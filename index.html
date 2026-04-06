@@ -125,9 +125,19 @@ function closeMenu() {
 function showPage(page) {
   let content = document.getElementById("content");
 
-  if (page === "home") {
-    content.innerHTML = `<h2>🏠 الرئيسية</h2>`;
-  }
+  content.innerHTML = `
+  <h2>🏠 الرئيسية</h2>
+
+  <div class="folder-box" onclick="openFolder('chat')">
+    <img src="https://i.imgur.com/2yaf2wb.jpg">
+    <div class="folder-name">تطبيقات الشات</div>
+  </div>
+
+  <div class="folder-box" onclick="openFolder('games')">
+    <img src="https://i.imgur.com/8Km9tLL.jpg">
+    <div class="folder-name">الألعاب</div>
+  </div>
+`;
 
   if (page === "charge") {
     content.innerHTML = `
@@ -186,3 +196,18 @@ window.onload = function () {
 
 </body>
 </html>
+function openFolder(type) {
+  let content = document.getElementById("content");
+
+  if (type === "chat") {
+    content.innerHTML = `
+      <h2>📱 تطبيقات الشات</h2>
+    `;
+  }
+
+  if (type === "games") {
+    content.innerHTML = `
+      <h2>🎮 الألعاب</h2>
+    `;
+  }
+}
