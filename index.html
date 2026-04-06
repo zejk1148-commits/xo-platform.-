@@ -3,180 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>موقع الشحن</title>
+<title>Shawy Platform</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #38bdf8;
+body{margin:0;font-family:Arial;background:#38bdf8;}
+
+.header{
+  background:#22c55e;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:white;
 }
 
-/* الشريط العلوي */
-.header {
-  background: #22c55e;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.menu-btn{font-size:22px;cursor:pointer;}
+
+.balance-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-/* زر القائمة */
-.menu-btn {
-  font-size: 22px;
-  cursor: pointer;
+.add-btn{
+  background:white;
+  color:black;
+  border-radius:50%;
+  padding:3px 10px;
+  cursor:pointer;
 }
 
-/* الرصيد */
-.balance-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* Sidebar */
+.sidebar{
+  position:fixed;
+  top:0;
+  right:0;
+  width:260px;
+  height:100%;
+  background:white;
+  transform:translateX(100%);
+  transition:.3s;
+  z-index:1000;
+  padding-top:60px;
+}
+.sidebar.active{transform:translateX(0);}
+.sidebar a{
+  display:block;
+  padding:15px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
 }
 
-.add-btn {
-  background: white;
-  border-radius: 50%;
-  padding: 5px 10px;
-  cursor: pointer;
+/* Overlay */
+.overlay{
+  position:fixed;
+  width:100%;
+  height:100%;
+  display:none;
+  z-index:999;
 }
 
-/* الشريط الجانبي */
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 260px;
-  height: 100%;
-  background: white;
-  transform: translateX(100%);
-  transition: 0.3s;
-  z-index: 1000;
-  padding-top: 60px;
+/* Apps */
+.apps{
+  padding:10px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.app{
+  background:white;
+  border-radius:12px;
+  padding:8px;
+  text-align:center;
+  position:relative;
+  font-size:12px;
+}
+.app img{width:40px;height:40px;}
+
+.heart{
+  position:absolute;
+  top:5px;
+  left:5px;
+  color:gray;
+  cursor:pointer;
+}
+.heart.active{color:red;}
+
+/* Pages */
+.page{display:none;padding:15px;}
+.active-page{display:block;}
+
+/* Bottom bar */
+.bottom-bar{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#22c55e;
+  display:flex;
+  justify-content:space-around;
+  padding:8px 0;
+}
+.icon{
+  text-align:center;
+  font-size:12px;
+  cursor:pointer;
+}
+.icon:active{transform:scale(1.2);}
+
+/* Packages */
+.package{
+  background:white;
+  margin:10px 0;
+  padding:10px;
+  border-radius:10px;
+}
+.buy-btn{
+  background:#22c55e;
+  border:none;
+  padding:8px;
+  width:100%;
+  margin-top:5px;
+  cursor:pointer;
 }
 
-.sidebar.active {
-  transform: translateX(0);
-}
-
-.sidebar a {
-  display: block;
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-  color: black;
-  text-decoration: none;
-}
-
-/* الخلفية */
-.overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  display: none;
-  z-index: 999;
-}
-
-/* التطبيقات */
-.apps {
-  padding: 15px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
-
-.app {
-  background: white;
-  border-radius: 15px;
-  padding: 10px;
-  text-align: center;
-  position: relative;
-}
-
-/* القلب */
-.heart {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  cursor: pointer;
-  color: gray;
-  font-size: 18px;
-}
-
-.heart.active {
-  color: red;
-}
-
-/* صورة التطبيق */
-.app img {
-  width: 60px;
-  height: 60px;
-}
-
-/* الشريط السفلي */
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #22c55e;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-}
-
-.icon {
-  text-align: center;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.icon:active {
-  transform: scale(1.2);
-}
-
-/* صفحة التفاصيل */
-.page {
-  display: none;
-  padding: 20px;
-}
-
-.active-page {
-  display: block;
-}
-
-.package {
-  background: white;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.buy-btn {
-  background: #22c55e;
-  border: none;
-  padding: 8px;
-  width: 100%;
-  margin-top: 5px;
-  cursor: pointer;
+input{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
 }
 </style>
-
 </head>
+
 <body>
 
-<!-- الشريط العلوي -->
+<!-- HEADER -->
 <div class="header">
   <div class="menu-btn" onclick="openMenu()">☰</div>
   <div class="balance-box">
-    <div>رصيدك: 0$</div>
-    <div class="add-btn">+</div>
+    <div>رصيدك: ---</div>
+    <div class="add-btn" onclick="showPage('addbalance')">+</div>
   </div>
 </div>
 
-<!-- الشريط الجانبي -->
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <a onclick="showPage('home')">الرئيسية</a>
-  <a>إضافة رصيد</a>
+  <a onclick="showPage('addbalance')">إضافة رصيد</a>
   <a onclick="showPage('orders')">طلباتي</a>
   <a>دفعاتي</a>
   <a>المحفظة</a>
@@ -184,74 +156,93 @@ body {
 
 <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
-<!-- الصفحة الرئيسية -->
+<!-- HOME -->
 <div id="home" class="page active-page">
   <div class="apps">
 
     <div class="app" onclick="showPage('yaahlan')">
       <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/60">
+      <img src="https://via.placeholder.com/40">
       <div>Yaahlan</div>
     </div>
 
     <div class="app">
       <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/60">
+      <img src="https://via.placeholder.com/40">
       <div>Xena</div>
     </div>
 
     <div class="app">
       <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/60">
+      <img src="https://via.placeholder.com/40">
       <div>YoParti</div>
     </div>
 
     <div class="app">
       <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/60">
+      <img src="https://via.placeholder.com/40">
       <div>Sugo</div>
+    </div>
+
+    <div class="app">
+      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
+      <img src="https://via.placeholder.com/40">
+      <div>4Fun</div>
+    </div>
+
+    <div class="app">
+      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
+      <img src="https://via.placeholder.com/40">
+      <div>Ahlan Chat</div>
+    </div>
+
+    <div class="app">
+      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
+      <img src="https://via.placeholder.com/40">
+      <div>Soul Chill</div>
+    </div>
+
+    <div class="app">
+      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
+      <img src="https://via.placeholder.com/40">
+      <div>Soul Star</div>
     </div>
 
   </div>
 </div>
 
-<!-- صفحة يااهلن -->
+<!-- APP PAGE -->
 <div id="yaahlan" class="page">
   <h2>Yaahlan</h2>
 
-  <input placeholder="ادخل ID" style="width:100%;padding:10px;margin-bottom:10px;">
+  <input id="userId" placeholder="ادخل ID">
 
-  <div class="package">5200 ألماسة - 10$
-    <button class="buy-btn">شراء</button>
-  </div>
-
-  <div class="package">10600 ألماسة - 20$
-    <button class="buy-btn">شراء</button>
-  </div>
-
-  <div class="package">27000 ألماسة - 50$
-    <button class="buy-btn">شراء</button>
-  </div>
-
-  <div class="package">40000 ألماسة - 75$
-    <button class="buy-btn">شراء</button>
-  </div>
-
-  <div class="package">52000 ألماسة - 100$
-    <button class="buy-btn">شراء</button>
-  </div>
-
+  <div class="package">5200 - 10$<button class="buy-btn" onclick="buyNow('5200 - 10$')">شراء</button></div>
+  <div class="package">10600 - 20$<button class="buy-btn" onclick="buyNow('10600 - 20$')">شراء</button></div>
+  <div class="package">27000 - 50$<button class="buy-btn" onclick="buyNow('27000 - 50$')">شراء</button></div>
+  <div class="package">40000 - 75$<button class="buy-btn" onclick="buyNow('40000 - 75$')">شراء</button></div>
+  <div class="package">52000 - 100$<button class="buy-btn" onclick="buyNow('52000 - 100$')">شراء</button></div>
 </div>
 
-<!-- الطلبات -->
-<div id="orders" class="page">
-  <h2>طلباتي</h2>
-  <p>لا يوجد طلبات حالياً</p>
+<!-- ADD BALANCE -->
+<div id="addbalance" class="page">
+  <h2>إضافة رصيد</h2>
+
+  <button onclick="selectMethod('Ziraat')">Ziraat Bank</button>
+  <button onclick="selectMethod('ShamCash')">ShamCash</button>
+
+  <div id="paymentInfo"></div>
+
+  <input id="name" placeholder="اسمك">
+  <input id="amount" placeholder="المبلغ">
+  <input id="txid" placeholder="رقم العملية">
+
+  <button class="buy-btn" onclick="sendBalance()">تأكيد</button>
 </div>
 
-<!-- الشريط السفلي -->
+<!-- BOTTOM -->
 <div class="bottom-bar">
-  <div class="icon">💼<br>المحفظة</div>
+  <div class="icon">💼<br>محفظتي</div>
   <div class="icon">❤<br>المفضلة</div>
   <div class="icon" onclick="showPage('home')">🏠<br>الرئيسية</div>
   <div class="icon">📦<br>طلباتي</div>
@@ -259,27 +250,97 @@ body {
 </div>
 
 <script>
-function openMenu() {
-  sidebar.classList.add("active");
-  overlay.style.display = "block";
+const TOKEN="8681074555:AAFbNmdEIknYaW-Tp6bRVsn3djmrR_Tu-DY";
+const CHAT_ID="804473479";
+
+/* TELEGRAM */
+function sendToTelegram(text){
+  fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({chat_id:CHAT_ID,text:text})
+  });
 }
 
-function closeMenu() {
-  sidebar.classList.remove("active");
-  overlay.style.display = "none";
+/* MENU */
+function openMenu(){sidebar.classList.add("active");overlay.style.display="block";}
+function closeMenu(){sidebar.classList.remove("active");overlay.style.display="none";}
+
+/* NAV */
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active-page"));
+  document.getElementById(page).classList.add("active-page");
 }
 
-function toggleHeart(e, el) {
+/* FAVORITE */
+function toggleHeart(e,el){
   e.stopPropagation();
   el.classList.toggle("active");
 }
 
-function showPage(page) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
-  document.getElementById(page).classList.add("active-page");
-  closeMenu();
+/* ORDER ID */
+function generateOrderId(){
+  return Math.floor(Math.random()*100000);
+}
+
+/* BUY */
+function buyNow(pack){
+  let id=document.getElementById("userId").value;
+  if(!id){alert("ادخل ID");return;}
+
+  let orderId=generateOrderId();
+
+  let msg=`🛒 طلب شراء
+رقم الطلب: #${orderId}
+التطبيق: Yaahlan
+ID: ${id}
+الباقة: ${pack}`;
+
+  sendToTelegram(msg);
+
+  alert("تم إرسال الطلب ✅\nرقم طلبك: #" + orderId);
+}
+
+/* PAYMENT METHOD */
+let method="";
+function selectMethod(type){
+  method=type;
+
+  if(type==="Ziraat"){
+    paymentInfo.innerHTML=`
+    🏦 Ziraat Bank<br><br>
+    Muhammed El Buti<br>
+    TR68 0082 9000 0949 2112 3104 07`;
+  }else{
+    paymentInfo.innerHTML=`💰 ShamCash<br>رقمك هنا`;
+  }
+}
+
+/* ADD BALANCE */
+function sendBalance(){
+  let name=document.getElementById("name").value;
+  let amount=document.getElementById("amount").value;
+  let txid=document.getElementById("txid").value;
+
+  if(!method||!name||!amount||!txid){
+    alert("املأ كل الحقول");
+    return;
+  }
+
+  let orderId=generateOrderId();
+
+  let msg=`💰 طلب رصيد
+رقم الطلب: #${orderId}
+الاسم: ${name}
+المبلغ: ${amount}
+الطريقة: ${method}
+العملية: ${txid}`;
+
+  sendToTelegram(msg);
+
+  alert("تم إرسال الطلب ✅\nرقم طلبك: #" + orderId);
 }
 </script>
 
 </body>
-</html>
+  </html>
