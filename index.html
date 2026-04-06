@@ -19,8 +19,7 @@ align-items:center;
 }
 
 .menu{font-size:22px;cursor:pointer}
-.balance{display:flex;gap:10px;align-items:center}
-.rechargeTop{background:white;color:black;border-radius:50%;padding:3px 10px;cursor:pointer}
+.balance{font-weight:bold}
 
 /* SIDEBAR */
 .sidebar{
@@ -54,7 +53,6 @@ border-bottom:1px solid #eee;
 cursor:pointer;
 }
 
-/* OVERLAY */
 .overlay{
 position:fixed;
 top:0;left:0;
@@ -80,7 +78,6 @@ position:relative;
 cursor:pointer;
 }
 
-.app img{width:40px;height:40px}
 .heart{
 position:absolute;
 top:5px;left:5px;
@@ -93,7 +90,7 @@ cursor:pointer;
 .page{display:none;padding:15px}
 .active{display:block}
 
-/* BOTTOM NAV */
+/* BOTTOM */
 .bottom{
 position:fixed;
 bottom:0;left:0;right:0;
@@ -104,22 +101,11 @@ padding:10px;
 border-top:1px solid #ddd;
 }
 
-.bottom div{
-cursor:pointer;
-font-size:14px;
-text-align:center;
-}
-
 /* PACKAGES */
-.packageGrid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-}
-
 .package{
 background:white;
 padding:10px;
+margin:10px 0;
 border-radius:10px;
 text-align:center;
 }
@@ -147,26 +133,24 @@ margin-top:10px;
 <!-- HEADER -->
 <div class="header">
 <div class="menu" onclick="openMenu()">☰</div>
-<div class="balance">
-<div id="balanceText">رصيدك: 0$</div>
-</div>
+<div class="balance" id="balanceText">0$</div>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
 
 <div class="profile">
-<img id="profilePic">
-<div id="username">User</div>
+<img>
+<div>User</div>
 </div>
 
-<a onclick="showPage('home')">الرئيسية</a>
-<a onclick="showPage('favorites')">المفضلة</a>
-<a onclick="showPage('wallet')">المحفظة</a>
-<a onclick="showPage('redeem')">شحن</a>
+<a onclick="show('home')">الرئيسية</a>
+<a onclick="show('favorites')">المفضلة</a>
+<a onclick="show('wallet')">المحفظة</a>
+<a onclick="show('redeem')">شحن</a>
 </div>
 
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="overlay" onclick="closeMenu()" id="overlay"></div>
 
 <!-- HOME -->
 <div id="home" class="page active">
@@ -190,65 +174,69 @@ margin-top:10px;
 <h3>Yaahlan</h3>
 <input id="userId" placeholder="ID المستخدم">
 
-<div class="packageGrid" id="packages"></div>
+<div class="package" onclick="buy(10,5200)">10$ - 5200 💎</div>
+<div class="package" onclick="buy(20,10600)">20$ - 10600 💎</div>
+<div class="package" onclick="buy(50,27000)">50$ - 27000 💎</div>
+<div class="package" onclick="buy(75,40000)">75$ - 40000 💎</div>
+<div class="package" onclick="buy(100,52000)">100$ - 52000 💎</div>
+
 </div>
 
 <!-- REDEEM -->
 <div id="redeem" class="page">
 <h3>شحن رصيد 💳</h3>
 <input id="codeInput" placeholder="أدخل الكود">
-<button onclick="redeem()">تفعيل</button>
+<button onclick="redeemCode()">تفعيل</button>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- BOTTOM -->
 <div class="bottom">
-<div onclick="showPage('redeem')">💳 شحن</div>
-<div onclick="showPage('home')">🏠 الرئيسية</div>
-<div onclick="showPage('favorites')">❤️ المفضلة</div>
-<div onclick="showPage('wallet')">💼 المحفظة</div>
-<div onclick="showPage('redeem')">➕ إضافة رصيد</div>
+<div onclick="show('home')">🏠</div>
+<div onclick="show('favorites')">❤️</div>
+<div onclick="show('wallet')">💼</div>
+<div onclick="show('redeem')">💳</div>
 </div>
 
 <script>
 
 /* DATA */
-let balance = parseInt(localStorage.getItem("balance")) || 0;
+let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-let wallet = JSON.parse(localStorage.getItem("wallet")) || [];
 let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+let wallet = JSON.parse(localStorage.getItem("wallet")) || [];
 
 /* CODES */
 const codes = {
+"XO5":5,
 "XO10":10,
 "XO20":20,
-"XO50":50,
-"XO100":100
+"XO50":50
 };
-
-/* APPS */
-const apps = [
-"yaahlan","xena","yoparti","sugo","4fun","ahlan","soulchill","soulstar"
-];
-
-/* PACKAGES */
-const packages = [
-{price:10,diamond:5200},
-{price:20,diamond:10600},
-{price:50,diamond:27000},
-{price:75,diamond:40000},
-{price:100,diamond:52000}
-];
 
 updateBalance();
 renderApps();
-renderPackages();
 renderFav();
 renderWallet();
 
-/* UI */
-function updateBalance(){
-document.getElementById("balanceText").innerText="رصيدك: "+balance+"$";
-localStorage.setItem("balance",balance);
+/* APPS */
+const apps = ["yaahlan","xena","yoparti","sugo","4fun","ahlan","soulchill","soulstar"];
+
+function renderApps(){
+let box=document.getElementById("apps");
+box.innerHTML="";
+apps.forEach(a=>{
+box.innerHTML+=`
+<div class="app" onclick="openApp('${a}')">
+<div class="heart ${favorites.includes(a)?'active':''}" onclick="toggleFav(event,'${a}')">❤</div>
+<div>${a}</div>
+</div>`;
+});
+}
+
+/* NAV */
+function show(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 
 /* MENU */
@@ -256,43 +244,19 @@ function openMenu(){
 document.getElementById("sidebar").style.transform="translateX(0)";
 document.getElementById("overlay").style.display="block";
 }
-
 function closeMenu(){
 document.getElementById("sidebar").style.transform="translateX(100%)";
 document.getElementById("overlay").style.display="none";
 }
 
-/* PAGE */
-function showPage(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-/* APPS RENDER */
-function renderApps(){
-let box=document.getElementById("apps");
-box.innerHTML="";
-
-apps.forEach(app=>{
-box.innerHTML+=`
-<div class="app" onclick="showPage('${app}')">
-<div class="heart ${favorites.includes(app)?'active':''}" onclick="toggleFav(event,'${app}')">❤</div>
-<img src="https://via.placeholder.com/40">
-<div>${app}</div>
-</div>`;
-});
-}
-
 /* FAVORITES */
 function toggleFav(e,id){
 e.stopPropagation();
-
 if(favorites.includes(id)){
 favorites=favorites.filter(x=>x!==id);
 }else{
 favorites.push(id);
 }
-
 localStorage.setItem("favorites",JSON.stringify(favorites));
 renderApps();
 renderFav();
@@ -300,73 +264,40 @@ renderFav();
 
 function renderFav(){
 let box=document.getElementById("favList");
-
-if(favorites.length===0){
-box.innerHTML="لا يوجد مفضلة";
-return;
-}
-
-box.innerHTML='<div class="apps">'+favorites.map(a=>`
-<div class="app" onclick="showPage('${a}')">
-<img src="https://via.placeholder.com/40">
-<div>${a}</div>
-</div>
-`).join("")+'</div>';
+box.innerHTML=favorites.length?favorites.join("<br>"):"فارغ";
 }
 
 /* WALLET */
-function addWallet(text){
-wallet.push(text);
+function addWallet(t){
+wallet.push(t);
 localStorage.setItem("wallet",JSON.stringify(wallet));
 renderWallet();
 }
 
 function renderWallet(){
-let box=document.getElementById("walletList");
-box.innerHTML = wallet.length?wallet.join("<br>"):"لا يوجد عمليات";
+document.getElementById("walletList").innerHTML =
+wallet.length?wallet.join("<br>"):"فارغ";
 }
 
-/* BUY PACKAGES */
-function renderPackages(){
-let box=document.getElementById("packages");
-
-box.innerHTML = packages.map((p,i)=>`
-<div class="package">
-<div>${p.price}$</div>
-<div>${p.diamond} 💎</div>
-<button onclick="buy(${i})">شراء</button>
-</div>
-`).join("");
-}
-
-function buy(i){
+/* BUY */
+function buy(price,diamond){
 let id=document.getElementById("userId").value;
 
-if(!id){
-alert("ادخل ID");
-return;
-}
+if(!id) return alert("ادخل ID");
+if(balance<price) return alert("رصيد غير كافي");
 
-let p=packages[i];
-
-if(balance<p.price){
-alert("رصيد غير كافي");
-return;
-}
-
-balance-=p.price;
+balance-=price;
 updateBalance();
 
-/* WALLET LOG */
-addWallet(`📦 شراء ${p.price}$ - ID:${id} - 💎${p.diamond}`);
+addWallet(`شراء ${price}$ - ${diamond} 💎 - ID:${id}`);
 
-/* TELEGRAM BOT */
+/* TELEGRAM */
 fetch("https://api.telegram.org/botYOUR_TOKEN/sendMessage",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 chat_id:"YOUR_CHAT_ID",
-text:`طلب جديد\nID:${id}\nسعر:${p.price}$\nألماس:${p.diamond}`
+text:`طلب جديد\nID:${id}\nالسعر:${price}$\nالماس:${diamond}`
 })
 });
 
@@ -374,26 +305,27 @@ alert("تم الطلب");
 }
 
 /* REDEEM */
-function redeem(){
-let code=document.getElementById("codeInput").value;
+function redeemCode(){
+let code=document.getElementById("codeInput").value.trim();
 
 if(!code) return alert("اكتب الكود");
-
-if(usedCodes.includes(code)){
-return alert("مستخدم مسبقاً");
-}
+if(usedCodes.includes(code)) return alert("الكود مستخدم مسبقاً");
 
 if(codes[code]){
 balance+=codes[code];
 usedCodes.push(code);
 
+localStorage.setItem("balance",balance);
 localStorage.setItem("usedCodes",JSON.stringify(usedCodes));
+
 updateBalance();
-
-alert("تم الشحن");
+alert("تم الشحن +" + codes[code] + "$");
 }
 }
 
+function updateBalance(){
+document.getElementById("balanceText").innerText = balance + "$";
+}
 </script>
 
 </body>
