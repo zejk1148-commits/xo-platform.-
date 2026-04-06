@@ -471,3 +471,124 @@ function setActive() {
 window.onload = setActive;
 </script>
 <!-- ✅ Bottom Bar END -->
+<style>
+
+/* 🌐 الخلفية العامة */
+body {
+  font-family: Arial;
+  background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+  margin: 0;
+  padding: 20px;
+  padding-bottom: 80px;
+}
+
+/* 🧊 المجلدات (الكروت) */
+.folder {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.folder:hover {
+  transform: translateY(-5px);
+}
+
+/* 📁 أيقونة المجلد */
+.folder-icon {
+  font-size: 24px;
+}
+
+/* 📝 اسم المجلد */
+.folder-name {
+  font-size: 18px;
+  color: #0d47a1;
+  font-weight: bold;
+}
+
+/* ➡️ سهم */
+.folder-arrow {
+  font-size: 20px;
+  color: #64b5f6;
+}
+
+/* 🔘 أزرار عامة */
+button {
+  background: #42a5f5;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #1e88e5;
+}
+
+/* 📌 الشريط السفلي */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #ccc;
+}
+
+.bottom-bar button {
+  color: #64b5f6;
+}
+
+.bottom-bar button.active {
+  color: #0d47a1;
+}
+
+/* 💙 عنوان الصفحة */
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #0d47a1;
+  margin-bottom: 20px;
+}
+
+</style>
+
+<!-- 🔥 عنوان -->
+<div class="title">الأقسام</div>
+
+<!-- 📁 المجلدات -->
+<div class="folder">
+  <span class="folder-icon">🎮</span>
+  <span class="folder-name">الألعاب</span>
+  <span class="folder-arrow">➡️</span>
+</div>
+
+<div class="folder">
+  <span class="folder-icon">📱</span>
+  <span class="folder-name">التطبيقات</span>
+  <span class="folder-arrow">➡️</span>
+</div>
+
+<div class="folder">
+  <span class="folder-icon">💳</span>
+  <span class="folder-name">البطاقات</span>
+  <span class="folder-arrow">➡️</span>
+</div>
+
+<div class="folder">
+  <span class="folder-icon">🔥</span>
+  <span class="folder-name">العروض</span>
+  <span class="folder-arrow">➡️</span>
+</div>
