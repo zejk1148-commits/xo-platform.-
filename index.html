@@ -3,90 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XO App</title>
+<title>XO STORE PRO</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#e0f2fe}
+body{margin:0;font-family:Arial;background:#f3f4f6}
 
-/* HEADER */
-.header{
+/* TOP BAR */
+.topbar{
 background:#16a34a;
 color:white;
 display:flex;
 justify-content:space-between;
 padding:12px;
+font-weight:bold;
 }
 
-/* APPS GRID */
-.apps{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-padding:10px;
-}
-
-.app{
+/* SIDEBAR */
+.sidebar{
+position:fixed;
+right:0;top:0;
+width:260px;height:100%;
 background:white;
-border-radius:12px;
-padding:10px;
-text-align:center;
-position:relative;
+transform:translateX(100%);
+transition:.3s;
+padding:15px;
+z-index:999;
 }
+.sidebar.open{transform:translateX(0)}
 
-.app img{
-width:100%;
-height:80px;
-object-fit:cover;
-border-radius:10px;
-}
-
-.heart{
-position:absolute;
-top:5px;left:5px;
+.menu-item{
+padding:12px;
+border-bottom:1px solid #eee;
 cursor:pointer;
 }
-.heart.active{color:red}
 
-/* BOTTOM BAR */
+/* BOTTOM NAV */
 .bottom{
 position:fixed;
 bottom:0;left:0;right:0;
 background:white;
 display:flex;
 justify-content:space-around;
-padding:10px;
-border-top:1px solid #ccc;
+padding:12px;
+font-size:20px;
+border-top:1px solid #ddd;
 }
 
 /* PAGES */
 .page{display:none;padding:15px}
 .active{display:block}
 
-/* PACKAGES */
-.package{
+/* APPS */
+.apps{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+}
+
+.app{
 background:white;
 padding:10px;
-margin:10px 0;
 border-radius:10px;
 text-align:center;
+position:relative;
 cursor:pointer;
 }
 
-/* TABLE */
-table{width:100%;background:white;border-collapse:collapse}
-td,th{border:1px solid #ddd;padding:6px;text-align:center}
+.heart{
+position:absolute;
+top:5px;left:5px;
+color:#aaa;
+}
+.heart.active{color:red}
 
-button{padding:5px}
-input{width:100%;padding:8px;margin-top:10px}
+/* BOX */
+.box{
+background:white;
+padding:15px;
+margin-top:10px;
+border-radius:10px;
+}
+.green{color:green}
+.red{color:red}
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-<div>☰</div>
-<div id="balance">0$</div>
+<div class="topbar">
+<div onclick="toggleSidebar()">☰ MENU</div>
+<div id="balanceTop">0$</div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+<div class="menu-item" onclick="show('home')">🏠 الرئيسية</div>
+<div class="menu-item" onclick="show('redeem')">💳 الشحن</div>
+<div class="menu-item" onclick="show('wallet')">💼 المحفظة</div>
+<div class="menu-item" onclick="show('favorites')">❤️ المفضلة</div>
 </div>
 
 <!-- HOME -->
@@ -94,7 +108,7 @@ input{width:100%;padding:8px;margin-top:10px}
 <div class="apps" id="apps"></div>
 </div>
 
-<!-- FAVORITES (EMPTY BY DEFAULT) -->
+<!-- FAVORITES -->
 <div id="favorites" class="page">
 <h3>المفضلة ❤️</h3>
 <div id="favList"></div>
@@ -102,19 +116,9 @@ input{width:100%;padding:8px;margin-top:10px}
 
 <!-- WALLET -->
 <div id="wallet" class="page">
-<h3>المحفظة 💼</h3>
-<div id="walletBox"></div>
-</div>
-
-<!-- YA AHLAN PACKAGES -->
-<div id="yaahlan" class="page">
-<h3>Yaahlan 💎</h3>
-
-<div class="package">10$ = 5200 💎</div>
-<div class="package">20$ = 10600 💎</div>
-<div class="package">50$ = 27000 💎</div>
-<div class="package">100$ = 52000 💎</div>
-
+<h3>المحفظة</h3>
+<p class="green">الوارد: <span id="income">0</span>$</p>
+<p class="red">المصروف: <span id="spent">0</span>$</p>
 </div>
 
 <!-- REDEEM -->
@@ -124,193 +128,127 @@ input{width:100%;padding:8px;margin-top:10px}
 <button onclick="redeem()">تفعيل</button>
 </div>
 
-<!-- ADMIN -->
-<div id="admin" class="page">
-
-<h3>لوحة الأدمن 👑</h3>
-
-<h4>إنشاء كود</h4>
-<input id="amount" placeholder="المبلغ">
-<button onclick="createCode()">إنشاء</button>
-
-<div id="codesBox"></div>
-
-<h4>المستخدمين</h4>
-<table>
-<tr><th>ID</th><th>Admin</th><th>Ban</th><th>Action</th></tr>
-<tbody id="usersBox"></tbody>
-</table>
-
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bottom">
-<div onclick="show('home')">🏠</div>
-<div onclick="show('favorites')">❤️</div>
-<div onclick="show('wallet')">💼</div>
-<div onclick="show('yaahlan')">💎</div>
-<div onclick="show('redeem')">💳</div>
-<div onclick="show('admin')">👑</div>
-</div>
-
 <script>
 
+/* 🔴 Telegram (ضع بياناتك هنا) */
+const BOT_TOKEN = "PUT_YOUR_BOT_TOKEN";
+const CHAT_ID = "PUT_YOUR_CHAT_ID";
+
 /* DATA */
-let balance = parseFloat(localStorage.getItem("balance")) || 0;
-let fav = JSON.parse(localStorage.getItem("fav")) || [];
-let codes = JSON.parse(localStorage.getItem("codes")) || {};
-let used = JSON.parse(localStorage.getItem("used")) || [];
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-/* USER */
-let myId = localStorage.getItem("myId");
-if(!myId){
-myId = "U"+Math.floor(Math.random()*999999);
-localStorage.setItem("myId",myId);
-}
-
-if(!users.find(u=>u.id===myId)){
-users.push({id:myId,admin:false,ban:false});
-saveUsers();
-}
-
-function saveUsers(){
-localStorage.setItem("users",JSON.stringify(users));
-}
+let income=0;
+let spent=0;
+let favorites=[];
 
 /* APPS */
 const apps = [
-{name:"yaahlan",img:"https://via.placeholder.com/150"},
-{name:"sugo",img:"https://via.placeholder.com/150"},
-{name:"chat",img:"https://via.placeholder.com/150"},
-{name:"game",img:"https://via.placeholder.com/150"}
+{name:"يا أهلاً",img:"https://via.placeholder.com/150"},
+{name:"Game",img:"https://via.placeholder.com/150"},
+{name:"VIP",img:"https://via.placeholder.com/150"},
+{name:"Chat",img:"https://via.placeholder.com/150"},
+{name:"Soul",img:"https://via.placeholder.com/150"},
+{name:"Xena",img:"https://via.placeholder.com/150"}
 ];
 
+/* RENDER */
 function renderApps(){
 let box=document.getElementById("apps");
 box.innerHTML="";
 
 apps.forEach(a=>{
 box.innerHTML+=`
-<div class="app">
-<div class="heart ${fav.includes(a.name)?'active':''}" onclick="toggleFav(event,'${a.name}')">❤</div>
-<img src="${a.img}">
+<div class="app" onclick="buy('${a.name}')">
+<div class="heart" onclick="event.stopPropagation();toggleFav('${a.name}',this)">❤</div>
+<img src="${a.img}" width="100%">
 <div>${a.name}</div>
 </div>`;
 });
 }
 
-/* FAVORITES EMPTY UNTIL CLICK */
-function toggleFav(e,id){
-e.stopPropagation();
-if(fav.includes(id)){
-fav=fav.filter(x=>x!==id);
-}else{
-fav.push(id);
+/* BUY */
+function buy(item){
+
+let price=1;
+
+spent+=price;
+income+=price;
+
+sendTelegram(item,price,"BUY");
+
+update();
 }
-localStorage.setItem("fav",JSON.stringify(fav));
-renderApps();
+
+/* REDEEM */
+function redeem(){
+let code=document.getElementById("code").value;
+
+income+=5;
+
+sendTelegram(code,5,"REDEEM");
+
+update();
+}
+
+/* TELEGRAM */
+function sendTelegram(item,price,type){
+
+fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+chat_id:CHAT_ID,
+text:`
+🛒 TYPE: ${type}
+📦 ITEM: ${item}
+💰 PRICE: ${price}$
+`
+})
+});
+
+}
+
+/* FAVORITE */
+function toggleFav(name,el){
+
+el.classList.toggle("active");
+
+if(favorites.includes(name)){
+favorites=favorites.filter(f=>f!==name);
+}else{
+favorites.push(name);
+}
+
 renderFav();
 }
 
 function renderFav(){
 let box=document.getElementById("favList");
-box.innerHTML = fav.length ? fav.join("<br>") : "";
+box.innerHTML="";
+
+favorites.forEach(f=>{
+box.innerHTML+=`<div class="box">❤️ ${f}</div>`;
+});
+}
+
+/* WALLET */
+function update(){
+document.getElementById("income").innerText=income;
+document.getElementById("spent").innerText=spent;
+document.getElementById("balanceTop").innerText=(income-spent)+"$";
 }
 
 /* NAV */
 function show(id){
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 document.getElementById(id).classList.add("active");
-renderUsers();
-renderCodes();
-renderWallet();
 }
 
-/* WALLET */
-function renderWallet(){
-document.getElementById("walletBox").innerHTML = balance + "$";
-document.getElementById("balance").innerText = balance + "$";
+/* SIDEBAR */
+function toggleSidebar(){
+document.getElementById("sidebar").classList.toggle("open");
 }
 
-/* REDEEM */
-function redeem(){
-let c=document.getElementById("code").value.trim();
-
-if(used.includes(c)) return alert("مستخدم");
-
-if(codes[c]){
-balance += parseFloat(codes[c]);
-used.push(c);
-
-localStorage.setItem("balance",balance);
-localStorage.setItem("used",JSON.stringify(used));
-
-renderWallet();
-alert("تم الشحن +" + codes[c]);
-}else{
-alert("خطأ");
-}
-}
-
-/* CREATE CODE */
-function createCode(){
-let a=document.getElementById("amount").value;
-
-let code="XO-"+Math.random().toString(36).substring(2,8).toUpperCase();
-
-codes[code]=a;
-localStorage.setItem("codes",JSON.stringify(codes));
-
-renderCodes();
-}
-
-function renderCodes(){
-let box=document.getElementById("codesBox");
-box.innerHTML="<h4>Codes</h4>";
-
-for(let c in codes){
-box.innerHTML+=`<div>${c} = ${codes[c]}$</div>`;
-}
-}
-
-/* USERS */
-function renderUsers(){
-let box=document.getElementById("usersBox");
-box.innerHTML="";
-
-users.forEach(u=>{
-box.innerHTML+=`
-<tr>
-<td>${u.id}</td>
-<td>${u.admin?"✔":"❌"}</td>
-<td>${u.ban?"⛔":"✔"}</td>
-<td>
-<button onclick="toggleAdmin('${u.id}')">Admin</button>
-<button onclick="toggleBan('${u.id}')">Ban</button>
-</td>
-</tr>`;
-});
-}
-
-function toggleAdmin(id){
-let u=users.find(x=>x.id===id);
-u.admin=!u.admin;
-saveUsers();
-renderUsers();
-}
-
-function toggleBan(id){
-let u=users.find(x=>x.id===id);
-u.ban=!u.ban;
-saveUsers();
-renderUsers();
-}
-
-/* INIT */
 renderApps();
-renderWallet();
-renderFav();
+update();
 
 </script>
 
