@@ -145,6 +145,7 @@ body{
   border:1px solid #ccc;
   border-radius:8px;
 }
+
 .modal button{
   background:#2ecc71;
   color:white;
@@ -189,7 +190,6 @@ body{
 
 </div>
 
-<!-- PACKS -->
 <div id="appPage" style="display:none">
 
 <div class="header">
@@ -241,14 +241,14 @@ function openApp(app){
   showApp();
 
   const data = {
-    yaahlan:{name:"يا أهلا", packs:[5200,10600,27000,40000,52500]},
-    xena:{name:"Xena", packs:[5200,10600]},
-    yoparti:{name:"YoParti", packs:[5200,10600]},
-    sugo:{name:"Sugo", packs:[5200,10600]},
-    "4fun":{name:"4Fun", packs:[5200,10600]},
-    ahlan:{name:"Ahlan", packs:[5200,10600]},
-    soulchill:{name:"Soul Chill", packs:[5200,10600]},
-    soulstar:{name:"Soul Star", packs:[5200,10600]}
+    yaahlan:{name:"يا أهلا", packs:[2500,5200,10600,27000,40000,52500]},
+    xena:{name:"Xena", packs:[2500,5200,10600]},
+    yoparti:{name:"YoParti", packs:[2500,5200,10600]},
+    sugo:{name:"Sugo", packs:[2500,5200,10600]},
+    "4fun":{name:"4Fun", packs:[2500,5200,10600]},
+    ahlan:{name:"Ahlan", packs:[2500,5200,10600]},
+    soulchill:{name:"Soul Chill", packs:[2500,5200,10600]},
+    soulstar:{name:"Soul Star", packs:[2500,5200,10600]}
   };
 
   document.getElementById("appName").innerText = data[app].name;
@@ -258,7 +258,7 @@ function openApp(app){
   data[app].packs.forEach(p=>{
     html += `
       <div class='pack-card'>
-        <div class='mas'>${p} 💎</div>
+        <div class='mas'>${p.toLocaleString()} 💎</div>
         <div class='price'>$${getPrice(p)} 💵</div>
         <div class='buy-btn' onclick="openBuy(${p})">شراء</div>
       </div>
@@ -271,6 +271,7 @@ function openApp(app){
 }
 
 function getPrice(p){
+  if(p == 2500) return 5;
   if(p == 5200) return 10;
   if(p == 10600) return 20;
   if(p == 27000) return 50;
@@ -279,7 +280,6 @@ function getPrice(p){
   return 0;
 }
 
-/* BUY */
 function openBuy(pack){
   selectedPack = pack;
   document.getElementById("modal").style.display="flex";
@@ -293,7 +293,7 @@ function confirmBuy(){
     return;
   }
 
-  alert("تم إرسال الطلب\nID: " + id + "\nPack: " + selectedPack);
+  alert("تم الطلب ✅\nID: " + id + "\nPack: " + selectedPack);
 
   document.getElementById("modal").style.display="none";
   document.getElementById("userId").value="";
