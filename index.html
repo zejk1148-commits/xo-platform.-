@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>App Store</title>
+<title>XO Store</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#38bdf8}
+body{margin:0;font-family:Arial;background:#e0f2fe}
 
 /* HEADER */
 .header{
-background:#22c55e;
+background:#16a34a;
 color:white;
 display:flex;
 justify-content:space-between;
@@ -18,6 +18,7 @@ padding:12px;
 align-items:center;
 }
 
+/* MENU */
 .menu{font-size:22px;cursor:pointer}
 .balance{font-weight:bold}
 
@@ -25,41 +26,32 @@ align-items:center;
 .sidebar{
 position:fixed;
 top:0;right:0;
-width:260px;
-height:100%;
+width:250px;height:100%;
 background:white;
 transform:translateX(100%);
 transition:.3s;
 z-index:1000;
-padding-top:20px;
-}
-
-.profile{
-text-align:center;
-padding:20px;
-border-bottom:1px solid #eee;
-}
-
-.profile img{
-width:70px;height:70px;
-border-radius:50%;
-background:#ddd;
+padding:10px;
 }
 
 .sidebar a{
 display:block;
-padding:15px;
+padding:12px;
 border-bottom:1px solid #eee;
 cursor:pointer;
 }
 
+/* OVERLAY */
 .overlay{
 position:fixed;
 top:0;left:0;
 width:100%;height:100%;
 display:none;
-z-index:999;
 }
+
+/* PAGES */
+.page{display:none;padding:15px}
+.active{display:block}
 
 /* APPS */
 .apps{
@@ -71,58 +63,33 @@ padding:10px;
 
 .app{
 background:white;
-border-radius:12px;
 padding:10px;
+border-radius:10px;
 text-align:center;
-position:relative;
 cursor:pointer;
+position:relative;
 }
 
 .heart{
 position:absolute;
 top:5px;left:5px;
-color:gray;
 cursor:pointer;
 }
 .heart.active{color:red}
 
-/* PAGES */
-.page{display:none;padding:15px}
-.active{display:block}
-
-/* BOTTOM */
-.bottom{
-position:fixed;
-bottom:0;left:0;right:0;
-background:white;
-display:flex;
-justify-content:space-around;
-padding:10px;
-border-top:1px solid #ddd;
-}
-
-/* PACKAGES */
-.package{
-background:white;
-padding:10px;
-margin:10px 0;
-border-radius:10px;
-text-align:center;
-}
+/* TABLE */
+table{width:100%;background:white;border-collapse:collapse}
+td,th{border:1px solid #ddd;padding:6px;text-align:center}
 
 button{
-background:#22c55e;
-border:none;
-color:white;
-padding:8px;
-width:100%;
-margin-top:5px;
+padding:5px;
 cursor:pointer;
+margin:2px;
 }
 
 input{
+padding:8px;
 width:100%;
-padding:10px;
 margin-top:10px;
 }
 </style>
@@ -133,24 +100,19 @@ margin-top:10px;
 <!-- HEADER -->
 <div class="header">
 <div class="menu" onclick="openMenu()">☰</div>
-<div class="balance" id="balanceText">0$</div>
+<div id="balanceText">0$</div>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-
-<div class="profile">
-<img>
-<div>User</div>
-</div>
-
 <a onclick="show('home')">الرئيسية</a>
 <a onclick="show('favorites')">المفضلة</a>
 <a onclick="show('wallet')">المحفظة</a>
 <a onclick="show('redeem')">شحن</a>
+<a onclick="show('admin')">لوحة الأدمن</a>
 </div>
 
-<div class="overlay" onclick="closeMenu()" id="overlay"></div>
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
 <!-- HOME -->
 <div id="home" class="page active">
@@ -165,21 +127,8 @@ margin-top:10px;
 
 <!-- WALLET -->
 <div id="wallet" class="page">
-<h3>المحفظة</h3>
+<h3>المحفظة 💼</h3>
 <div id="walletList"></div>
-</div>
-
-<!-- YA AHLAN -->
-<div id="yaahlan" class="page">
-<h3>Yaahlan</h3>
-<input id="userId" placeholder="ID المستخدم">
-
-<div class="package" onclick="buy(10,5200)">10$ - 5200 💎</div>
-<div class="package" onclick="buy(20,10600)">20$ - 10600 💎</div>
-<div class="package" onclick="buy(50,27000)">50$ - 27000 💎</div>
-<div class="package" onclick="buy(75,40000)">75$ - 40000 💎</div>
-<div class="package" onclick="buy(100,52000)">100$ - 52000 💎</div>
-
 </div>
 
 <!-- REDEEM -->
@@ -189,12 +138,21 @@ margin-top:10px;
 <button onclick="redeemCode()">تفعيل</button>
 </div>
 
-<!-- BOTTOM -->
-<div class="bottom">
-<div onclick="show('home')">🏠</div>
-<div onclick="show('favorites')">❤️</div>
-<div onclick="show('wallet')">💼</div>
-<div onclick="show('redeem')">💳</div>
+<!-- ADMIN PANEL (HIDDEN LOGIC) -->
+<div id="admin" class="page">
+<h2>لوحة التحكم 👑</h2>
+
+<h3>المستخدمين</h3>
+<table>
+<tr><th>ID</th><th>Admin</th><th>Ban</th><th>Actions</th></tr>
+<tbody id="usersTable"></tbody>
+</table>
+
+<h3>إنشاء كود شحن</h3>
+<input id="amount" placeholder="المبلغ">
+<button onclick="createCode()">إنشاء كود</button>
+
+<div id="codesList"></div>
 </div>
 
 <script>
@@ -203,23 +161,29 @@ margin-top:10px;
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
-let wallet = JSON.parse(localStorage.getItem("wallet")) || [];
+let codes = JSON.parse(localStorage.getItem("codes")) || {};
+let users = JSON.parse(localStorage.getItem("users")) || [];
 
-/* CODES */
-const codes = {
-"XO5":5,
-"XO10":10,
-"XO20":20,
-"XO50":50
-};
+/* USER ID */
+let myId = localStorage.getItem("myId");
+if(!myId){
+myId = "U"+Math.floor(Math.random()*999999);
+localStorage.setItem("myId",myId);
+}
 
-updateBalance();
-renderApps();
-renderFav();
-renderWallet();
+/* add user */
+if(!users.find(u=>u.id===myId)){
+users.push({id:myId,admin:false,banned:false});
+saveUsers();
+}
+
+/* SAVE */
+function saveUsers(){
+localStorage.setItem("users",JSON.stringify(users));
+}
 
 /* APPS */
-const apps = ["yaahlan","xena","yoparti","sugo","4fun","ahlan","soulchill","soulstar"];
+const apps = ["yaahlan","sugo","4fun","soul","xena","vip","chat","game"];
 
 function renderApps(){
 let box=document.getElementById("apps");
@@ -231,22 +195,6 @@ box.innerHTML+=`
 <div>${a}</div>
 </div>`;
 });
-}
-
-/* NAV */
-function show(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-/* MENU */
-function openMenu(){
-document.getElementById("sidebar").style.transform="translateX(0)";
-document.getElementById("overlay").style.display="block";
-}
-function closeMenu(){
-document.getElementById("sidebar").style.transform="translateX(100%)";
-document.getElementById("overlay").style.display="none";
 }
 
 /* FAVORITES */
@@ -263,69 +211,130 @@ renderFav();
 }
 
 function renderFav(){
-let box=document.getElementById("favList");
-box.innerHTML=favorites.length?favorites.join("<br>"):"فارغ";
+document.getElementById("favList").innerHTML =
+favorites.length ? favorites.join("<br>") : "فارغ";
 }
 
 /* WALLET */
-function addWallet(t){
-wallet.push(t);
-localStorage.setItem("wallet",JSON.stringify(wallet));
-renderWallet();
-}
-
 function renderWallet(){
-document.getElementById("walletList").innerHTML =
-wallet.length?wallet.join("<br>"):"فارغ";
+document.getElementById("walletList").innerHTML = balance + "$";
 }
 
-/* BUY */
-function buy(price,diamond){
-let id=document.getElementById("userId").value;
+/* MENU */
+function openMenu(){
+sidebar.style.transform="translateX(0)";
+overlay.style.display="block";
+}
+function closeMenu(){
+sidebar.style.transform="translateX(100%)";
+overlay.style.display="none";
+}
 
-if(!id) return alert("ادخل ID");
-if(balance<price) return alert("رصيد غير كافي");
-
-balance-=price;
-updateBalance();
-
-addWallet(`شراء ${price}$ - ${diamond} 💎 - ID:${id}`);
-
-/* TELEGRAM */
-fetch("https://api.telegram.org/botYOUR_TOKEN/sendMessage",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-chat_id:"YOUR_CHAT_ID",
-text:`طلب جديد\nID:${id}\nالسعر:${price}$\nالماس:${diamond}`
-})
-});
-
-alert("تم الطلب");
+/* NAV */
+function show(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+renderUsers();
+renderCodes();
 }
 
 /* REDEEM */
 function redeemCode(){
 let code=document.getElementById("codeInput").value.trim();
 
-if(!code) return alert("اكتب الكود");
-if(usedCodes.includes(code)) return alert("الكود مستخدم مسبقاً");
+if(usedCodes.includes(code)){
+return alert("مستخدم مسبقاً");
+}
 
 if(codes[code]){
-balance+=codes[code];
+balance += parseFloat(codes[code]);
 usedCodes.push(code);
 
 localStorage.setItem("balance",balance);
 localStorage.setItem("usedCodes",JSON.stringify(usedCodes));
 
 updateBalance();
+renderWallet();
+
 alert("تم الشحن +" + codes[code] + "$");
+}else{
+alert("كود خاطئ");
 }
 }
 
+/* UPDATE BALANCE */
 function updateBalance(){
 document.getElementById("balanceText").innerText = balance + "$";
 }
+
+/* CREATE CODE (ADMIN) */
+function createCode(){
+let amount=document.getElementById("amount").value;
+if(!amount) return;
+
+let code="XO-"+Math.random().toString(36).substring(2,8).toUpperCase();
+
+codes[code]=amount;
+localStorage.setItem("codes",JSON.stringify(codes));
+
+renderCodes();
+}
+
+/* SHOW CODES */
+function renderCodes(){
+let box=document.getElementById("codesList");
+box.innerHTML="<h4>الأكواد</h4>";
+for(let c in codes){
+box.innerHTML+=`<div>${c} = ${codes[c]}$</div>`;
+}
+}
+
+/* USERS ADMIN */
+function renderUsers(){
+let box=document.getElementById("usersTable");
+box.innerHTML="";
+
+users.forEach(u=>{
+box.innerHTML+=`
+<tr>
+<td>${u.id}</td>
+<td>${u.admin?"👑":"❌"}</td>
+<td>${u.banned?"⛔":"✔"}</td>
+<td>
+<button onclick="toggleAdmin('${u.id}')">Admin</button>
+<button onclick="toggleBan('${u.id}')">Ban</button>
+<button onclick="deleteUser('${u.id}')">X</button>
+</td>
+</tr>`;
+});
+}
+
+function toggleAdmin(id){
+let u=users.find(x=>x.id===id);
+u.admin=!u.admin;
+saveUsers();
+renderUsers();
+}
+
+function toggleBan(id){
+let u=users.find(x=>x.id===id);
+u.banned=!u.banned;
+saveUsers();
+renderUsers();
+}
+
+function deleteUser(id){
+users=users.filter(x=>x.id!==id);
+saveUsers();
+renderUsers();
+}
+
+/* INIT */
+renderApps();
+renderFav();
+renderWallet();
+updateBalance();
+
 </script>
 
 </body>
