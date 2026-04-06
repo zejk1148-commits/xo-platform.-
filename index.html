@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XO Store</title>
+<title>XO App</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#e0f2fe}
@@ -15,59 +15,29 @@ color:white;
 display:flex;
 justify-content:space-between;
 padding:12px;
-align-items:center;
 }
 
-/* MENU */
-.menu{font-size:22px;cursor:pointer}
-.balance{font-weight:bold}
-
-/* SIDEBAR */
-.sidebar{
-position:fixed;
-top:0;right:0;
-width:250px;height:100%;
-background:white;
-transform:translateX(100%);
-transition:.3s;
-z-index:1000;
-padding:10px;
-}
-
-.sidebar a{
-display:block;
-padding:12px;
-border-bottom:1px solid #eee;
-cursor:pointer;
-}
-
-/* OVERLAY */
-.overlay{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-display:none;
-}
-
-/* PAGES */
-.page{display:none;padding:15px}
-.active{display:block}
-
-/* APPS */
+/* APPS GRID */
 .apps{
 display:grid;
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:repeat(3,1fr);
 gap:10px;
 padding:10px;
 }
 
 .app{
 background:white;
+border-radius:12px;
 padding:10px;
-border-radius:10px;
 text-align:center;
-cursor:pointer;
 position:relative;
+}
+
+.app img{
+width:100%;
+height:80px;
+object-fit:cover;
+border-radius:10px;
 }
 
 .heart{
@@ -77,21 +47,37 @@ cursor:pointer;
 }
 .heart.active{color:red}
 
+/* BOTTOM BAR */
+.bottom{
+position:fixed;
+bottom:0;left:0;right:0;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+border-top:1px solid #ccc;
+}
+
+/* PAGES */
+.page{display:none;padding:15px}
+.active{display:block}
+
+/* PACKAGES */
+.package{
+background:white;
+padding:10px;
+margin:10px 0;
+border-radius:10px;
+text-align:center;
+cursor:pointer;
+}
+
 /* TABLE */
 table{width:100%;background:white;border-collapse:collapse}
 td,th{border:1px solid #ddd;padding:6px;text-align:center}
 
-button{
-padding:5px;
-cursor:pointer;
-margin:2px;
-}
-
-input{
-padding:8px;
-width:100%;
-margin-top:10px;
-}
+button{padding:5px}
+input{width:100%;padding:8px;margin-top:10px}
 </style>
 </head>
 
@@ -99,27 +85,16 @@ margin-top:10px;
 
 <!-- HEADER -->
 <div class="header">
-<div class="menu" onclick="openMenu()">☰</div>
-<div id="balanceText">0$</div>
+<div>☰</div>
+<div id="balance">0$</div>
 </div>
-
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-<a onclick="show('home')">الرئيسية</a>
-<a onclick="show('favorites')">المفضلة</a>
-<a onclick="show('wallet')">المحفظة</a>
-<a onclick="show('redeem')">شحن</a>
-<a onclick="show('admin')">لوحة الأدمن</a>
-</div>
-
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
 <!-- HOME -->
 <div id="home" class="page active">
 <div class="apps" id="apps"></div>
 </div>
 
-<!-- FAVORITES -->
+<!-- FAVORITES (EMPTY BY DEFAULT) -->
 <div id="favorites" class="page">
 <h3>المفضلة ❤️</h3>
 <div id="favList"></div>
@@ -128,106 +103,119 @@ margin-top:10px;
 <!-- WALLET -->
 <div id="wallet" class="page">
 <h3>المحفظة 💼</h3>
-<div id="walletList"></div>
+<div id="walletBox"></div>
+</div>
+
+<!-- YA AHLAN PACKAGES -->
+<div id="yaahlan" class="page">
+<h3>Yaahlan 💎</h3>
+
+<div class="package">10$ = 5200 💎</div>
+<div class="package">20$ = 10600 💎</div>
+<div class="package">50$ = 27000 💎</div>
+<div class="package">100$ = 52000 💎</div>
+
 </div>
 
 <!-- REDEEM -->
 <div id="redeem" class="page">
-<h3>شحن رصيد 💳</h3>
-<input id="codeInput" placeholder="أدخل الكود">
-<button onclick="redeemCode()">تفعيل</button>
+<h3>شحن كود 💳</h3>
+<input id="code" placeholder="أدخل الكود">
+<button onclick="redeem()">تفعيل</button>
 </div>
 
-<!-- ADMIN PANEL (HIDDEN LOGIC) -->
+<!-- ADMIN -->
 <div id="admin" class="page">
-<h2>لوحة التحكم 👑</h2>
 
-<h3>المستخدمين</h3>
+<h3>لوحة الأدمن 👑</h3>
+
+<h4>إنشاء كود</h4>
+<input id="amount" placeholder="المبلغ">
+<button onclick="createCode()">إنشاء</button>
+
+<div id="codesBox"></div>
+
+<h4>المستخدمين</h4>
 <table>
-<tr><th>ID</th><th>Admin</th><th>Ban</th><th>Actions</th></tr>
-<tbody id="usersTable"></tbody>
+<tr><th>ID</th><th>Admin</th><th>Ban</th><th>Action</th></tr>
+<tbody id="usersBox"></tbody>
 </table>
 
-<h3>إنشاء كود شحن</h3>
-<input id="amount" placeholder="المبلغ">
-<button onclick="createCode()">إنشاء كود</button>
+</div>
 
-<div id="codesList"></div>
+<!-- BOTTOM NAV -->
+<div class="bottom">
+<div onclick="show('home')">🏠</div>
+<div onclick="show('favorites')">❤️</div>
+<div onclick="show('wallet')">💼</div>
+<div onclick="show('yaahlan')">💎</div>
+<div onclick="show('redeem')">💳</div>
+<div onclick="show('admin')">👑</div>
 </div>
 
 <script>
 
 /* DATA */
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
-let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+let fav = JSON.parse(localStorage.getItem("fav")) || [];
 let codes = JSON.parse(localStorage.getItem("codes")) || {};
+let used = JSON.parse(localStorage.getItem("used")) || [];
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
-/* USER ID */
+/* USER */
 let myId = localStorage.getItem("myId");
 if(!myId){
 myId = "U"+Math.floor(Math.random()*999999);
 localStorage.setItem("myId",myId);
 }
 
-/* add user */
 if(!users.find(u=>u.id===myId)){
-users.push({id:myId,admin:false,banned:false});
+users.push({id:myId,admin:false,ban:false});
 saveUsers();
 }
 
-/* SAVE */
 function saveUsers(){
 localStorage.setItem("users",JSON.stringify(users));
 }
 
 /* APPS */
-const apps = ["yaahlan","sugo","4fun","soul","xena","vip","chat","game"];
+const apps = [
+{name:"yaahlan",img:"https://via.placeholder.com/150"},
+{name:"sugo",img:"https://via.placeholder.com/150"},
+{name:"chat",img:"https://via.placeholder.com/150"},
+{name:"game",img:"https://via.placeholder.com/150"}
+];
 
 function renderApps(){
 let box=document.getElementById("apps");
 box.innerHTML="";
+
 apps.forEach(a=>{
 box.innerHTML+=`
-<div class="app" onclick="openApp('${a}')">
-<div class="heart ${favorites.includes(a)?'active':''}" onclick="toggleFav(event,'${a}')">❤</div>
-<div>${a}</div>
+<div class="app">
+<div class="heart ${fav.includes(a.name)?'active':''}" onclick="toggleFav(event,'${a.name}')">❤</div>
+<img src="${a.img}">
+<div>${a.name}</div>
 </div>`;
 });
 }
 
-/* FAVORITES */
+/* FAVORITES EMPTY UNTIL CLICK */
 function toggleFav(e,id){
 e.stopPropagation();
-if(favorites.includes(id)){
-favorites=favorites.filter(x=>x!==id);
+if(fav.includes(id)){
+fav=fav.filter(x=>x!==id);
 }else{
-favorites.push(id);
+fav.push(id);
 }
-localStorage.setItem("favorites",JSON.stringify(favorites));
+localStorage.setItem("fav",JSON.stringify(fav));
 renderApps();
 renderFav();
 }
 
 function renderFav(){
-document.getElementById("favList").innerHTML =
-favorites.length ? favorites.join("<br>") : "فارغ";
-}
-
-/* WALLET */
-function renderWallet(){
-document.getElementById("walletList").innerHTML = balance + "$";
-}
-
-/* MENU */
-function openMenu(){
-sidebar.style.transform="translateX(0)";
-overlay.style.display="block";
-}
-function closeMenu(){
-sidebar.style.transform="translateX(100%)";
-overlay.style.display="none";
+let box=document.getElementById("favList");
+box.innerHTML = fav.length ? fav.join("<br>") : "";
 }
 
 /* NAV */
@@ -236,74 +224,70 @@ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 renderUsers();
 renderCodes();
+renderWallet();
+}
+
+/* WALLET */
+function renderWallet(){
+document.getElementById("walletBox").innerHTML = balance + "$";
+document.getElementById("balance").innerText = balance + "$";
 }
 
 /* REDEEM */
-function redeemCode(){
-let code=document.getElementById("codeInput").value.trim();
+function redeem(){
+let c=document.getElementById("code").value.trim();
 
-if(usedCodes.includes(code)){
-return alert("مستخدم مسبقاً");
-}
+if(used.includes(c)) return alert("مستخدم");
 
-if(codes[code]){
-balance += parseFloat(codes[code]);
-usedCodes.push(code);
+if(codes[c]){
+balance += parseFloat(codes[c]);
+used.push(c);
 
 localStorage.setItem("balance",balance);
-localStorage.setItem("usedCodes",JSON.stringify(usedCodes));
+localStorage.setItem("used",JSON.stringify(used));
 
-updateBalance();
 renderWallet();
-
-alert("تم الشحن +" + codes[code] + "$");
+alert("تم الشحن +" + codes[c]);
 }else{
-alert("كود خاطئ");
+alert("خطأ");
 }
 }
 
-/* UPDATE BALANCE */
-function updateBalance(){
-document.getElementById("balanceText").innerText = balance + "$";
-}
-
-/* CREATE CODE (ADMIN) */
+/* CREATE CODE */
 function createCode(){
-let amount=document.getElementById("amount").value;
-if(!amount) return;
+let a=document.getElementById("amount").value;
 
 let code="XO-"+Math.random().toString(36).substring(2,8).toUpperCase();
 
-codes[code]=amount;
+codes[code]=a;
 localStorage.setItem("codes",JSON.stringify(codes));
 
 renderCodes();
 }
 
-/* SHOW CODES */
 function renderCodes(){
-let box=document.getElementById("codesList");
-box.innerHTML="<h4>الأكواد</h4>";
+let box=document.getElementById("codesBox");
+box.innerHTML="<h4>Codes</h4>";
+
 for(let c in codes){
 box.innerHTML+=`<div>${c} = ${codes[c]}$</div>`;
 }
 }
 
-/* USERS ADMIN */
+/* USERS */
 function renderUsers(){
-let box=document.getElementById("usersTable");
+let box=document.getElementById("usersBox");
 box.innerHTML="";
 
 users.forEach(u=>{
 box.innerHTML+=`
 <tr>
 <td>${u.id}</td>
-<td>${u.admin?"👑":"❌"}</td>
-<td>${u.banned?"⛔":"✔"}</td>
+<td>${u.admin?"✔":"❌"}</td>
+<td>${u.ban?"⛔":"✔"}</td>
 <td>
 <button onclick="toggleAdmin('${u.id}')">Admin</button>
 <button onclick="toggleBan('${u.id}')">Ban</button>
-<button onclick="deleteUser('${u.id}')">X</button>
 </td>
 </tr>`;
 });
@@ -318,22 +302,15 @@ renderUsers();
 
 function toggleBan(id){
 let u=users.find(x=>x.id===id);
-u.banned=!u.banned;
-saveUsers();
-renderUsers();
-}
-
-function deleteUser(id){
-users=users.filter(x=>x.id!==id);
+u.ban=!u.ban;
 saveUsers();
 renderUsers();
 }
 
 /* INIT */
 renderApps();
-renderFav();
 renderWallet();
-updateBalance();
+renderFav();
 
 </script>
 
