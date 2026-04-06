@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>منصة XO</title>
+<title>XO</title>
 
 <style>
 body {
@@ -16,7 +16,6 @@ body {
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   background: #1e293b;
   padding: 15px;
 }
@@ -32,10 +31,9 @@ body {
   border-radius: 10px;
 }
 
-/* القائمة الجانبية */
+/* القائمة */
 .sidebar {
   position: fixed;
-  top: 0;
   left: -250px;
   width: 250px;
   height: 100%;
@@ -51,60 +49,79 @@ body {
   text-decoration: none;
 }
 
-.sidebar a:hover {
-  background: #1e293b;
-}
-
 /* المحتوى */
 .content {
   padding: 20px;
 }
 
-/* الأقسام */
-.section-title {
-  margin-top: 25px;
-  text-align: right;
-  color: #38bdf8;
+/* المجلدات */
+.categories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.cat-box {
+  height: 130px;
+  border-radius: 15px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 10px;
+  font-weight: bold;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.cat-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  border-radius: 15px;
+}
+
+.cat-box span {
+  position: relative;
+  z-index: 2;
+}
+
+/* صور */
+.chat {
+  background-image: url('https://images.unsplash.com/photo-1611162618071-b39a2ec055fb');
+}
+
+.games {
+  background-image: url('https://images.unsplash.com/photo-1605902711622-cfb43c4437d1');
+}
+
+.cards {
+  background-image: url('https://images.unsplash.com/photo-1580910051074-3eb694886505');
+}
+
+.whatsapp {
+  background-image: url('https://images.unsplash.com/photo-1584438784894-089d6a62b8fa');
 }
 
 /* التطبيقات */
 .apps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  margin-top: 15px;
+  padding: 20px;
 }
 
 .app-card {
   background: #1e293b;
-  padding: 15px;
-  border-radius: 15px;
+  padding: 10px;
+  border-radius: 10px;
   text-align: center;
-  cursor: pointer;
 }
 
 .app-card img {
   width: 60px;
-  height: 60px;
-  border-radius: 15px;
-}
-
-/* الفورم */
-.input {
-  padding: 10px;
-  width: 200px;
   border-radius: 10px;
-  border: none;
-  text-align: center;
-}
-
-button {
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background: #3b82f6;
-  color: white;
 }
 </style>
 
@@ -113,9 +130,9 @@ button {
 
 <!-- القائمة -->
 <div class="sidebar" id="sidebar">
-  <a href="#" onclick="hideAll()">🏠 الرئيسية</a>
+  <a href="#" onclick="goHome()">🏠 الرئيسية</a>
   <a href="#">💰 إضافة رصيد</a>
-  <a href="#" onclick="showOrders()">📦 طلباتي</a>
+  <a href="#">📦 طلباتي</a>
   <a href="#">💳 دفعاتي</a>
   <a href="#">👛 محفظتي</a>
 </div>
@@ -123,73 +140,71 @@ button {
 <!-- الهيدر -->
 <div class="header">
   <span class="menu-btn" onclick="toggleMenu()">☰</span>
-  <div class="balance">رصيدك: <span id="balance">50</span>$</div>
+  <div class="balance">رصيدك: 0$</div>
 </div>
 
-<!-- المحتوى -->
-<div class="content" id="mainContent">
+<!-- الصفحة الرئيسية -->
+<div class="content" id="home">
 
-<h2>مرحباً بك 👋</h2>
+<h2>👋 أهلاً بك</h2>
 
-<!-- دردشة -->
-<h3 class="section-title">🎤 تطبيقات الدردشة الصوتية</h3>
-<div class="apps">
-  <div class="app-card" onclick="selectApp('XO')">
-    <img src="https://via.placeholder.com/80">
-    <p>XO</p>
+<div class="categories">
+
+  <div class="cat-box chat" onclick="openChat()">
+    <span>🎤 برامج الدردشة</span>
   </div>
 
-  <div class="app-card" onclick="selectApp('Yalla')">
-    <img src="https://via.placeholder.com/80">
-    <p>Yalla</p>
+  <div class="cat-box games" onclick="openGames()">
+    <span>🎮 الألعاب</span>
+  </div>
+
+  <div class="cat-box cards" onclick="openCards()">
+    <span>💳 بطاقات Google Play</span>
+  </div>
+
+  <div class="cat-box whatsapp" onclick="openNumbers()">
+    <span>📱 أرقام واتساب</span>
+  </div>
+
+</div>
+</div>
+
+<!-- الدردشة -->
+<div id="chatApps" style="display:none;">
+  <h2 style="padding:20px;">🎤 برامج الدردشة</h2>
+  <div class="apps">
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>SoulChill</p></div>
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>Yalla</p></div>
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>هنيجار</p></div>
   </div>
 </div>
 
-<!-- ألعاب -->
-<h3 class="section-title">🎮 التطبيقات والألعاب</h3>
-<div class="apps">
-  <div class="app-card">
-    <img src="https://via.placeholder.com/80">
-    <p>PUBG</p>
+<!-- الألعاب -->
+<div id="gamesApps" style="display:none;">
+  <h2 style="padding:20px;">🎮 الألعاب</h2>
+  <div class="apps">
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>Free Fire</p></div>
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>PUBG</p></div>
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>Clash of Clans</p></div>
   </div>
 </div>
 
-<!-- بطاقات -->
-<h3 class="section-title">💳 البطاقات الرقمية</h3>
-<div class="apps">
-  <div class="app-card" onclick="selectApp('Google Play')">
-    <img src="https://via.placeholder.com/80">
-    <p>Google Play</p>
+<!-- البطاقات -->
+<div id="cardsApps" style="display:none;">
+  <h2 style="padding:20px;">💳 البطاقات</h2>
+  <div class="apps">
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>Google Play 10$</p></div>
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>Google Play 25$</p></div>
   </div>
 </div>
 
-</div>
-
-<!-- الباقات -->
-<div id="packsSection" style="display:none; padding:20px;">
-  <h2 id="selectedApp"></h2>
-  <div id="packsContainer" class="apps"></div>
-</div>
-
-<!-- الفورم -->
-<div id="orderForm" style="display:none; padding:20px;">
-  <h2>إتمام الطلب</h2>
-
-  <input type="text" id="userId" placeholder="ادخل ID" class="input"><br><br>
-
-  <select id="paymentMethod" class="input">
-    <option value="">طريقة الدفع</option>
-    <option>USDT</option>
-    <option>تحويل يدوي</option>
-  </select><br><br>
-
-  <button onclick="confirmOrder()">تأكيد الطلب</button>
-</div>
-
-<!-- الطلبات -->
-<div id="ordersSection" style="display:none; padding:20px;">
-  <h2>📦 طلباتي</h2>
-  <div id="ordersContainer"></div>
+<!-- الأرقام -->
+<div id="numbersApps" style="display:none;">
+  <h2 style="padding:20px;">📱 أرقام واتساب</h2>
+  <div class="apps">
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>رقم تركي</p></div>
+    <div class="app-card"><img src="https://via.placeholder.com/80"><p>رقم أمريكي</p></div>
+  </div>
 </div>
 
 <script>
@@ -199,134 +214,38 @@ function toggleMenu() {
 }
 
 function hideAll() {
-  document.getElementById("packsSection").style.display = "none";
-  document.getElementById("orderForm").style.display = "none";
-  document.getElementById("ordersSection").style.display = "none";
+  document.getElementById("home").style.display = "none";
+  document.getElementById("chatApps").style.display = "none";
+  document.getElementById("gamesApps").style.display = "none";
+  document.getElementById("cardsApps").style.display = "none";
+  document.getElementById("numbersApps").style.display = "none";
 }
 
-let selectedApp = "";
-let selectedPack = "";
-
-function selectApp(app) {
+function goHome() {
   hideAll();
-
-  document.getElementById("packsSection").style.display = "block";
-  document.getElementById("selectedApp").innerText = "شحن " + app;
-
-  let container = document.getElementById("packsContainer");
-  container.innerHTML = "";
-
-  let packs = [];
-
-  if (app === "Yalla") {
-    packs = [
-      {name:"1000 كوين", price:"5$"},
-      {name:"5000 كوين", price:"20$"}
-    ];
-  }
-
-  else if (app === "Google Play") {
-    packs = [
-      {name:"10$", price:"11$"},
-      {name:"25$", price:"27$"}
-    ];
-  }
-
-  else if (app === "XO") {
-    packs = [
-      {name:"اشتراك أسبوع", price:"3$"},
-      {name:"اشتراك شهر", price:"10$"}
-    ];
-  }
-
-  packs.forEach(p => {
-    container.innerHTML += `
-      <div class="app-card">
-        <h3>${p.name}</h3>
-        <p>${p.price}</p>
-        <button onclick="buy('${app}','${p.name}')">شراء</button>
-      </div>
-    `;
-  });
+  document.getElementById("home").style.display = "block";
 }
 
-function buy(app, pack) {
-  selectedApp = app;
-  selectedPack = pack;
-  document.getElementById("orderForm").style.display = "block";
-}
-
-function confirmOrder() {
-
-  let userId = document.getElementById("userId").value;
-  let payment = document.getElementById("paymentMethod").value;
-
-  if (!userId || !payment) {
-    alert("عبّي كل الحقول");
-    return;
-  }
-
-  let order = {
-    app: selectedApp,
-    pack: selectedPack,
-    userId,
-    payment,
-    date: new Date().toLocaleString()
-  };
-
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  orders.push(order);
-  localStorage.setItem("orders", JSON.stringify(orders));
-
-  alert("تم حفظ الطلب ✅");
-}
-
-function showOrders() {
+function openChat() {
   hideAll();
-  document.getElementById("ordersSection").style.display = "block";
+  document.getElementById("chatApps").style.display = "block";
+}
 
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  let container = document.getElementById("ordersContainer");
+function openGames() {
+  hideAll();
+  document.getElementById("gamesApps").style.display = "block";
+}
 
-  container.innerHTML = "";
+function openCards() {
+  hideAll();
+  document.getElementById("cardsApps").style.display = "block";
+}
 
-  if (orders.length === 0) {
-    container.innerHTML = "لا يوجد طلبات";
-    return;
-  }
-
-  orders.reverse().forEach(o => {
-    container.innerHTML += `
-      <div class="app-card">
-        <h3>${o.app}</h3>
-        <p>${o.pack}</p>
-        <p>ID: ${o.userId}</p>
-        <p>${o.payment}</p>
-        <small>${o.date}</small>
-      </div>
-    `;
-  });
+function openNumbers() {
+  hideAll();
+  document.getElementById("numbersApps").style.display = "block";
 }
 </script>
 
 </body>
-  </html>
-<div class="categories">
-
-  <div class="cat-box chat" onclick="showCategory('chat')">
-    <span>🎤 دردشة</span>
-  </div>
-
-  <div class="cat-box games" onclick="showCategory('games')">
-    <span>🎮 ألعاب</span>
-  </div>
-
-  <div class="cat-box cards" onclick="showCategory('cards')">
-    <span>💳 بطاقات</span>
-  </div>
-
-  <div class="cat-box numbers" onclick="showCategory('numbers')">
-    <span>📱 الأرقام</span>
-  </div>
-
-</div>
+</html>
