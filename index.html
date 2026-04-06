@@ -3,259 +3,329 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shawy Platform</title>
+<title>App Store</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#38bdf8;}
+body{margin:0;font-family:Arial;background:#38bdf8}
 
-.header{background:#22c55e;padding:12px;display:flex;justify-content:space-between;color:white;}
-.menu-btn{font-size:22px;cursor:pointer;}
-.balance-box{display:flex;gap:10px;align-items:center;}
-.add-btn{background:white;color:black;border-radius:50%;padding:3px 10px;cursor:pointer;}
+/* HEADER */
+.header{
+background:#22c55e;
+color:white;
+display:flex;
+justify-content:space-between;
+padding:12px;
+align-items:center;
+}
 
-.sidebar{position:fixed;top:0;right:0;width:260px;height:100%;background:white;transform:translateX(100%);transition:.3s;z-index:1000;padding-top:60px;}
-.sidebar.active{transform:translateX(0);}
-.sidebar a{display:block;padding:15px;border-bottom:1px solid #eee;cursor:pointer;}
+.menu{font-size:22px;cursor:pointer}
 
-.overlay{position:fixed;width:100%;height:100%;display:none;z-index:999;}
+.balance{display:flex;gap:10px;align-items:center}
+.recharge{background:white;color:black;border-radius:50%;padding:3px 10px;cursor:pointer}
 
-.apps{padding:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.app{background:white;border-radius:12px;padding:8px;text-align:center;position:relative;}
-.app img{width:40px;height:40px;}
+/* SIDEBAR */
+.sidebar{
+position:fixed;
+top:0;
+right:0;
+width:250px;
+height:100%;
+background:white;
+transform:translateX(100%);
+transition:.3s;
+z-index:1000;
+padding-top:60px;
+}
 
-.heart{position:absolute;top:5px;left:5px;color:gray;cursor:pointer;}
-.heart.active{color:red;}
+.sidebar a{
+display:block;
+padding:15px;
+border-bottom:1px solid #eee;
+cursor:pointer
+}
 
-.page{display:none;padding:15px;}
-.active-page{display:block;}
+.overlay{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+display:none;
+z-index:999;
+}
 
-.bottom-bar{position:fixed;bottom:0;width:100%;background:#22c55e;display:flex;justify-content:space-around;padding:8px 0;}
-.icon{text-align:center;font-size:12px;cursor:pointer;}
+/* APPS */
+.apps{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:10px;
+}
 
-.package{background:white;margin:10px 0;padding:10px;border-radius:10px;}
-.buy-btn{background:#22c55e;border:none;padding:8px;width:100%;margin-top:5px;cursor:pointer;color:white;}
+.app{
+background:white;
+border-radius:12px;
+padding:10px;
+text-align:center;
+position:relative;
+cursor:pointer;
+}
 
-input{width:100%;padding:10px;margin-top:10px;}
+.app img{width:40px;height:40px}
 
-.success-box{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:white;padding:15px;border-radius:15px;display:none;}
-.ok-btn{background:#22c55e;color:white;padding:10px;border-radius:20px;text-align:center;margin-top:10px;cursor:pointer;}
+.heart{
+position:absolute;
+top:5px;
+left:5px;
+cursor:pointer;
+color:gray;
+}
+
+.heart.active{color:red}
+
+/* PAGES */
+.page{display:none;padding:15px}
+.active{display:block}
+
+/* PACKAGES */
+.package{
+background:white;
+padding:10px;
+margin:10px 0;
+border-radius:10px;
+}
+
+button{
+background:#22c55e;
+border:none;
+color:white;
+padding:8px;
+width:100%;
+margin-top:5px;
+cursor:pointer;
+}
+
+/* INPUT */
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
-  <div class="menu-btn" onclick="openMenu()">☰</div>
-  <div class="balance-box">
-    <div id="balanceText">رصيدك: 0$</div>
-    <div class="add-btn" onclick="showPage('addbalance')">+</div>
-  </div>
+<div class="menu" onclick="openMenu()">☰</div>
+
+<div class="balance">
+<div id="balanceText">رصيدك: 0$</div>
+<div class="recharge" onclick="showPage('redeem')">💳</div>
+</div>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-  <a onclick="showPage('home')">الرئيسية</a>
-  <a onclick="showPage('favorites')">المفضلة</a>
-  <a onclick="showPage('orders')">طلباتي</a>
-  <a onclick="showPage('payments')">دفعاتي</a>
-  <a onclick="showPage('wallet')">محفظتي</a>
+<a onclick="showPage('home')">الرئيسية</a>
+<a onclick="showPage('favorites')">المفضلة</a>
+<a onclick="showPage('wallet')">المحفظة</a>
+<a onclick="showPage('redeem')">شحن</a>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
 <!-- HOME -->
-<div id="home" class="page active-page">
-  <div class="apps">
+<div id="home" class="page active">
+<div class="apps">
 
-    <div class="app" onclick="showPage('yaahlan')">
-      <div class="heart" data-name="yaahlan" onclick="toggleHeart(event,this,'yaahlan')">❤</div>
-      <img src="PUT_IMAGE_LINK_HERE">
-      <div>Yaahlan</div>
-    </div>
+<div class="app" onclick="showPage('yaahlan')">
+<div class="heart" data-id="yaahlan" onclick="toggleFav(event,this,'yaahlan')">❤</div>
+<img src="https://via.placeholder.com/40">
+<div>Yaahlan</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 <!-- FAVORITES -->
 <div id="favorites" class="page">
-  <h2>المفضلة ❤️</h2>
-  <div id="favList"></div>
+<h3>المفضلة ❤️</h3>
+<div id="favList"></div>
 </div>
-
-<!-- ORDERS -->
-<div id="orders" class="page"><h2>طلباتي 📦</h2></div>
-
-<!-- PAYMENTS -->
-<div id="payments" class="page"><h2>دفعاتي 💳</h2></div>
 
 <!-- WALLET -->
-<div id="wallet" class="page"><h2>محفظتي 💼</h2></div>
+<div id="wallet" class="page">
+<h3>المحفظة</h3>
+</div>
 
-<!-- APP -->
+<!-- YA AHLAN -->
 <div id="yaahlan" class="page">
-  <h2>Yaahlan</h2>
+<h3>Yaahlan</h3>
 
-  <input id="userId" placeholder="ادخل ID">
+<input id="userId" placeholder="ID المستخدم">
 
-  <div class="package">5200 - 10$ <button class="buy-btn" onclick="buyNow(10)">شراء</button></div>
-  <div class="package">10600 - 20$ <button class="buy-btn" onclick="buyNow(20)">شراء</button></div>
-  <div class="package">27000 - 50$ <button class="buy-btn" onclick="buyNow(50)">شراء</button></div>
-  <div class="package">40000 - 75$ <button class="buy-btn" onclick="buyNow(75)">شراء</button></div>
-  <div class="package">52000 - 100$ <button class="buy-btn" onclick="buyNow(100)">شراء</button></div>
+<div class="package">
+10$ <button onclick="buy(10)">شراء</button>
 </div>
 
-<!-- ADD BALANCE -->
-<div id="addbalance" class="page">
-  <h2>إضافة رصيد</h2>
-
-  <button onclick="selectMethod('Ziraat')">Ziraat Bank</button>
-  <button onclick="selectMethod('ShamCash')">ShamCash</button>
-
-  <div id="paymentInfo"></div>
-
-  <input id="name" placeholder="اسمك">
-  <input id="amount" placeholder="المبلغ">
-  <input id="txid" placeholder="رقم العملية">
-
-  <button class="buy-btn" onclick="sendBalance()">تأكيد</button>
+<div class="package">
+20$ <button onclick="buy(20)">شراء</button>
 </div>
 
-<!-- SUCCESS -->
-<div id="successBox" class="success-box">
-  <div>تمت العملية</div>
-  <div class="ok-btn" onclick="hideSuccess()">✔️ حسناً</div>
+<div class="package">
+50$ <button onclick="buy(50)">شراء</button>
 </div>
 
-<!-- BOTTOM -->
-<div class="bottom-bar">
-  <div class="icon" onclick="showPage('wallet')">💼<br>محفظتي</div>
-  <div class="icon" onclick="showPage('favorites')">❤<br>المفضلة</div>
-  <div class="icon" onclick="showPage('home')">🏠<br>الرئيسية</div>
-  <div class="icon" onclick="showPage('orders')">📦<br>طلباتي</div>
-  <div class="icon" onclick="showPage('payments')">💳<br>دفعاتي</div>
+</div>
+
+<!-- REDEEM -->
+<div id="redeem" class="page">
+<h3>شحن رصيد 💳</h3>
+
+<input id="codeInput" placeholder="أدخل الكود">
+<button onclick="redeem()">تفعيل</button>
 </div>
 
 <script>
-const TOKEN="8631734604:AAFnNucRhPjurOzCGUyE-uOgsdNKAGCHG9s";
-const CHAT_ID="8044738479";
 
-let balance=0;
-let method="";
+/* بيانات */
+let balance = parseInt(localStorage.getItem("balance")) || 0;
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
 
-window.onload = function(){
-  renderFav();
-  restoreHearts();
+/* أكواد شحن */
+const codes = {
+"XO10":10,
+"XO20":20,
+"XO50":50,
+"XO100":100
 };
 
+updateBalance();
+
+/* ====== UI ====== */
+
 function updateBalance(){
-  balanceText.innerText="رصيدك: "+balance+"$";
+document.getElementById("balanceText").innerText = "رصيدك: " + balance + "$";
+localStorage.setItem("balance",balance);
 }
 
-function sendToTelegram(text){
-  fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({chat_id:CHAT_ID,text:text})
-  });
+function showPage(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 
-function openMenu(){sidebar.classList.add("active");overlay.style.display="block";}
-function closeMenu(){sidebar.classList.remove("active");overlay.style.display="none";}
-
-function showPage(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active-page"));
-  document.getElementById(page).classList.add("active-page");
+function openMenu(){
+document.getElementById("sidebar").style.transform="translateX(0)";
+document.getElementById("overlay").style.display="block";
 }
 
-function toggleHeart(e,el,id){
-  e.stopPropagation();
+function closeMenu(){
+document.getElementById("sidebar").style.transform="translateX(100%)";
+document.getElementById("overlay").style.display="none";
+}
 
-  if(favorites.includes(id)){
-    favorites = favorites.filter(x=>x!==id);
-    el.classList.remove("active");
-  }else{
-    favorites.push(id);
-    el.classList.add("active");
-  }
+/* ====== FAVORITES ====== */
 
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-  renderFav();
+function toggleFav(e,el,id){
+e.stopPropagation();
+
+if(favorites.includes(id)){
+favorites = favorites.filter(x=>x!==id);
+el.classList.remove("active");
+}else{
+favorites.push(id);
+el.classList.add("active");
+}
+
+localStorage.setItem("favorites",JSON.stringify(favorites));
+renderFav();
 }
 
 function renderFav(){
-  let container=document.getElementById("favList");
+let box = document.getElementById("favList");
 
-  if(favorites.length===0){
-    container.innerHTML="لا يوجد مفضلة";
-    return;
-  }
-
-  let html='<div class="apps">';
-  favorites.forEach(app=>{
-    if(app==="yaahlan"){
-      html+=`
-      <div class="app" onclick="showPage('yaahlan')">
-        <div class="heart active" onclick="toggleHeart(event,this,'yaahlan')">❤</div>
-        <img src="PUT_IMAGE_LINK_HERE">
-        <div>Yaahlan</div>
-      </div>`;
-    }
-  });
-  html+='</div>';
-  container.innerHTML=html;
+if(favorites.length===0){
+box.innerHTML="لا يوجد مفضلة";
+return;
 }
 
-function restoreHearts(){
-  document.querySelectorAll(".heart").forEach(el=>{
-    let name=el.getAttribute("data-name");
-    if(favorites.includes(name)){
-      el.classList.add("active");
-    }
-  });
+let html='<div class="apps">';
+
+favorites.forEach(id=>{
+if(id==="yaahlan"){
+html+=`
+<div class="app" onclick="showPage('yaahlan')">
+<div class="heart active">❤</div>
+<img src="https://via.placeholder.com/40">
+<div>Yaahlan</div>
+</div>`;
+}
+});
+
+html+='</div>';
+box.innerHTML = html;
 }
 
-function showSuccess(){successBox.style.display="block";}
-function hideSuccess(){successBox.style.display="none";}
+window.onload = ()=>{
+renderFav();
 
-function buyNow(price){
-  let id=document.getElementById("userId").value;
+document.querySelectorAll(".heart").forEach(h=>{
+if(favorites.includes(h.dataset.id)){
+h.classList.add("active");
+}
+});
+};
 
-  if(!id){alert("ادخل ID");return;}
-  if(balance<price){alert("رصيدك غير كافي");return;}
+/* ====== BUY ====== */
 
-  balance-=price;
-  updateBalance();
+function buy(price){
+let id = document.getElementById("userId").value;
 
-  sendToTelegram(`طلب شراء\nID:${id}\n${price}$`);
-
-  document.getElementById("userId").value="";
-  showSuccess();
+if(!id){
+alert("ادخل ID");
+return;
 }
 
-function selectMethod(type){
-  method=type;
-  if(type==="Ziraat"){
-    paymentInfo.innerHTML=`🏦 Ziraat Bank<br>TRXXXX`;
-  }else{
-    paymentInfo.innerHTML=`💰 ShamCash`;
-  }
+if(balance < price){
+alert("الرصيد غير كافي");
+return;
 }
 
-function sendBalance(){
-  let name=document.getElementById("name").value;
-  let amount=document.getElementById("amount").value;
-  let txid=document.getElementById("txid").value;
+balance -= price;
+updateBalance();
 
-  if(!name||!amount||!txid){alert("املأ الحقول");return;}
-
-  sendToTelegram(`طلب رصيد\n${name}\n${amount}\n${txid}`);
-
-  document.getElementById("name").value="";
-  document.getElementById("amount").value="";
-  document.getElementById("txid").value="";
-  showSuccess();
+alert("تم الشراء بنجاح");
 }
+
+/* ====== REDEEM ====== */
+
+function redeem(){
+let code = document.getElementById("codeInput").value;
+
+if(!code) return alert("اكتب الكود");
+
+if(usedCodes.includes(code)){
+alert("الكود مستخدم مسبقاً");
+return;
+}
+
+if(codes[code]){
+balance += codes[code];
+usedCodes.push(code);
+
+localStorage.setItem("usedCodes",JSON.stringify(usedCodes));
+
+updateBalance();
+
+alert("تم الشحن بنجاح");
+document.getElementById("codeInput").value="";
+}else{
+alert("كود غير صحيح");
+}
+}
+
 </script>
 
 </body>
-  </html>
+</html>
