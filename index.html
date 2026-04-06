@@ -13,18 +13,56 @@ body{
   background:#f5f5f5;
 }
 
+/* HEADER */
 .header{
   background:linear-gradient(to left,#2ecc71,#27ae60);
   color:white;
-  padding:10px;
+  padding:12px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  top:0;
+  right:-260px;
+  width:250px;
+  height:100%;
+  background:#1e1e2f;
+  color:white;
+  padding:15px;
+  transition:0.3s;
+  z-index:999;
+}
+
+.sidebar a{
+  display:block;
+  color:white;
+  text-decoration:none;
+  padding:10px;
+  margin:5px 0;
+  background:#2c2c44;
+  border-radius:8px;
+}
+
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  z-index:998;
+}
+
+/* PAGES */
 .page{display:none;}
 .active{display:block;}
 
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -32,29 +70,27 @@ body{
   padding:10px;
 }
 
-/* شكل التطبيق */
 .card{
   background:linear-gradient(to left,#3498db,#2ecc71);
   color:white;
-  padding:20px;
+  padding:18px;
   border-radius:12px;
   text-align:center;
   cursor:pointer;
   font-weight:bold;
 }
 
-/* أيقونة التطبيق */
 .icon{
-  font-size:35px;
-  margin-bottom:8px;
+  font-size:32px;
   display:block;
+  margin-bottom:6px;
 }
 
 .pack{
-  background:white;
   margin:10px;
-  padding:15px;
+  background:white;
   border-radius:10px;
+  padding:10px;
 }
 
 .pack-item{
@@ -64,63 +100,41 @@ body{
   border-radius:8px;
 }
 </style>
-
 </head>
 
 <body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <h3>القائمة</h3>
+  <a href="#">الرئيسية</a>
+  <a href="#">الرصيد</a>
+  <a href="#">طلباتي</a>
+  <a href="#">إضافة رصيد</a>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
 <!-- HOME -->
 <div id="home" class="page active">
 
 <div class="header">
-  <div>☰</div>
-  <div>التطبيقات</div>
+  <div onclick="toggleSidebar()">☰</div>
+  <div>الرصيد: 120$</div>
 </div>
 
 <div class="grid">
 
-  <div class="card" onclick="openApp('xena')">
-    <span class="icon">🎮</span>
-    زينا - Xena
-  </div>
-
-  <div class="card" onclick="openApp('yoparti')">
-    <span class="icon">💬</span>
-    يو بارتي - YoParti
-  </div>
-
-  <div class="card" onclick="openApp('sugo')">
-    <span class="icon">🎤</span>
-    سوجو - Sugo
-  </div>
-
-  <div class="card" onclick="openApp('4fun')">
-    <span class="icon">🎉</span>
-    فورفان - 4Fun
-  </div>
-
-  <div class="card" onclick="openApp('ahlan')">
-    <span class="icon">👋</span>
-    أهلن شات - Ahlan Chat
-  </div>
-
-  <div class="card" onclick="openApp('soulchill')">
-    <span class="icon">🌙</span>
-    سول شيل - Soul Chill
-  </div>
-
-  <div class="card" onclick="openApp('yaahlan')">
-    <span class="icon">💎</span>
-    يا أهلا - Yaahlan
-  </div>
-
-  <div class="card" onclick="openApp('soulstar')">
-    <span class="icon">⭐</span>
-    سول ستار - Soul Star
-  </div>
+  <div class="card" onclick="openApp('yaahlan')"><span class="icon">💎</span>يا أهلا</div>
+  <div class="card" onclick="openApp('xena')"><span class="icon">🎮</span>Xena</div>
+  <div class="card" onclick="openApp('yoparti')"><span class="icon">💬</span>YoParti</div>
+  <div class="card" onclick="openApp('sugo')"><span class="icon">🎤</span>Sugo</div>
+  <div class="card" onclick="openApp('4fun')"><span class="icon">🎉</span>4Fun</div>
+  <div class="card" onclick="openApp('ahlan')"><span class="icon">👋</span>Ahlan Chat</div>
+  <div class="card" onclick="openApp('soulchill')"><span class="icon">🌙</span>Soul Chill</div>
+  <div class="card" onclick="openApp('soulstar')"><span class="icon">⭐</span>Soul Star</div>
 
 </div>
-
 </div>
 
 <!-- APP PAGE -->
@@ -128,7 +142,7 @@ body{
 
 <div class="header">
   <div onclick="back()">رجوع</div>
-  <div id="appName">تطبيق</div>
+  <div id="appName"></div>
 </div>
 
 <div id="packs"></div>
@@ -137,6 +151,21 @@ body{
 
 <script>
 
+/* SIDEBAR */
+function toggleSidebar(){
+  let sidebar = document.getElementById("sidebar");
+  let overlay = document.getElementById("overlay");
+
+  if(sidebar.style.right === "0px"){
+    sidebar.style.right = "-260px";
+    overlay.style.display = "none";
+  }else{
+    sidebar.style.right = "0px";
+    overlay.style.display = "block";
+  }
+}
+
+/* PAGES */
 function show(page){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(page).classList.add("active");
@@ -146,38 +175,44 @@ function back(){
   show("home");
 }
 
+/* APPS DATA */
 function openApp(app){
 
   show("appPage");
 
-  let name = "";
-  let packs = "";
+  let data = {
+    yaahlan:{
+      name:"يا أهلا - Yaahlan",
+      packs:[
+        "5200 ماس - 10$",
+        "10600 ماس - 20$",
+        "27000 ماس - 50$",
+        "40000 ماس - 75$",
+        "52500 ماس - 100$"
+      ]
+    },
+    xena:{name:"زينا - Xena", packs:["باقة 5$","باقة 10$"]},
+    yoparti:{name:"يو بارتي - YoParti", packs:["باقة 5$","باقة 15$"]},
+    sugo:{name:"سوجو - Sugo", packs:["باقة 5$","باقة 15$"]},
+    "4fun":{name:"فورفان - 4Fun", packs:["باقة 5$","باقة 15$"]},
+    ahlan:{name:"أهلن شات - Ahlan Chat", packs:["باقة 5$","باقة 15$"]},
+    soulchill:{name:"سول شيل - Soul Chill", packs:["باقة 5$","باقة 15$"]},
+    soulstar:{name:"سول ستار - Soul Star", packs:["باقة 5$","باقة 15$"]}
+  };
 
-  if(app === "yaahlan"){
-    name = "يا أهلا - Yaahlan";
+  let appData = data[app];
 
-    packs = `
-      <div class="pack">
-        <div class="pack-item">5200 ماس - 10$</div>
-        <div class="pack-item">10600 ماس - 20$</div>
-        <div class="pack-item">27000 ماس - 50$</div>
-        <div class="pack-item">40000 ماس - 75$</div>
-        <div class="pack-item">52500 ماس - 100$</div>
-      </div>
-    `;
-  }
+  document.getElementById("appName").innerText = appData.name;
 
-  else{
-    name = app;
-    packs = `
-      <div class="pack">
-        <div class="pack-item">لا توجد باقات حالياً</div>
-      </div>
-    `;
-  }
+  let html = "<div class='pack'>";
 
-  document.getElementById("appName").innerText = name;
-  document.getElementById("packs").innerHTML = packs;
+  appData.packs.forEach(p=>{
+    html += `<div class="pack-item">${p}</div>`;
+  });
+
+  html += "</div>";
+
+  document.getElementById("packs").innerHTML = html;
 }
 
 </script>
