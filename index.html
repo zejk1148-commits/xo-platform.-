@@ -3,253 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XO STORE PRO</title>
+<title>Shawy Platform</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#f3f4f6}
-
-/* TOP BAR */
-.topbar{
-background:#16a34a;
-color:white;
-display:flex;
-justify-content:space-between;
-padding:12px;
-font-weight:bold;
-}
-
-/* SIDEBAR */
-.sidebar{
-position:fixed;
-right:0;top:0;
-width:260px;height:100%;
-background:white;
-transform:translateX(100%);
-transition:.3s;
-padding:15px;
-z-index:999;
-}
-.sidebar.open{transform:translateX(0)}
-
-.menu-item{
-padding:12px;
-border-bottom:1px solid #eee;
-cursor:pointer;
-}
-
-/* BOTTOM NAV */
-.bottom{
-position:fixed;
-bottom:0;left:0;right:0;
-background:white;
-display:flex;
-justify-content:space-around;
-padding:12px;
-font-size:20px;
-border-top:1px solid #ddd;
-}
-
-/* PAGES */
-.page{display:none;padding:15px}
-.active{display:block}
-
-/* APPS */
-.apps{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-}
-
-.app{
-background:white;
-padding:10px;
-border-radius:10px;
-text-align:center;
-position:relative;
-cursor:pointer;
-}
-
-.heart{
-position:absolute;
-top:5px;left:5px;
-color:#aaa;
-}
-.heart.active{color:red}
-
-/* BOX */
-.box{
-background:white;
-padding:15px;
-margin-top:10px;
-border-radius:10px;
-}
-.green{color:green}
-.red{color:red}
+body{margin:0;font-family:Arial;background:#38bdf8;}
+.header{background:#22c55e;padding:12px;display:flex;justify-content:space-between;align-items:center;color:white;}
+.menu-btn{font-size:22px;cursor:pointer;}
+.balance-box{display:flex;align-items:center;gap:10px;}
+.add-btn{background:white;color:black;border-radius:50%;padding:3px 10px;cursor:pointer;}
+.sidebar{position:fixed;top:0;right:0;width:260px;height:100%;background:white;transform:translateX(100%);transition:.3s;z-index:1000;padding-top:60px;}
+.sidebar.active{transform:translateX(0);}
+.sidebar a{display:block;padding:15px;border-bottom:1px solid #eee;cursor:pointer;}
+.overlay{position:fixed;width:100%;height:100%;display:none;z-index:999;}
+.apps{padding:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.app{background:white;border-radius:12px;padding:8px;text-align:center;position:relative;font-size:12px;}
+.app img{width:40px;height:40px;}
+.heart{position:absolute;top:5px;left:5px;color:gray;cursor:pointer;}
+.heart.active{color:red;}
+.page{display:none;padding:15px;}
+.active-page{display:block;}
+.bottom-bar{position:fixed;bottom:0;width:100%;background:#22c55e;display:flex;justify-content:space-around;padding:8px 0;}
+.icon{text-align:center;font-size:12px;cursor:pointer;}
+.package{background:white;margin:10px 0;padding:10px;border-radius:10px;}
+.buy-btn{background:#22c55e;border:none;padding:8px;width:100%;margin-top:5px;cursor:pointer;}
+input{width:100%;padding:10px;margin-top:10px;}
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-<div onclick="toggleSidebar()">☰ MENU</div>
-<div id="balanceTop">0$</div>
+<div class="header">
+  <div class="menu-btn" onclick="openMenu()">☰</div>
+  <div>رصيدك: ---</div>
 </div>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-<div class="menu-item" onclick="show('home')">🏠 الرئيسية</div>
-<div class="menu-item" onclick="show('redeem')">💳 الشحن</div>
-<div class="menu-item" onclick="show('wallet')">💼 المحفظة</div>
-<div class="menu-item" onclick="show('favorites')">❤️ المفضلة</div>
+  <a onclick="showPage('home')">الرئيسية</a>
+  <a onclick="showPage('addbalance')">إضافة رصيد</a>
+  <a onclick="showPage('orders')">طلباتي</a>
 </div>
+
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
 <!-- HOME -->
-<div id="home" class="page active">
-<div class="apps" id="apps"></div>
+<div id="home" class="page active-page">
+  <div class="apps">
+    <div class="app">
+      <img src="https://via.placeholder.com/40">
+      <div>Yaahlan</div>
+    </div>
+  </div>
 </div>
 
-<!-- FAVORITES -->
-<div id="favorites" class="page">
-<h3>المفضلة ❤️</h3>
-<div id="favList"></div>
+<!-- YA AHLAN -->
+<div id="yaahlan" class="page">
+  <h2>Yaahlan</h2>
+  <input id="userId" placeholder="ادخل ID">
+
+  <div class="package">5200 - 10$
+    <button class="buy-btn" onclick="buyNow('5200 - 10$')">شراء</button>
+  </div>
 </div>
 
-<!-- WALLET -->
-<div id="wallet" class="page">
-<h3>المحفظة</h3>
-<p class="green">الوارد: <span id="income">0</span>$</p>
-<p class="red">المصروف: <span id="spent">0</span>$</p>
-</div>
-
-<!-- REDEEM -->
-<div id="redeem" class="page">
-<h3>شحن كود 💳</h3>
-<input id="code" placeholder="أدخل الكود">
-<button onclick="redeem()">تفعيل</button>
-</div>
-
+<!-- JS -->
 <script>
+const API_URL = "http://localhost:3000/order";
 
-/* 🔴 Telegram (ضع بياناتك هنا) */
-const BOT_TOKEN = "PUT_YOUR_BOT_TOKEN";
-const CHAT_ID = "PUT_YOUR_CHAT_ID";
-
-/* DATA */
-let income=0;
-let spent=0;
-let favorites=[];
-
-/* APPS */
-const apps = [
-{name:"يا أهلاً",img:"https://via.placeholder.com/150"},
-{name:"Game",img:"https://via.placeholder.com/150"},
-{name:"VIP",img:"https://via.placeholder.com/150"},
-{name:"Chat",img:"https://via.placeholder.com/150"},
-{name:"Soul",img:"https://via.placeholder.com/150"},
-{name:"Xena",img:"https://via.placeholder.com/150"}
-];
-
-/* RENDER */
-function renderApps(){
-let box=document.getElementById("apps");
-box.innerHTML="";
-
-apps.forEach(a=>{
-box.innerHTML+=`
-<div class="app" onclick="buy('${a.name}')">
-<div class="heart" onclick="event.stopPropagation();toggleFav('${a.name}',this)">❤</div>
-<img src="${a.img}" width="100%">
-<div>${a.name}</div>
-</div>`;
-});
+/* SEND TO SERVER */
+function sendToServer(text){
+  fetch(API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      message:text,
+      chat_id:"YOUR_CHAT_ID"
+    })
+  });
 }
 
 /* BUY */
-function buy(item){
+function buyNow(pack){
+  let id=document.getElementById("userId").value;
+  if(!id){alert("ادخل ID");return;}
 
-let price=1;
+  let orderId=Math.floor(Math.random()*100000);
 
-spent+=price;
-income+=price;
+  let msg=`🛒 طلب شراء
+رقم: #${orderId}
+ID: ${id}
+الباقة: ${pack}`;
 
-sendTelegram(item,price,"BUY");
-
-update();
+  sendToServer(msg);
+  alert("تم الإرسال ✔️ #" + orderId);
 }
-
-/* REDEEM */
-function redeem(){
-let code=document.getElementById("code").value;
-
-income+=5;
-
-sendTelegram(code,5,"REDEEM");
-
-update();
-}
-
-/* TELEGRAM */
-function sendTelegram(item,price,type){
-
-fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-chat_id:CHAT_ID,
-text:`
-🛒 TYPE: ${type}
-📦 ITEM: ${item}
-💰 PRICE: ${price}$
-`
-})
-});
-
-}
-
-/* FAVORITE */
-function toggleFav(name,el){
-
-el.classList.toggle("active");
-
-if(favorites.includes(name)){
-favorites=favorites.filter(f=>f!==name);
-}else{
-favorites.push(name);
-}
-
-renderFav();
-}
-
-function renderFav(){
-let box=document.getElementById("favList");
-box.innerHTML="";
-
-favorites.forEach(f=>{
-box.innerHTML+=`<div class="box">❤️ ${f}</div>`;
-});
-}
-
-/* WALLET */
-function update(){
-document.getElementById("income").innerText=income;
-document.getElementById("spent").innerText=spent;
-document.getElementById("balanceTop").innerText=(income-spent)+"$";
-}
-
-/* NAV */
-function show(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-/* SIDEBAR */
-function toggleSidebar(){
-document.getElementById("sidebar").classList.toggle("open");
-}
-
-renderApps();
-update();
-
 </script>
 
 </body>
