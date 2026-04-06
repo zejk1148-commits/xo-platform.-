@@ -384,3 +384,90 @@ window.onload = loadState;
 
 </body>
 </html>
+<!-- ✅ Bottom Bar START -->
+<style>
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #111;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+  z-index: 9999;
+}
+
+.bottom-bar button {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom-bar button.active {
+  color: #00bcd4;
+}
+
+/* حتى ما يغطي المحتوى */
+body {
+  padding-bottom: 70px;
+}
+</style>
+
+<div class="bottom-bar">
+  <button onclick="goTo('home')" id="btn-home">
+    🏠
+    <span>الرئيسية</span>
+  </button>
+
+  <button onclick="goTo('favorites')" id="btn-fav">
+    ⭐
+    <span>المفضلة</span>
+  </button>
+
+  <button onclick="goTo('settings')" id="btn-settings">
+    ⚙️
+    <span>الإعدادات</span>
+  </button>
+</div>
+
+<script>
+// ✅ التنقل بين الصفحات
+function goTo(page) {
+  if (page === 'home') {
+    window.location.href = "index.html";
+  } 
+  else if (page === 'favorites') {
+    window.location.href = "favorites.html";
+  } 
+  else if (page === 'settings') {
+    window.location.href = "settings.html";
+  }
+}
+
+// 🎯 تفعيل الزر الحالي تلقائي
+function setActive() {
+  let path = window.location.pathname;
+
+  if (path.includes("index")) {
+    document.getElementById("btn-home").classList.add("active");
+  } 
+  else if (path.includes("favorites")) {
+    document.getElementById("btn-fav").classList.add("active");
+  } 
+  else if (path.includes("settings")) {
+    document.getElementById("btn-settings").classList.add("active");
+  }
+}
+
+// 🚀 تشغيل عند فتح الصفحة
+window.onload = setActive;
+</script>
+<!-- ✅ Bottom Bar END -->
