@@ -23,18 +23,35 @@ body{
   align-items:center;
 }
 
-/* SIDEBAR */
+/* OVERLAY */
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  z-index:998;
+}
+
+/* SIDEBAR (FIXED) */
 .sidebar{
   position:fixed;
   top:0;
-  right:-260px;
+  right:0;
   width:250px;
   height:100%;
   background:#1e1e2f;
   color:white;
   padding:15px;
-  transition:0.3s;
+  transform:translateX(100%);
+  transition:0.3s ease;
   z-index:999;
+}
+
+.sidebar.open{
+  transform:translateX(0);
 }
 
 .sidebar a{
@@ -45,17 +62,6 @@ body{
   margin:5px 0;
   background:#2c2c44;
   border-radius:8px;
-}
-
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.4);
-  display:none;
-  z-index:998;
 }
 
 /* PAGES */
@@ -113,9 +119,10 @@ body{
   <a href="#">إضافة رصيد</a>
 </div>
 
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
 
-<!-- HOME -->
+<!-- HOME PAGE -->
 <div id="home" class="page active">
 
 <div class="header">
@@ -151,18 +158,24 @@ body{
 
 <script>
 
-/* SIDEBAR */
+/* SIDEBAR FIX */
 function toggleSidebar(){
   let sidebar = document.getElementById("sidebar");
   let overlay = document.getElementById("overlay");
 
-  if(sidebar.style.right === "0px"){
-    sidebar.style.right = "-260px";
-    overlay.style.display = "none";
-  }else{
-    sidebar.style.right = "0px";
+  sidebar.classList.toggle("open");
+
+  if(sidebar.classList.contains("open")){
     overlay.style.display = "block";
+  }else{
+    overlay.style.display = "none";
   }
+}
+
+/* CLOSE WHEN CLICK OUTSIDE */
+document.getElementById("overlay").onclick = function(){
+  document.getElementById("sidebar").classList.remove("open");
+  this.style.display = "none";
 }
 
 /* PAGES */
