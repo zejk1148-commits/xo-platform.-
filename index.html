@@ -1,101 +1,313 @@
-index.html        ← الصفحة الرئيسية
-charge.html       ← صفحة الشحن
-style.css         ← التنسيق
-script.js         ← الجافاسكربت
 <!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>منصة الشحن</title>
-<link rel="stylesheet" href="style.css">
-</head>
+<title>منصة XO</title>
 
-<body>
-
-<h1>🔥 منصة الشحن والدردشة الصوتية</h1>
-
-<div class="container">
-
-  <div class="card">
-    <h2>Yalla</h2>
-    <button onclick="goCharge('Yalla')">شحن الآن</button>
-  </div>
-
-  <div class="card">
-    <h2>Ahlan</h2>
-    <button onclick="goCharge('Ahlan')">شحن الآن</button>
-  </div>
-
-</div>
-
-<script src="script.js"></script>
-
-</body>
-</html>
+<style>
 body {
+  margin: 0;
+  font-family: Arial;
   background: #0f172a;
   color: white;
-  text-align: center;
-  font-family: Arial;
 }
 
-.container {
+/* الهيدر */
+.header {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e293b;
+  padding: 15px;
 }
 
-.card {
+.menu-btn {
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.balance {
+  background: #22c55e;
+  padding: 5px 15px;
+  border-radius: 10px;
+}
+
+/* القائمة الجانبية */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background: #111827;
+  transition: 0.3s;
+  padding-top: 20px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
   background: #1e293b;
+}
+
+/* المحتوى */
+.content {
   padding: 20px;
+}
+
+/* الأقسام */
+.section-title {
+  margin-top: 25px;
+  text-align: right;
+  color: #38bdf8;
+}
+
+/* التطبيقات */
+.apps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.app-card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.app-card img {
+  width: 60px;
+  height: 60px;
   border-radius: 15px;
 }
 
+/* الفورم */
+.input {
+  padding: 10px;
+  width: 200px;
+  border-radius: 10px;
+  border: none;
+  text-align: center;
+}
+
 button {
-  background: #22c55e;
-  padding: 10px 20px;
+  padding: 10px;
   border: none;
   border-radius: 10px;
-  color: white;
   cursor: pointer;
+  background: #3b82f6;
+  color: white;
 }
-function goCharge(app) {
-  // نخزن اسم التطبيق
-  localStorage.setItem("appName", app);
+</style>
 
-  // نروح لصفحة الشحن
-  window.location.href = "charge.html";
-}
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<title>الشحن</title>
-<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<h1 id="appTitle"></h1>
-
-<div class="card">
-  <h3>1000 كوين</h3>
-  <p>5$</p>
-  <button onclick="buy('1000')">شراء</button>
+<!-- القائمة -->
+<div class="sidebar" id="sidebar">
+  <a href="#" onclick="hideAll()">🏠 الرئيسية</a>
+  <a href="#">💰 إضافة رصيد</a>
+  <a href="#" onclick="showOrders()">📦 طلباتي</a>
+  <a href="#">💳 دفعاتي</a>
+  <a href="#">👛 محفظتي</a>
 </div>
 
-<div class="card">
-  <h3>5000 كوين</h3>
-  <p>20$</p>
-  <button onclick="buy('5000')">شراء</button>
+<!-- الهيدر -->
+<div class="header">
+  <span class="menu-btn" onclick="toggleMenu()">☰</span>
+  <div class="balance">رصيدك: <span id="balance">50</span>$</div>
 </div>
 
-<script src="script.js"></script>
+<!-- المحتوى -->
+<div class="content" id="mainContent">
+
+<h2>مرحباً بك 👋</h2>
+
+<!-- دردشة -->
+<h3 class="section-title">🎤 تطبيقات الدردشة الصوتية</h3>
+<div class="apps">
+  <div class="app-card" onclick="selectApp('XO')">
+    <img src="https://via.placeholder.com/80">
+    <p>XO</p>
+  </div>
+
+  <div class="app-card" onclick="selectApp('Yalla')">
+    <img src="https://via.placeholder.com/80">
+    <p>Yalla</p>
+  </div>
+</div>
+
+<!-- ألعاب -->
+<h3 class="section-title">🎮 التطبيقات والألعاب</h3>
+<div class="apps">
+  <div class="app-card">
+    <img src="https://via.placeholder.com/80">
+    <p>PUBG</p>
+  </div>
+</div>
+
+<!-- بطاقات -->
+<h3 class="section-title">💳 البطاقات الرقمية</h3>
+<div class="apps">
+  <div class="app-card" onclick="selectApp('Google Play')">
+    <img src="https://via.placeholder.com/80">
+    <p>Google Play</p>
+  </div>
+</div>
+
+</div>
+
+<!-- الباقات -->
+<div id="packsSection" style="display:none; padding:20px;">
+  <h2 id="selectedApp"></h2>
+  <div id="packsContainer" class="apps"></div>
+</div>
+
+<!-- الفورم -->
+<div id="orderForm" style="display:none; padding:20px;">
+  <h2>إتمام الطلب</h2>
+
+  <input type="text" id="userId" placeholder="ادخل ID" class="input"><br><br>
+
+  <select id="paymentMethod" class="input">
+    <option value="">طريقة الدفع</option>
+    <option>USDT</option>
+    <option>تحويل يدوي</option>
+  </select><br><br>
+
+  <button onclick="confirmOrder()">تأكيد الطلب</button>
+</div>
+
+<!-- الطلبات -->
+<div id="ordersSection" style="display:none; padding:20px;">
+  <h2>📦 طلباتي</h2>
+  <div id="ordersContainer"></div>
+</div>
 
 <script>
-document.getElementById("appTitle").innerText =
-  "شحن " + localStorage.getItem("appName");
+function toggleMenu() {
+  let s = document.getElementById("sidebar");
+  s.style.left = s.style.left === "0px" ? "-250px" : "0px";
+}
+
+function hideAll() {
+  document.getElementById("packsSection").style.display = "none";
+  document.getElementById("orderForm").style.display = "none";
+  document.getElementById("ordersSection").style.display = "none";
+}
+
+let selectedApp = "";
+let selectedPack = "";
+
+function selectApp(app) {
+  hideAll();
+
+  document.getElementById("packsSection").style.display = "block";
+  document.getElementById("selectedApp").innerText = "شحن " + app;
+
+  let container = document.getElementById("packsContainer");
+  container.innerHTML = "";
+
+  let packs = [];
+
+  if (app === "Yalla") {
+    packs = [
+      {name:"1000 كوين", price:"5$"},
+      {name:"5000 كوين", price:"20$"}
+    ];
+  }
+
+  else if (app === "Google Play") {
+    packs = [
+      {name:"10$", price:"11$"},
+      {name:"25$", price:"27$"}
+    ];
+  }
+
+  else if (app === "XO") {
+    packs = [
+      {name:"اشتراك أسبوع", price:"3$"},
+      {name:"اشتراك شهر", price:"10$"}
+    ];
+  }
+
+  packs.forEach(p => {
+    container.innerHTML += `
+      <div class="app-card">
+        <h3>${p.name}</h3>
+        <p>${p.price}</p>
+        <button onclick="buy('${app}','${p.name}')">شراء</button>
+      </div>
+    `;
+  });
+}
+
+function buy(app, pack) {
+  selectedApp = app;
+  selectedPack = pack;
+  document.getElementById("orderForm").style.display = "block";
+}
+
+function confirmOrder() {
+
+  let userId = document.getElementById("userId").value;
+  let payment = document.getElementById("paymentMethod").value;
+
+  if (!userId || !payment) {
+    alert("عبّي كل الحقول");
+    return;
+  }
+
+  let order = {
+    app: selectedApp,
+    pack: selectedPack,
+    userId,
+    payment,
+    date: new Date().toLocaleString()
+  };
+
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  orders.push(order);
+  localStorage.setItem("orders", JSON.stringify(orders));
+
+  alert("تم حفظ الطلب ✅");
+}
+
+function showOrders() {
+  hideAll();
+  document.getElementById("ordersSection").style.display = "block";
+
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  let container = document.getElementById("ordersContainer");
+
+  container.innerHTML = "";
+
+  if (orders.length === 0) {
+    container.innerHTML = "لا يوجد طلبات";
+    return;
+  }
+
+  orders.reverse().forEach(o => {
+    container.innerHTML += `
+      <div class="app-card">
+        <h3>${o.app}</h3>
+        <p>${o.pack}</p>
+        <p>ID: ${o.userId}</p>
+        <p>${o.payment}</p>
+        <small>${o.date}</small>
+      </div>
+    `;
+  });
+}
 </script>
 
 </body>
-</html>
+  </html>
