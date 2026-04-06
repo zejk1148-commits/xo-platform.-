@@ -2,28 +2,25 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>موقعي</title>
+<title>منصة شحن</title>
 
 <style>
 body {
   margin: 0;
   font-family: Arial;
-  direction: rtl;
-  background: #f5f5f5;
+  background: #111;
+  color: white;
 }
 
 /* الشريط العلوي */
 .topbar {
-  background: linear-gradient(to right, #2ecc71, #3498db);
-  color: white;
+  background: #000;
   padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* زر القائمة */
 .menu-btn {
   font-size: 20px;
   cursor: pointer;
@@ -32,217 +29,14 @@ body {
 /* الشريط الجانبي */
 .sidebar {
   position: fixed;
-  top: 0;
-  right: -250px;
-  width: 250px;
-  height: 100%;
-  background: #222;
-  color: white;
-  transition: 0.3s;
-  padding-top: 20px;
-  z-index: 1000;
-}
-
-.sidebar a {
-  display: block;
-  padding: 15px;
-  color: white;
-  text-decoration: none;
-}
-
-.sidebar a:hover {
-  background: #444;
-}
-
-/* طبقة الإغلاق */
-.overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  z-index: 500;
-}
-
-/* الصفحات */
-.page {
-  display: none;
-  padding: 15px;
-}
-
-.active {
-  display: block;
-}
-
-/* الكروت */
-.container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
-
-.card {
-  background: linear-gradient(to bottom, #ffffff, #1e73be);
-  border-radius: 20px;
-  text-align: center;
-  padding: 10px;
-  color: white;
-  cursor: pointer;
-}
-
-.card img {
-  width: 70px;
-  height: 70px;
-  border-radius: 15px;
-}
-
-.app-name {
-  margin-top: 10px;
-  font-weight: bold;
-}
-</style>
-
-</head>
-<body>
-
-<!-- الشريط العلوي -->
-<div class="topbar">
-  <div class="menu-btn" onclick="openMenu()">☰</div>
-  <div>رصيدك: 0$</div>
-</div>
-
-<!-- الشريط الجانبي -->
-<div class="sidebar" id="sidebar">
-  <a href="#" onclick="showPage('home')">الرئيسية</a>
-  <a href="#" onclick="showPage('voice')">تطبيقات الدردشة الصوتية</a>
-  <a href="#">قسم ثاني</a>
-  <a href="#">قسم ثالث</a>
-</div>
-
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
-
-<!-- الصفحة الرئيسية -->
-<div class="page active" id="home">
-  <h3>مرحباً 👋</h3>
-  <p>اختر قسم من القائمة الجانبية</p>
-</div>
-
-<!-- صفحة التطبيقات -->
-<div class="page" id="voice">
-  <h3>تطبيقات الدردشة الصوتية</h3>
-
-  <div class="container">
-
-    <div class="card">
-      <img src="https://via.placeholder.com/80?text=Xena">
-      <div class="app-name">زينا</div>
-    </div>
-
-    <div class="card">
-      <img src="https://via.placeholder.com/80?text=YoParti">
-      <div class="app-name">يو بارتي</div>
-    </div>
-
-    <div class="card">
-      <img src="https://via.placeholder.com/80?text=Sugo">
-      <div class="app-name">سوجو</div>
-    </div>
-
-    <div class="card">
-      <img src="https://via.placeholder.com/80?text=4Fun">
-      <div class="app-name">فورفان</div>
-    </div>
-
-  </div>
-</div>
-
-<script>
-function openMenu() {
-  document.getElementById("sidebar").style.right = "0";
-  document.getElementById("overlay").style.display = "block";
-}
-
-function closeMenu() {
-  document.getElementById("sidebar").style.right = "-250px";
-  document.getElementById("overlay").style.display = "none";
-}
-
-function showPage(pageId) {
-  closeMenu();
-  let pages = document.querySelectorAll(".page");
-  pages.forEach(p => p.classList.remove("active"));
-  document.getElementById(pageId).classList.add("active");
-}
-</script>
-
-</body>
-</html>
-<div id="home" class="page active">
-  <h1>🔥 الخدمات</h1>
-
-  <div class="grid">
-    <div class="card">🎤 تطبيقات الدردشة الصوتية</div>
-    <div class="card">🎮 الألعاب</div>
-    <div class="card">💎 خدمات مميزة</div>
-    <div class="card">📱 تطبيقات أخرى</div>
-  </div>
-</div>
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.card {
-  background: #222;
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.card:hover {
-  background: #333;
-} 
-function showPage(pageId) {
-  let pages = document.querySelectorAll('.page');
-  pages.forEach(p => p.classList.remove('active'));
-
-  document.getElementById(pageId).classList.add('active');
-}
-<div id="sidebar" class="sidebar">
-  <h2>القائمة</h2>
-  
-  <ul>
-    <li onclick="showPage('home')">🏠 الرئيسية</li>
-    <li onclick="showPage('addBalance')">💰 إضافة رصيد</li>
-    <li onclick="showPage('orders')">📦 طلباتي / دفعاتي</li>
-    <li onclick="showPage('wallet')">👛 محفظتي</li>
-  </ul>
-</div>
-.sidebar {
-  position: fixed;
   right: 0;
   top: 0;
   width: 250px;
   height: 100%;
-  background: #111;
-  color: white;
-  padding: 20px;
+  background: #000;
   transform: translateX(100%);
   transition: 0.3s;
+  padding: 20px;
 }
 
 .sidebar.active {
@@ -256,10 +50,108 @@ function showPage(pageId) {
 
 .sidebar ul li {
   padding: 10px;
-  cursor: pointer;
   border-bottom: 1px solid #333;
+  cursor: pointer;
 }
 
 .sidebar ul li:hover {
   background: #222;
-} 
+}
+
+/* الصفحات */
+.page {
+  display: none;
+  padding: 20px;
+}
+
+.page.active {
+  display: block;
+}
+
+/* الكروت */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.card {
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.card:hover {
+  background: #333;
+}
+</style>
+</head>
+
+<body>
+
+<!-- الشريط العلوي -->
+<div class="topbar">
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+  <div>💰 الرصيد: 0$</div>
+</div>
+
+<!-- الشريط الجانبي -->
+<div id="sidebar" class="sidebar">
+  <ul>
+    <li onclick="showPage('home')">🏠 الرئيسية</li>
+    <li onclick="showPage('add')">💰 إضافة رصيد</li>
+    <li onclick="showPage('orders')">📦 طلباتي</li>
+    <li onclick="showPage('wallet')">👛 محفظتي</li>
+  </ul>
+</div>
+
+<!-- الصفحة الرئيسية -->
+<div id="home" class="page active">
+  <h2>🔥 الخدمات</h2>
+
+  <div class="grid">
+    <div class="card">🎤 تطبيقات الدردشة الصوتية</div>
+    <div class="card">🎮 الألعاب</div>
+    <div class="card">💎 خدمات مميزة</div>
+    <div class="card">📱 تطبيقات أخرى</div>
+  </div>
+</div>
+
+<!-- إضافة رصيد -->
+<div id="add" class="page">
+  <h2>💰 إضافة رصيد</h2>
+  <p>هنا تضيف الرصيد</p>
+</div>
+
+<!-- الطلبات -->
+<div id="orders" class="page">
+  <h2>📦 طلباتي</h2>
+  <p>هنا تظهر الطلبات</p>
+</div>
+
+<!-- المحفظة -->
+<div id="wallet" class="page">
+  <h2>👛 محفظتي</h2>
+  <p>هنا معلومات المحفظة</p>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("active");
+}
+
+function showPage(id) {
+  let pages = document.querySelectorAll(".page");
+  pages.forEach(p => p.classList.remove("active"));
+
+  document.getElementById(id).classList.add("active");
+
+  // يسكر الشريط بعد الضغط
+  document.getElementById("sidebar").classList.remove("active");
+}
+</script>
+
+</body>
+</html>
