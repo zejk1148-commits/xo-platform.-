@@ -2,491 +2,32 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة الشحن</title>
+<title>الرئيسية</title>
 
 <style>
+
+/* 🌐 إعدادات عامة */
 body {
   margin: 0;
-  font-family: Arial;
-  background: #111;
-  color: white;
-}
-
-/* الشريط العلوي */
-.topbar {
-  background: #000;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.menu-btn {
-  font-size: 22px;
-  cursor: pointer;
-}
-
-/* الشريط الجانبي */
-.sidebar {
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 260px;
-  height: 100%;
-  background: #000;
-  transform: translateX(100%);
-  transition: 0.3s;
-  z-index: 1000;
-  padding: 15px;
-}
-
-.sidebar.active {
-  transform: translateX(0);
-}
-
-.profile {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.profile img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #333;
-}
-
-.profile input {
-  width: 90%;
-  margin-top: 10px;
-  padding: 5px;
-  text-align: center;
-}
-
-.balance-box {
-  margin-top: 10px;
-  background: #222;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  padding: 12px;
-  border-bottom: 1px solid #333;
-  cursor: pointer;
-}
-
-.sidebar ul li:hover {
-  background: #222;
-}
-
-/* الصفحات */
-.page {
-  display: none;
-  padding: 15px;
-}
-
-.page.active {
-  display: block;
-}
-
-/* الشعار */
-.logo {
-  width: 100%;
-  height: 120px;
-  background: #222;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-/* النص المتحرك */
-.marquee {
-  background: #000;
-  padding: 10px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.marquee span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: move 10s linear infinite;
-}
-
-@keyframes move {
-  0% {transform: translateX(0);}
-  100% {transform: translateX(-100%);}
-}
-
-/* البحث */
-.search {
-  margin: 10px 0;
-}
-
-.search input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-}
-
-/* المجلدات */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.card {
-  background: #222;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-}
-
-.card .fav {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  cursor: pointer;
-}
-
-/* الشريط السفلي */
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #000;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-}
-
-.bottom-bar div {
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<div class="topbar">
-  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-  <div>💰 0$</div>
-</div>
-
-<div id="sidebar" class="sidebar">
-  <div class="profile">
-    <img src="" alt="">
-    <input placeholder="اسمك">
-    <div class="balance-box">رصيدك: 0$</div>
-  </div>
-
-  <ul>
-    <li onclick="go('home')">الرئيسية</li>
-    <li onclick="go('add')">إضافة رصيد</li>
-    <li onclick="go('orders')">دفعاتي</li>
-    <li onclick="go('wallet')">محفظتي</li>
-  </ul>
-</div>
-
-<div id="overlay" onclick="closeSidebar()" style="display:none;position:fixed;width:100%;height:100%;top:0;"></div>
-
-<div id="home" class="page active">
-  <div class="logo">LOGO</div>
-
-  <div class="marquee">
-    <span>📞 خدمة العملاء: +63 955 472 1005</span>
-  </div>
-
-  <div class="search">
-    <input placeholder="بحث...">
-  </div>
-
-  <div class="grid">
-    <div class="card" onclick="go('chat')">
-      <div class="fav" onclick="fav(event)"></div>
-      تطبيقات الدردشة
-    </div>
-
-    <div class="card">
-      <div class="fav" onclick="fav(event)"></div>
-      الألعاب
-    </div>
-
-    <div class="card">
-      <div class="fav" onclick="fav(event)"></div>
-      بطاقات المتاجر
-    </div>
-
-    <div class="card">
-      <div class="fav" onclick="fav(event)"></div>
-      أرقام الواتساب
-    </div>
-  </div>
-</div>
-
-<div id="chat" class="page">
-  <h3>تطبيقات الدردشة</h3>
-
-<div id="add" class="page">إضافة رصيد</div>
-<div id="orders" class="page">دفعاتي</div>
-<div id="wallet" class="page">محفظتي / المفضلة</div>
-
-<div class="bottom-bar">
-  <div onclick="go('home')">🏠</div>
-  <div onclick="go('add')">💰</div>
-  <div onclick="go('orders')">📦</div>
-  <div onclick="go('wallet')">❤️</div>
-</div>
-
-<script>
-function toggleSidebar() {
-  document.getElementById("sidebar").classList.add("active");
-  document.getElementById("overlay").style.display = "block";
-}
-
-function closeSidebar() {
-  document.getElementById("sidebar").classList.remove("active");
-  document.getElementById("overlay").style.display = "none";
-}
-
-function go(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  closeSidebar();
-}
-
-function fav(e) {
-  e.stopPropagation();
-  alert("تمت الإضافة للمفضلة ❤️");
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<title>صفحة التطبيق</title>
-
-<style>
-body {
-  font-family: Arial;
-  background: #111;
-  color: #fff;
-  padding: 20px;
-}
-
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 22px;
-  margin-bottom: 20px;
-}
-
-.favorite {
-  cursor: pointer;
-  font-size: 26px;
-  transition: 0.3s;
-}
-
-.packages {
-  background: #222;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.package {
-  padding: 10px;
-  border-bottom: 1px solid #444;
-}
-
-</style>
-</head>
-
-<body>
-
-<!-- 🔥 اسم التطبيق + القلب -->
-<div class="app-header">
-  <span class="app-name">PUBG</span>
-  <span class="favorite" id="favBtn">🤍</span>
-</div>
-
-<!-- 💰 الباقات -->
-<div class="packages">
-  <div class="package">60 UC - $1</div>
-  <div class="package">325 UC - $5</div>
-  <div class="package">660 UC - $10</div>
-</div>
-
-<script>
-
-// ✅ ID التطبيق (غيره حسب كل تطبيق)
-const appId = "pubg";
-
-// ✅ جلب المفضلة من التخزين
-function getFavorites() {
-  return JSON.parse(localStorage.getItem("favorites")) || [];
-}
-
-// ✅ حفظ المفضلة
-function saveFavorites(favorites) {
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-}
-
-// ❤️ تبديل القلب
-function toggleFavorite() {
-  let favorites = getFavorites();
-
-  if (favorites.includes(appId)) {
-    favorites = favorites.filter(id => id !== appId);
-    favBtn.innerHTML = "🤍";
-  } else {
-    favorites.push(appId);
-    favBtn.innerHTML = "❤️";
-  }
-
-  saveFavorites(favorites);
-}
-
-// 🔁 عند فتح الصفحة
-function loadState() {
-  let favorites = getFavorites();
-
-  if (favorites.includes(appId)) {
-    favBtn.innerHTML = "❤️";
-  } else {
-    favBtn.innerHTML = "🤍";
-  }
-}
-
-// 🎯 ربط الزر
-const favBtn = document.getElementById("favBtn");
-favBtn.addEventListener("click", toggleFavorite);
-
-// 🚀 تشغيل عند الدخول
-window.onload = loadState;
-
-</script>
-
-</body>
-</html>
-<!-- ✅ Bottom Bar START -->
-<style>
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #111;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 10px 0;
-  border-top: 1px solid #333;
-  z-index: 9999;
-}
-
-.bottom-bar button {
-  background: none;
-  border: none;
-  color: #aaa;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.bottom-bar button.active {
-  color: #00bcd4;
-}
-
-/* حتى ما يغطي المحتوى */
-body {
-  padding-bottom: 70px;
-}
-</style>
-
-<div class="bottom-bar">
-  <button onclick="goTo('home')" id="btn-home">
-    🏠
-    <span>الرئيسية</span>
-  </button>
-
-  <button onclick="goTo('favorites')" id="btn-fav">
-    ⭐
-    <span>المفضلة</span>
-  </button>
-
-  <button onclick="goTo('settings')" id="btn-settings">
-    ⚙️
-    <span>الإعدادات</span>
-  </button>
-</div>
-
-<script>
-// ✅ التنقل بين الصفحات
-function goTo(page) {
-  if (page === 'home') {
-    window.location.href = "index.html";
-  } 
-  else if (page === 'favorites') {
-    window.location.href = "favorites.html";
-  } 
-  else if (page === 'settings') {
-    window.location.href = "settings.html";
-  }
-}
-
-// 🎯 تفعيل الزر الحالي تلقائي
-function setActive() {
-  let path = window.location.pathname;
-
-  if (path.includes("index")) {
-    document.getElementById("btn-home").classList.add("active");
-  } 
-  else if (path.includes("favorites")) {
-    document.getElementById("btn-fav").classList.add("active");
-  } 
-  else if (path.includes("settings")) {
-    document.getElementById("btn-settings").classList.add("active");
-  }
-}
-
-// 🚀 تشغيل عند فتح الصفحة
-window.onload = setActive;
-</script>
-<!-- ✅ Bottom Bar END -->
-<style>
-
-/* 🌐 الخلفية العامة */
-body {
   font-family: Arial;
   background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
-  margin: 0;
   padding: 20px;
   padding-bottom: 80px;
 }
 
-/* 🧊 المجلدات (الكروت) */
+/* 🏷️ العنوان */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #0d47a1;
+  margin-bottom: 20px;
+}
+
+/* 📁 المجلدات */
 .folder {
   background: white;
   border-radius: 15px;
-  padding: 20px;
+  padding: 18px;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
@@ -497,41 +38,29 @@ body {
 }
 
 .folder:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
-/* 📁 أيقونة المجلد */
+/* 📁 محتوى المجلد */
+.folder-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .folder-icon {
-  font-size: 24px;
+  font-size: 22px;
 }
 
-/* 📝 اسم المجلد */
 .folder-name {
   font-size: 18px;
   color: #0d47a1;
   font-weight: bold;
 }
 
-/* ➡️ سهم */
 .folder-arrow {
-  font-size: 20px;
   color: #64b5f6;
-}
-
-/* 🔘 أزرار عامة */
-button {
-  background: #42a5f5;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 10px;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #1e88e5;
+  font-size: 18px;
 }
 
 /* 📌 الشريط السفلي */
@@ -548,47 +77,63 @@ button:hover {
 }
 
 .bottom-bar button {
+  background: none;
+  border: none;
   color: #64b5f6;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .bottom-bar button.active {
   color: #0d47a1;
 }
 
-/* 💙 عنوان الصفحة */
-.title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #0d47a1;
-  margin-bottom: 20px;
-}
-
 </style>
+</head>
 
-<!-- 🔥 عنوان -->
+<body>
+
 <div class="title">الأقسام</div>
 
-<!-- 📁 المجلدات -->
-<div class="folder">
-  <span class="folder-icon">🎮</span>
-  <span class="folder-name">الألعاب</span>
+<!-- 📁 الأقسام -->
+<div class="folder" onclick="alert('قسم الألعاب')">
+  <div class="folder-left">
+    <span class="folder-icon">🎮</span>
+    <span class="folder-name">الألعاب</span>
+  </div>
   <span class="folder-arrow">➡️</span>
 </div>
 
-<div class="folder">
-  <span class="folder-icon">📱</span>
-  <span class="folder-name">التطبيقات</span>
+<div class="folder" onclick="alert('قسم التطبيقات')">
+  <div class="folder-left">
+    <span class="folder-icon">📱</span>
+    <span class="folder-name">التطبيقات</span>
+  </div>
   <span class="folder-arrow">➡️</span>
 </div>
 
-<div class="folder">
-  <span class="folder-icon">💳</span>
-  <span class="folder-name">البطاقات</span>
+<div class="folder" onclick="alert('قسم البطاقات')">
+  <div class="folder-left">
+    <span class="folder-icon">💳</span>
+    <span class="folder-name">البطاقات</span>
+  </div>
   <span class="folder-arrow">➡️</span>
 </div>
 
-<div class="folder">
-  <span class="folder-icon">🔥</span>
-  <span class="folder-name">العروض</span>
+<div class="folder" onclick="alert('قسم العروض')">
+  <div class="folder-left">
+    <span class="folder-icon">🔥</span>
+    <span class="folder-name">العروض</span>
+  </div>
   <span class="folder-arrow">➡️</span>
 </div>
+
+<!-- 📌 الشريط السفلي -->
+<div class="bottom-bar">
+  <button class="active">🏠 الرئيسية</button>
+  <button>⭐ المفضلة</button>
+  <button>⚙️ الإعدادات</button>
+</div>
+
+</body>
+</html>
