@@ -1,189 +1,100 @@
+index.html        ← الصفحة الرئيسية
+charge.html       ← صفحة الشحن
+style.css         ← التنسيق
+script.js         ← الجافاسكربت
 <!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>واجهة شحن</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial;
-    direction: rtl;
-}
-
-/* الشريط العلوي */
-.header {
-    background: #1e1e2f;
-    color: white;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.balance {
-    font-size: 18px;
-    background: #4CAF50;
-    padding: 8px 15px;
-    border-radius: 10px;
-}
-
-/* القائمة الجانبية */
-.sidebar {
-    width: 200px;
-    height: 100vh;
-    background: #2c2c3e;
-    position: fixed;
-    top: 0;
-    right: 0;
-    padding-top: 60px;
-}
-
-.sidebar a {
-    display: block;
-    color: white;
-    padding: 15px;
-    text-decoration: none;
-}
-
-.sidebar a:hover {
-    background: #444;
-}
-
-/* المحتوى */
-.content {
-    margin-right: 200px;
-    padding: 20px;
-}
-
-/* أزرار */
-.button {
-    padding: 15px;
-    margin: 10px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.charge {
-    background: #2196F3;
-    color: white;
-}
-
-.start {
-    background: #FF9800;
-    color: white;
-}
-</style>
-
+<title>منصة الشحن</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- الشريط العلوي -->
-<div class="header">
-    <h2>لوحة التحكم</h2>
-    <div class="balance">رصيدك: <span id="balance">100</span> $</div>
+<h1>🔥 منصة الشحن والدردشة الصوتية</h1>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Yalla</h2>
+    <button onclick="goCharge('Yalla')">شحن الآن</button>
+  </div>
+
+  <div class="card">
+    <h2>Ahlan</h2>
+    <button onclick="goCharge('Ahlan')">شحن الآن</button>
+  </div>
+
 </div>
 
-<!-- القائمة الجانبية -->
-<div class="sidebar">
-    <a href="#">الرئيسية</a>
-    <a href="#">شحن رصيد</a>
-    <a href="#">طلباتي</a>
-    <a href="#">الإعدادات</a>
-</div>
-
-<!-- المحتوى -->
-<div class="content">
-    <h3>اختر عملية</h3>
-
-    <button class="button charge" onclick="charge(10)">شحن 10$</button>
-    <button class="button charge" onclick="charge(50)">شحن 50$</button>
-    <button class="button charge" onclick="charge(100)">شحن 100$</button>
-
-    <br><br>
-
-    <button class="button start" onclick="startNow()">ابدأ الآن</button>
-</div>
-
-<script>
-let balance = 100;
-
-function charge(amount) {
-    balance += amount;
-    document.getElementById("balance").innerText = balance;
-    alert("تم الشحن بنجاح!");
-}
-
-function startNow() {
-    alert("تم بدء العملية 🚀");
-}
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
-<a class="btn charge" href="charge-yalla.html">شحن الآن</a>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<title>شحن Yalla</title>
-
-<style>
 body {
   background: #0f172a;
   color: white;
-  font-family: Arial;
   text-align: center;
+  font-family: Arial;
 }
 
-.pack {
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.card {
   background: #1e293b;
-  margin: 20px;
   padding: 20px;
   border-radius: 15px;
 }
 
 button {
   background: #22c55e;
-  border: none;
   padding: 10px 20px;
+  border: none;
   border-radius: 10px;
   color: white;
   cursor: pointer;
 }
-</style>
+function goCharge(app) {
+  // نخزن اسم التطبيق
+  localStorage.setItem("appName", app);
 
+  // نروح لصفحة الشحن
+  window.location.href = "charge.html";
+}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>الشحن</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h2>💎 شحن Yalla</h2>
+<h1 id="appTitle"></h1>
 
-<div class="pack">
+<div class="card">
   <h3>1000 كوين</h3>
-  <p>السعر: 5$</p>
-  <button onclick="buy('1000 كوين')">شراء</button>
+  <p>5$</p>
+  <button onclick="buy('1000')">شراء</button>
 </div>
 
-<div class="pack">
+<div class="card">
   <h3>5000 كوين</h3>
-  <p>السعر: 20$</p>
-  <button onclick="buy('5000 كوين')">شراء</button>
+  <p>20$</p>
+  <button onclick="buy('5000')">شراء</button>
 </div>
 
-<div class="pack">
-  <h3>10000 كوين</h3>
-  <p>السعر: 35$</p>
-  <button onclick="buy('10000 كوين')">شراء</button>
-</div>
+<script src="script.js"></script>
 
 <script>
-function buy(pack) {
-  alert("تم اختيار: " + pack + "\nسيتم تحويلك للدفع");
-  // هون بعدين تربطه بالدفع (USDT أو غيره)
-}
+document.getElementById("appTitle").innerText =
+  "شحن " + localStorage.getItem("appName");
 </script>
 
 </body>
