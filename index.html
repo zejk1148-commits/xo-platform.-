@@ -215,22 +215,22 @@ body {
 
   <div class="grid">
     <div class="card" onclick="go('chat')">
-      <div class="fav" onclick="fav(event)">❤️</div>
+      <div class="fav" onclick="fav(event)"></div>
       تطبيقات الدردشة
     </div>
 
     <div class="card">
-      <div class="fav" onclick="fav(event)">❤️</div>
+      <div class="fav" onclick="fav(event)"></div>
       الألعاب
     </div>
 
     <div class="card">
-      <div class="fav" onclick="fav(event)">❤️</div>
+      <div class="fav" onclick="fav(event)"></div>
       بطاقات المتاجر
     </div>
 
     <div class="card">
-      <div class="fav" onclick="fav(event)">❤️</div>
+      <div class="fav" onclick="fav(event)"></div>
       أرقام الواتساب
     </div>
   </div>
@@ -238,12 +238,6 @@ body {
 
 <div id="chat" class="page">
   <h3>تطبيقات الدردشة</h3>
-  <div class="grid">
-    <div class="card">Telegram</div>
-    <div class="card">WhatsApp</div>
-    <div class="card">Discord</div>
-  </div>
-</div>
 
 <div id="add" class="page">إضافة رصيد</div>
 <div id="orders" class="page">دفعاتي</div>
@@ -277,6 +271,115 @@ function fav(e) {
   e.stopPropagation();
   alert("تمت الإضافة للمفضلة ❤️");
 }
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>صفحة التطبيق</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #111;
+  color: #fff;
+  padding: 20px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.favorite {
+  cursor: pointer;
+  font-size: 26px;
+  transition: 0.3s;
+}
+
+.packages {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.package {
+  padding: 10px;
+  border-bottom: 1px solid #444;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔥 اسم التطبيق + القلب -->
+<div class="app-header">
+  <span class="app-name">PUBG</span>
+  <span class="favorite" id="favBtn">🤍</span>
+</div>
+
+<!-- 💰 الباقات -->
+<div class="packages">
+  <div class="package">60 UC - $1</div>
+  <div class="package">325 UC - $5</div>
+  <div class="package">660 UC - $10</div>
+</div>
+
+<script>
+
+// ✅ ID التطبيق (غيره حسب كل تطبيق)
+const appId = "pubg";
+
+// ✅ جلب المفضلة من التخزين
+function getFavorites() {
+  return JSON.parse(localStorage.getItem("favorites")) || [];
+}
+
+// ✅ حفظ المفضلة
+function saveFavorites(favorites) {
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+}
+
+// ❤️ تبديل القلب
+function toggleFavorite() {
+  let favorites = getFavorites();
+
+  if (favorites.includes(appId)) {
+    favorites = favorites.filter(id => id !== appId);
+    favBtn.innerHTML = "🤍";
+  } else {
+    favorites.push(appId);
+    favBtn.innerHTML = "❤️";
+  }
+
+  saveFavorites(favorites);
+}
+
+// 🔁 عند فتح الصفحة
+function loadState() {
+  let favorites = getFavorites();
+
+  if (favorites.includes(appId)) {
+    favBtn.innerHTML = "❤️";
+  } else {
+    favBtn.innerHTML = "🤍";
+  }
+}
+
+// 🎯 ربط الزر
+const favBtn = document.getElementById("favBtn");
+favBtn.addEventListener("click", toggleFavorite);
+
+// 🚀 تشغيل عند الدخول
+window.onload = loadState;
+
 </script>
 
 </body>
