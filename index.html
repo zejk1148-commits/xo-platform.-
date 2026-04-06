@@ -8,7 +8,7 @@
 <style>
 body{margin:0;font-family:Arial;background:#f3f4f6}
 
-/* TOP BAR */
+/* TOP */
 .topbar{
 background:#16a34a;
 color:white;
@@ -37,18 +37,6 @@ border-bottom:1px solid #eee;
 cursor:pointer;
 }
 
-/* BOTTOM NAV */
-.bottom{
-position:fixed;
-bottom:0;left:0;right:0;
-background:white;
-display:flex;
-justify-content:space-around;
-padding:12px;
-font-size:20px;
-border-top:1px solid #ddd;
-}
-
 /* PAGES */
 .page{display:none;padding:15px}
 .active{display:block}
@@ -65,14 +53,15 @@ background:white;
 padding:10px;
 border-radius:10px;
 text-align:center;
-position:relative;
 cursor:pointer;
+position:relative;
 }
 
 .heart{
 position:absolute;
 top:5px;left:5px;
 color:#aaa;
+cursor:pointer;
 }
 .heart.active{color:red}
 
@@ -83,8 +72,6 @@ padding:15px;
 margin-top:10px;
 border-radius:10px;
 }
-.green{color:green}
-.red{color:red}
 </style>
 </head>
 
@@ -117,8 +104,8 @@ border-radius:10px;
 <!-- WALLET -->
 <div id="wallet" class="page">
 <h3>المحفظة</h3>
-<p class="green">الوارد: <span id="income">0</span>$</p>
-<p class="red">المصروف: <span id="spent">0</span>$</p>
+<p>الوارد: <span id="income">0</span>$</p>
+<p>المصروف: <span id="spent">0</span>$</p>
 </div>
 
 <!-- REDEEM -->
@@ -130,26 +117,33 @@ border-radius:10px;
 
 <script>
 
-/* 🔴 Telegram (ضع بياناتك هنا) */
-const BOT_TOKEN = "PUT_YOUR_BOT_TOKEN";
-const CHAT_ID = "PUT_YOUR_CHAT_ID";
+/* 🔴 ضع بياناتك هنا */
+const BOT_TOKEN = "PUT_BOT_TOKEN";
+const CHAT_ID = "PUT_CHAT_ID";
 
 /* DATA */
-let income=0;
-let spent=0;
-let favorites=[];
+let income = JSON.parse(localStorage.getItem("income")) || 0;
+let spent = JSON.parse(localStorage.getItem("spent")) || 0;
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
 /* APPS */
 const apps = [
-{name:"يا أهلاً",img:"https://via.placeholder.com/150"},
-{name:"Game",img:"https://via.placeholder.com/150"},
-{name:"VIP",img:"https://via.placeholder.com/150"},
-{name:"Chat",img:"https://via.placeholder.com/150"},
-{name:"Soul",img:"https://via.placeholder.com/150"},
-{name:"Xena",img:"https://via.placeholder.com/150"}
+{name:"يا أهلاً"},
+{name:"Game"},
+{name:"VIP"},
+{name:"Chat"},
+{name:"Soul"},
+{name:"Xena"}
 ];
 
-/* RENDER */
+/* SAVE */
+function save(){
+localStorage.setItem("income",income);
+localStorage.setItem("spent",spent);
+localStorage.setItem("favorites",JSON.stringify(favorites));
+}
+
+/* RENDER APPS */
 function renderApps(){
 let box=document.getElementById("apps");
 box.innerHTML="";
@@ -157,8 +151,8 @@ box.innerHTML="";
 apps.forEach(a=>{
 box.innerHTML+=`
 <div class="app" onclick="buy('${a.name}')">
-<div class="heart" onclick="event.stopPropagation();toggleFav('${a.name}',this)">❤</div>
-<img src="${a.img}" width="100%">
+<div class="heart ${favorites.includes(a.name)?'active':''}"
+onclick="event.stopPropagation();toggleFav('${a.name}')">❤</div>
 <div>${a.name}</div>
 </div>`;
 });
@@ -166,60 +160,62 @@ box.innerHTML+=`
 
 /* BUY */
 function buy(item){
+let price = 1;
 
-let price=1;
+spent += price;
 
-spent+=price;
-income+=price;
-
-sendTelegram(item,price,"BUY");
+sendTelegram(item, price, "BUY");
 
 update();
+save();
 }
 
 /* REDEEM */
 function redeem(){
-let code=document.getElementById("code").value;
+let code = document.getElementById("code").value;
 
-income+=5;
+if(!code){alert("أدخل كود");return;}
 
-sendTelegram(code,5,"REDEEM");
+income += 5;
+
+sendTelegram(code, 5, "REDEEM");
 
 update();
+save();
 }
 
-/* TELEGRAM */
+/* TELEGRAM FIXED */
 function sendTelegram(item,price,type){
 
-fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-chat_id:CHAT_ID,
-text:`
+let text = `
 🛒 TYPE: ${type}
 📦 ITEM: ${item}
 💰 PRICE: ${price}$
-`
-})
+`;
+
+fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+method: "POST",
+headers: {
+"Content-Type": "application/x-www-form-urlencoded"
+},
+body: `chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`
 });
 
 }
 
 /* FAVORITE */
-function toggleFav(name,el){
-
-el.classList.toggle("active");
-
+function toggleFav(name){
 if(favorites.includes(name)){
-favorites=favorites.filter(f=>f!==name);
+favorites = favorites.filter(f=>f!==name);
 }else{
 favorites.push(name);
 }
-
+renderApps();
 renderFav();
+save();
 }
 
+/* FAVORITES LIST */
 function renderFav(){
 let box=document.getElementById("favList");
 box.innerHTML="";
@@ -229,11 +225,11 @@ box.innerHTML+=`<div class="box">❤️ ${f}</div>`;
 });
 }
 
-/* WALLET */
+/* UPDATE WALLET */
 function update(){
-document.getElementById("income").innerText=income;
-document.getElementById("spent").innerText=spent;
-document.getElementById("balanceTop").innerText=(income-spent)+"$";
+document.getElementById("income").innerText = income;
+document.getElementById("spent").innerText = spent;
+document.getElementById("balanceTop").innerText = (income - spent) + "$";
 }
 
 /* NAV */
@@ -248,6 +244,7 @@ document.getElementById("sidebar").classList.toggle("open");
 }
 
 renderApps();
+renderFav();
 update();
 
 </script>
