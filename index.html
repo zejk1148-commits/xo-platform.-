@@ -19,31 +19,42 @@ align-items:center;
 }
 
 .menu{font-size:22px;cursor:pointer}
-
 .balance{display:flex;gap:10px;align-items:center}
-.recharge{background:white;color:black;border-radius:50%;padding:3px 10px;cursor:pointer}
+.rechargeTop{background:white;color:black;border-radius:50%;padding:3px 10px;cursor:pointer}
 
 /* SIDEBAR */
 .sidebar{
 position:fixed;
-top:0;
-right:0;
-width:250px;
+top:0;right:0;
+width:260px;
 height:100%;
 background:white;
 transform:translateX(100%);
 transition:.3s;
 z-index:1000;
-padding-top:60px;
+padding-top:20px;
+}
+
+.profile{
+text-align:center;
+padding:20px;
+border-bottom:1px solid #eee;
+}
+
+.profile img{
+width:70px;height:70px;
+border-radius:50%;
+background:#ddd;
 }
 
 .sidebar a{
 display:block;
 padding:15px;
 border-bottom:1px solid #eee;
-cursor:pointer
+cursor:pointer;
 }
 
+/* OVERLAY */
 .overlay{
 position:fixed;
 top:0;left:0;
@@ -70,27 +81,47 @@ cursor:pointer;
 }
 
 .app img{width:40px;height:40px}
-
 .heart{
 position:absolute;
-top:5px;
-left:5px;
-cursor:pointer;
+top:5px;left:5px;
 color:gray;
+cursor:pointer;
 }
-
 .heart.active{color:red}
 
 /* PAGES */
 .page{display:none;padding:15px}
 .active{display:block}
 
+/* BOTTOM NAV */
+.bottom{
+position:fixed;
+bottom:0;left:0;right:0;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+border-top:1px solid #ddd;
+}
+
+.bottom div{
+cursor:pointer;
+font-size:14px;
+text-align:center;
+}
+
 /* PACKAGES */
+.packageGrid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
 .package{
 background:white;
 padding:10px;
-margin:10px 0;
 border-radius:10px;
+text-align:center;
 }
 
 button{
@@ -103,7 +134,6 @@ margin-top:5px;
 cursor:pointer;
 }
 
-/* INPUT */
 input{
 width:100%;
 padding:10px;
@@ -117,15 +147,19 @@ margin-top:10px;
 <!-- HEADER -->
 <div class="header">
 <div class="menu" onclick="openMenu()">☰</div>
-
 <div class="balance">
 <div id="balanceText">رصيدك: 0$</div>
-<div class="recharge" onclick="showPage('redeem')">💳</div>
 </div>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
+
+<div class="profile">
+<img id="profilePic">
+<div id="username">User</div>
+</div>
+
 <a onclick="showPage('home')">الرئيسية</a>
 <a onclick="showPage('favorites')">المفضلة</a>
 <a onclick="showPage('wallet')">المحفظة</a>
@@ -136,15 +170,7 @@ margin-top:10px;
 
 <!-- HOME -->
 <div id="home" class="page active">
-<div class="apps">
-
-<div class="app" onclick="showPage('yaahlan')">
-<div class="heart" data-id="yaahlan" onclick="toggleFav(event,this,'yaahlan')">❤</div>
-<img src="https://via.placeholder.com/40">
-<div>Yaahlan</div>
-</div>
-
-</div>
+<div class="apps" id="apps"></div>
 </div>
 
 <!-- FAVORITES -->
@@ -156,44 +182,42 @@ margin-top:10px;
 <!-- WALLET -->
 <div id="wallet" class="page">
 <h3>المحفظة</h3>
+<div id="walletList"></div>
 </div>
 
 <!-- YA AHLAN -->
 <div id="yaahlan" class="page">
 <h3>Yaahlan</h3>
-
 <input id="userId" placeholder="ID المستخدم">
 
-<div class="package">
-10$ <button onclick="buy(10)">شراء</button>
-</div>
-
-<div class="package">
-20$ <button onclick="buy(20)">شراء</button>
-</div>
-
-<div class="package">
-50$ <button onclick="buy(50)">شراء</button>
-</div>
-
+<div class="packageGrid" id="packages"></div>
 </div>
 
 <!-- REDEEM -->
 <div id="redeem" class="page">
 <h3>شحن رصيد 💳</h3>
-
 <input id="codeInput" placeholder="أدخل الكود">
 <button onclick="redeem()">تفعيل</button>
 </div>
 
+<!-- BOTTOM NAV -->
+<div class="bottom">
+<div onclick="showPage('redeem')">💳 شحن</div>
+<div onclick="showPage('home')">🏠 الرئيسية</div>
+<div onclick="showPage('favorites')">❤️ المفضلة</div>
+<div onclick="showPage('wallet')">💼 المحفظة</div>
+<div onclick="showPage('redeem')">➕ إضافة رصيد</div>
+</div>
+
 <script>
 
-/* بيانات */
+/* DATA */
 let balance = parseInt(localStorage.getItem("balance")) || 0;
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+let wallet = JSON.parse(localStorage.getItem("wallet")) || [];
 let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
 
-/* أكواد شحن */
+/* CODES */
 const codes = {
 "XO10":10,
 "XO20":20,
@@ -201,20 +225,33 @@ const codes = {
 "XO100":100
 };
 
+/* APPS */
+const apps = [
+"yaahlan","xena","yoparti","sugo","4fun","ahlan","soulchill","soulstar"
+];
+
+/* PACKAGES */
+const packages = [
+{price:10,diamond:5200},
+{price:20,diamond:10600},
+{price:50,diamond:27000},
+{price:75,diamond:40000},
+{price:100,diamond:52000}
+];
+
 updateBalance();
+renderApps();
+renderPackages();
+renderFav();
+renderWallet();
 
-/* ====== UI ====== */
-
+/* UI */
 function updateBalance(){
-document.getElementById("balanceText").innerText = "رصيدك: " + balance + "$";
+document.getElementById("balanceText").innerText="رصيدك: "+balance+"$";
 localStorage.setItem("balance",balance);
 }
 
-function showPage(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
+/* MENU */
 function openMenu(){
 document.getElementById("sidebar").style.transform="translateX(0)";
 document.getElementById("overlay").style.display="block";
@@ -225,103 +262,135 @@ document.getElementById("sidebar").style.transform="translateX(100%)";
 document.getElementById("overlay").style.display="none";
 }
 
-/* ====== FAVORITES ====== */
+/* PAGE */
+function showPage(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
 
-function toggleFav(e,el,id){
+/* APPS RENDER */
+function renderApps(){
+let box=document.getElementById("apps");
+box.innerHTML="";
+
+apps.forEach(app=>{
+box.innerHTML+=`
+<div class="app" onclick="showPage('${app}')">
+<div class="heart ${favorites.includes(app)?'active':''}" onclick="toggleFav(event,'${app}')">❤</div>
+<img src="https://via.placeholder.com/40">
+<div>${app}</div>
+</div>`;
+});
+}
+
+/* FAVORITES */
+function toggleFav(e,id){
 e.stopPropagation();
 
 if(favorites.includes(id)){
-favorites = favorites.filter(x=>x!==id);
-el.classList.remove("active");
+favorites=favorites.filter(x=>x!==id);
 }else{
 favorites.push(id);
-el.classList.add("active");
 }
 
 localStorage.setItem("favorites",JSON.stringify(favorites));
+renderApps();
 renderFav();
 }
 
 function renderFav(){
-let box = document.getElementById("favList");
+let box=document.getElementById("favList");
 
 if(favorites.length===0){
 box.innerHTML="لا يوجد مفضلة";
 return;
 }
 
-let html='<div class="apps">';
-
-favorites.forEach(id=>{
-if(id==="yaahlan"){
-html+=`
-<div class="app" onclick="showPage('yaahlan')">
-<div class="heart active">❤</div>
+box.innerHTML='<div class="apps">'+favorites.map(a=>`
+<div class="app" onclick="showPage('${a}')">
 <img src="https://via.placeholder.com/40">
-<div>Yaahlan</div>
-</div>`;
-}
-});
-
-html+='</div>';
-box.innerHTML = html;
+<div>${a}</div>
+</div>
+`).join("")+'</div>';
 }
 
-window.onload = ()=>{
-renderFav();
-
-document.querySelectorAll(".heart").forEach(h=>{
-if(favorites.includes(h.dataset.id)){
-h.classList.add("active");
+/* WALLET */
+function addWallet(text){
+wallet.push(text);
+localStorage.setItem("wallet",JSON.stringify(wallet));
+renderWallet();
 }
-});
-};
 
-/* ====== BUY ====== */
+function renderWallet(){
+let box=document.getElementById("walletList");
+box.innerHTML = wallet.length?wallet.join("<br>"):"لا يوجد عمليات";
+}
 
-function buy(price){
-let id = document.getElementById("userId").value;
+/* BUY PACKAGES */
+function renderPackages(){
+let box=document.getElementById("packages");
+
+box.innerHTML = packages.map((p,i)=>`
+<div class="package">
+<div>${p.price}$</div>
+<div>${p.diamond} 💎</div>
+<button onclick="buy(${i})">شراء</button>
+</div>
+`).join("");
+}
+
+function buy(i){
+let id=document.getElementById("userId").value;
 
 if(!id){
 alert("ادخل ID");
 return;
 }
 
-if(balance < price){
-alert("الرصيد غير كافي");
+let p=packages[i];
+
+if(balance<p.price){
+alert("رصيد غير كافي");
 return;
 }
 
-balance -= price;
+balance-=p.price;
 updateBalance();
 
-alert("تم الشراء بنجاح");
+/* WALLET LOG */
+addWallet(`📦 شراء ${p.price}$ - ID:${id} - 💎${p.diamond}`);
+
+/* TELEGRAM BOT */
+fetch("https://api.telegram.org/botYOUR_TOKEN/sendMessage",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+chat_id:"YOUR_CHAT_ID",
+text:`طلب جديد\nID:${id}\nسعر:${p.price}$\nألماس:${p.diamond}`
+})
+});
+
+alert("تم الطلب");
 }
 
-/* ====== REDEEM ====== */
-
+/* REDEEM */
 function redeem(){
-let code = document.getElementById("codeInput").value;
+let code=document.getElementById("codeInput").value;
 
 if(!code) return alert("اكتب الكود");
 
 if(usedCodes.includes(code)){
-alert("الكود مستخدم مسبقاً");
-return;
+return alert("مستخدم مسبقاً");
 }
 
 if(codes[code]){
-balance += codes[code];
+balance+=codes[code];
 usedCodes.push(code);
 
 localStorage.setItem("usedCodes",JSON.stringify(usedCodes));
-
 updateBalance();
 
-alert("تم الشحن بنجاح");
-document.getElementById("codeInput").value="";
-}else{
-alert("كود غير صحيح");
+alert("تم الشحن");
 }
 }
 
