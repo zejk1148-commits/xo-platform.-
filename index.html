@@ -178,3 +178,88 @@ function showPage(pageId) {
 
 </body>
 </html>
+<div id="home" class="page active">
+  <h1>🔥 الخدمات</h1>
+
+  <div class="grid">
+    <div class="card">🎤 تطبيقات الدردشة الصوتية</div>
+    <div class="card">🎮 الألعاب</div>
+    <div class="card">💎 خدمات مميزة</div>
+    <div class="card">📱 تطبيقات أخرى</div>
+  </div>
+</div>
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.card {
+  background: #222;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card:hover {
+  background: #333;
+} 
+function showPage(pageId) {
+  let pages = document.querySelectorAll('.page');
+  pages.forEach(p => p.classList.remove('active'));
+
+  document.getElementById(pageId).classList.add('active');
+}
+<div id="sidebar" class="sidebar">
+  <h2>القائمة</h2>
+  
+  <ul>
+    <li onclick="showPage('home')">🏠 الرئيسية</li>
+    <li onclick="showPage('addBalance')">💰 إضافة رصيد</li>
+    <li onclick="showPage('orders')">📦 طلباتي / دفعاتي</li>
+    <li onclick="showPage('wallet')">👛 محفظتي</li>
+  </ul>
+</div>
+.sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background: #111;
+  color: white;
+  padding: 20px;
+  transform: translateX(100%);
+  transition: 0.3s;
+}
+
+.sidebar.active {
+  transform: translateX(0);
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #333;
+}
+
+.sidebar ul li:hover {
+  background: #222;
+} 
