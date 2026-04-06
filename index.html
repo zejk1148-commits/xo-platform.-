@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+here<!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
@@ -63,7 +63,7 @@ body{margin:0;font-family:Arial;background:#38bdf8;}
   z-index:999;
 }
 
-/* Apps */
+/* Apps Grid */
 .apps{
   padding:10px;
   display:grid;
@@ -103,11 +103,7 @@ body{margin:0;font-family:Arial;background:#38bdf8;}
   justify-content:space-around;
   padding:8px 0;
 }
-.icon{
-  text-align:center;
-  font-size:12px;
-  cursor:pointer;
-}
+.icon{text-align:center;font-size:12px;cursor:pointer;}
 .icon:active{transform:scale(1.2);}
 
 /* Packages */
@@ -184,30 +180,6 @@ input{
       <div>Sugo</div>
     </div>
 
-    <div class="app">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>4Fun</div>
-    </div>
-
-    <div class="app">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>Ahlan Chat</div>
-    </div>
-
-    <div class="app">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>Soul Chill</div>
-    </div>
-
-    <div class="app">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>Soul Star</div>
-    </div>
-
   </div>
 </div>
 
@@ -220,8 +192,7 @@ input{
   <div class="package">5200 - 10$<button class="buy-btn" onclick="buyNow('5200 - 10$')">شراء</button></div>
   <div class="package">10600 - 20$<button class="buy-btn" onclick="buyNow('10600 - 20$')">شراء</button></div>
   <div class="package">27000 - 50$<button class="buy-btn" onclick="buyNow('27000 - 50$')">شراء</button></div>
-  <div class="package">40000 - 75$<button class="buy-btn" onclick="buyNow('40000 - 75$')">شراء</button></div>
-  <div class="package">52000 - 100$<button class="buy-btn" onclick="buyNow('52000 - 100$')">شراء</button></div>
+
 </div>
 
 <!-- ADD BALANCE -->
@@ -240,18 +211,24 @@ input{
   <button class="buy-btn" onclick="sendBalance()">تأكيد</button>
 </div>
 
+<!-- ORDERS -->
+<div id="orders" class="page">
+  <h2>طلباتي</h2>
+  <div id="ordersList">لا يوجد طلبات بعد</div>
+</div>
+
 <!-- BOTTOM -->
 <div class="bottom-bar">
   <div class="icon">💼<br>محفظتي</div>
   <div class="icon">❤<br>المفضلة</div>
   <div class="icon" onclick="showPage('home')">🏠<br>الرئيسية</div>
-  <div class="icon">📦<br>طلباتي</div>
+  <div class="icon" onclick="showPage('orders')">📦<br>طلباتي</div>
   <div class="icon">💳<br>دفعاتي</div>
 </div>
 
 <script>
-const TOKEN="8681074555:AAFbNmdEIknYaW-Tp6bRVsn3djmrR_Tu-DY";
-const CHAT_ID="804473479";
+const TOKEN="8631734604:AAFnNucRhPjurOzCGUyE-uOgsdNKAGCHG9s";
+const CHAT_ID="8044738479";
 
 /* TELEGRAM */
 function sendToTelegram(text){
@@ -278,6 +255,9 @@ function toggleHeart(e,el){
   el.classList.toggle("active");
 }
 
+/* ORDER STORAGE */
+let orders=[];
+
 /* ORDER ID */
 function generateOrderId(){
   return Math.floor(Math.random()*100000);
@@ -298,22 +278,26 @@ ID: ${id}
 
   sendToTelegram(msg);
 
-  alert("تم إرسال الطلب ✅\nرقم طلبك: #" + orderId);
+  orders.push("طلب #" + orderId + " - " + pack);
+  updateOrders();
+
+  alert("تم إرسال الطلب ✅ رقم: #" + orderId);
 }
 
-/* PAYMENT METHOD */
+/* UPDATE ORDERS UI */
+function updateOrders(){
+  let list=document.getElementById("ordersList");
+  list.innerHTML=orders.map(o=>"<div>"+o+"</div>").join("");
+}
+
+/* PAYMENT */
 let method="";
 function selectMethod(type){
   method=type;
 
-  if(type==="Ziraat"){
-    paymentInfo.innerHTML=`
-    🏦 Ziraat Bank<br><br>
-    Muhammed El Buti<br>
-    TR68 0082 9000 0949 2112 3104 07`;
-  }else{
-    paymentInfo.innerHTML=`💰 ShamCash<br>رقمك هنا`;
-  }
+  paymentInfo.innerHTML= type==="Ziraat"
+    ? "🏦 Ziraat Bank<br>TR68 0082 9000 0949 2112 3104 07"
+    : "💰 ShamCash";
 }
 
 /* ADD BALANCE */
@@ -338,7 +322,7 @@ function sendBalance(){
 
   sendToTelegram(msg);
 
-  alert("تم إرسال الطلب ✅\nرقم طلبك: #" + orderId);
+  alert("تم إرسال الطلب ✅ رقم: #" + orderId);
 }
 </script>
 
