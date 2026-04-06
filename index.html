@@ -124,11 +124,12 @@ function startNow() {
 
 </body>
 </html>
+<a class="btn charge" href="charge-yalla.html">شحن الآن</a>
 <!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>منصة الشحن والدردشة الصوتية</title>
+<title>شحن Yalla</title>
 
 <style>
 body {
@@ -138,60 +139,52 @@ body {
   text-align: center;
 }
 
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-.card {
+.pack {
   background: #1e293b;
+  margin: 20px;
   padding: 20px;
   border-radius: 15px;
 }
 
-.btn {
-  display: block;
-  margin-top: 10px;
-  padding: 10px;
+button {
   background: #22c55e;
+  border: none;
+  padding: 10px 20px;
   border-radius: 10px;
-  text-decoration: none;
   color: white;
-}
-
-.charge {
-  background: #3b82f6;
+  cursor: pointer;
 }
 </style>
 
 </head>
 <body>
 
-<h2>🔥 منصة الشحن والدردشة الصوتية</h2>
+<h2>💎 شحن Yalla</h2>
 
-<div class="container">
-
-  <div class="card">
-    <h3>Yalla</h3>
-    <a class="btn" href="https://www.yalla.live" target="_blank">فتح التطبيق</a>
-    <a class="btn charge" href="#">شحن الآن</a>
-  </div>
-
-  <div class="card">
-    <h3>Ahla</h3>
-    <a class="btn" href="#" target="_blank">فتح التطبيق</a>
-    <a class="btn charge" href="#">شحن الآن</a>
-  </div>
-
-  <div class="card">
-    <h3>Salla Chat</h3>
-    <a class="btn" href="#" target="_blank">فتح التطبيق</a>
-    <a class="btn charge" href="#">شحن الآن</a>
-  </div>
-
+<div class="pack">
+  <h3>1000 كوين</h3>
+  <p>السعر: 5$</p>
+  <button onclick="buy('1000 كوين')">شراء</button>
 </div>
+
+<div class="pack">
+  <h3>5000 كوين</h3>
+  <p>السعر: 20$</p>
+  <button onclick="buy('5000 كوين')">شراء</button>
+</div>
+
+<div class="pack">
+  <h3>10000 كوين</h3>
+  <p>السعر: 35$</p>
+  <button onclick="buy('10000 كوين')">شراء</button>
+</div>
+
+<script>
+function buy(pack) {
+  alert("تم اختيار: " + pack + "\nسيتم تحويلك للدفع");
+  // هون بعدين تربطه بالدفع (USDT أو غيره)
+}
+</script>
 
 </body>
 </html>
