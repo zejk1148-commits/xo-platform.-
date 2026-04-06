@@ -35,7 +35,7 @@ body{
   z-index:998;
 }
 
-/* SIDEBAR (FIXED) */
+/* SIDEBAR */
 .sidebar{
   position:fixed;
   top:0;
@@ -68,7 +68,7 @@ body{
 .page{display:none;}
 .active{display:block;}
 
-/* GRID */
+/* GRID APPS */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -92,18 +92,32 @@ body{
   margin-bottom:6px;
 }
 
-.pack{
-  margin:10px;
-  background:white;
-  border-radius:10px;
+/* PACKS */
+.pack-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
   padding:10px;
 }
 
-.pack-item{
-  background:#f0f0f0;
-  margin:8px 0;
-  padding:10px;
-  border-radius:8px;
+.pack-card{
+  background:white;
+  border-radius:12px;
+  padding:15px;
+  text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  font-weight:bold;
+}
+
+.mas{
+  font-size:16px;
+  color:#2ecc71;
+  margin-bottom:6px;
+}
+
+.price{
+  font-size:16px;
+  color:#e67e22;
 }
 </style>
 </head>
@@ -119,10 +133,9 @@ body{
   <a href="#">إضافة رصيد</a>
 </div>
 
-<!-- OVERLAY -->
 <div class="overlay" id="overlay"></div>
 
-<!-- HOME PAGE -->
+<!-- HOME -->
 <div id="home" class="page active">
 
 <div class="header">
@@ -158,7 +171,7 @@ body{
 
 <script>
 
-/* SIDEBAR FIX */
+/* SIDEBAR */
 function toggleSidebar(){
   let sidebar = document.getElementById("sidebar");
   let overlay = document.getElementById("overlay");
@@ -172,7 +185,6 @@ function toggleSidebar(){
   }
 }
 
-/* CLOSE WHEN CLICK OUTSIDE */
 document.getElementById("overlay").onclick = function(){
   document.getElementById("sidebar").classList.remove("open");
   this.style.display = "none";
@@ -196,31 +208,28 @@ function openApp(app){
   let data = {
     yaahlan:{
       name:"يا أهلا - Yaahlan",
-      packs:[
-        "5200 ماس - 10$",
-        "10600 ماس - 20$",
-        "27000 ماس - 50$",
-        "40000 ماس - 75$",
-        "52500 ماس - 100$"
-      ]
+      packs:[5200,10600,27000,40000,52500]
     },
-    xena:{name:"زينا - Xena", packs:["باقة 5$","باقة 10$"]},
-    yoparti:{name:"يو بارتي - YoParti", packs:["باقة 5$","باقة 15$"]},
-    sugo:{name:"سوجو - Sugo", packs:["باقة 5$","باقة 15$"]},
-    "4fun":{name:"فورفان - 4Fun", packs:["باقة 5$","باقة 15$"]},
-    ahlan:{name:"أهلن شات - Ahlan Chat", packs:["باقة 5$","باقة 15$"]},
-    soulchill:{name:"سول شيل - Soul Chill", packs:["باقة 5$","باقة 15$"]},
-    soulstar:{name:"سول ستار - Soul Star", packs:["باقة 5$","باقة 15$"]}
+    xena:{name:"زينا - Xena", packs:[5200,10600]},
+    yoparti:{name:"يو بارتي - YoParti", packs:[5200,10600]},
+    sugo:{name:"سوجو - Sugo", packs:[5200,10600]},
+    "4fun":{name:"فورفان - 4Fun", packs:[5200,10600]},
+    ahlan:{name:"أهلن شات - Ahlan Chat", packs:[5200,10600]},
+    soulchill:{name:"سول شيل - Soul Chill", packs:[5200,10600]},
+    soulstar:{name:"سول ستار - Soul Star", packs:[5200,10600]}
   };
 
-  let appData = data[app];
+  document.getElementById("appName").innerText = data[app].name;
 
-  document.getElementById("appName").innerText = appData.name;
+  let html = "<div class='pack-grid'>";
 
-  let html = "<div class='pack'>";
-
-  appData.packs.forEach(p=>{
-    html += `<div class="pack-item">${p}</div>`;
+  data[app].packs.forEach(p=>{
+    html += `
+      <div class='pack-card'>
+        <div class='mas'>${p} 💎</div>
+        <div class='price'>$${getPrice(p)} 💵</div>
+      </div>
+    `;
   });
 
   html += "</div>";
@@ -228,7 +237,17 @@ function openApp(app){
   document.getElementById("packs").innerHTML = html;
 }
 
+/* PRICE MAP */
+function getPrice(p){
+  if(p == 5200) return 10;
+  if(p == 10600) return 20;
+  if(p == 27000) return 50;
+  if(p == 40000) return 75;
+  if(p == 52500) return 100;
+  return 0;
+}
+
 </script>
 
 </body>
-</html>
+  </html>
