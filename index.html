@@ -64,10 +64,6 @@ body{
   border-radius:8px;
 }
 
-/* PAGES */
-.page{display:none;}
-.active{display:block;}
-
 /* GRID APPS */
 .grid{
   display:grid;
@@ -124,7 +120,6 @@ body{
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <h3>القائمة</h3>
   <a href="#">الرئيسية</a>
@@ -135,8 +130,7 @@ body{
 
 <div class="overlay" id="overlay"></div>
 
-<!-- HOME -->
-<div id="home" class="page active">
+<div id="home" class="page">
 
 <div class="header">
   <div onclick="toggleSidebar()">☰</div>
@@ -146,19 +140,18 @@ body{
 <div class="grid">
 
   <div class="card" onclick="openApp('yaahlan')"><span class="icon">💎</span>يا أهلا</div>
-  <div class="card" onclick="openApp('xena')"><span class="icon">🎮</span>Xena</div>
-  <div class="card" onclick="openApp('yoparti')"><span class="icon">💬</span>YoParti</div>
-  <div class="card" onclick="openApp('sugo')"><span class="icon">🎤</span>Sugo</div>
-  <div class="card" onclick="openApp('4fun')"><span class="icon">🎉</span>4Fun</div>
-  <div class="card" onclick="openApp('ahlan')"><span class="icon">👋</span>Ahlan Chat</div>
-  <div class="card" onclick="openApp('soulchill')"><span class="icon">🌙</span>Soul Chill</div>
+  <div class="card" onclick="openApp('xena')"><span class="icon">🥲</span>Xena</div>
+  <div class="card" onclick="openApp('yoparti')"><span class="icon">😄</span>YoParti</div>
+  <div class="card" onclick="openApp('sugo')"><span class="icon">😜</span>Sugo</div>
+  <div class="card" onclick="openApp('4fun')"><span class="icon">😂</span>4Fun</div>
+  <div class="card" onclick="openApp('ahlan')"><span class="icon">😅</span>Ahlan Chat</div>
+  <div class="card" onclick="openApp('soulchill')"><span class="icon">😁</span>Soul Chill</div>
   <div class="card" onclick="openApp('soulstar')"><span class="icon">⭐</span>Soul Star</div>
 
 </div>
 </div>
 
-<!-- APP PAGE -->
-<div id="appPage" class="page">
+<div id="appPage" class="page" style="display:none">
 
 <div class="header">
   <div onclick="back()">رجوع</div>
@@ -171,18 +164,12 @@ body{
 
 <script>
 
-/* SIDEBAR */
 function toggleSidebar(){
   let sidebar = document.getElementById("sidebar");
   let overlay = document.getElementById("overlay");
 
   sidebar.classList.toggle("open");
-
-  if(sidebar.classList.contains("open")){
-    overlay.style.display = "block";
-  }else{
-    overlay.style.display = "none";
-  }
+  overlay.style.display = sidebar.classList.contains("open") ? "block" : "none";
 }
 
 document.getElementById("overlay").onclick = function(){
@@ -190,33 +177,28 @@ document.getElementById("overlay").onclick = function(){
   this.style.display = "none";
 }
 
-/* PAGES */
-function show(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
+function showAppPage(show){
+  document.getElementById("home").style.display = show ? "none" : "block";
+  document.getElementById("appPage").style.display = show ? "block" : "none";
 }
 
 function back(){
-  show("home");
+  showAppPage(false);
 }
 
-/* APPS DATA */
 function openApp(app){
 
-  show("appPage");
+  showAppPage(true);
 
-  let data = {
-    yaahlan:{
-      name:"يا أهلا - Yaahlan",
-      packs:[5200,10600,27000,40000,52500]
-    },
-    xena:{name:"زينا - Xena", packs:[5200,10600]},
-    yoparti:{name:"يو بارتي - YoParti", packs:[5200,10600]},
-    sugo:{name:"سوجو - Sugo", packs:[5200,10600]},
-    "4fun":{name:"فورفان - 4Fun", packs:[5200,10600]},
-    ahlan:{name:"أهلن شات - Ahlan Chat", packs:[5200,10600]},
-    soulchill:{name:"سول شيل - Soul Chill", packs:[5200,10600]},
-    soulstar:{name:"سول ستار - Soul Star", packs:[5200,10600]}
+  const data = {
+    yaahlan:{name:"يا أهلا - Yaahlan", packs:[5200,5500,10600,27000,40000,52500]},
+    xena:{name:"زينا - Xena", packs:[5200,5500,10600]},
+    yoparti:{name:"يو بارتي - YoParti", packs:[5200,5500,10600]},
+    sugo:{name:"سوجو - Sugo", packs:[5200,5500,10600]},
+    "4fun":{name:"فورفان - 4Fun", packs:[5200,5500,10600]},
+    ahlan:{name:"أهلن شات - Ahlan Chat", packs:[5200,5500,10600]},
+    soulchill:{name:"سول شيل - Soul Chill", packs:[5200,5500,10600]},
+    soulstar:{name:"سول ستار - Soul Star", packs:[5200,5500,10600]}
   };
 
   document.getElementById("appName").innerText = data[app].name;
@@ -237,9 +219,9 @@ function openApp(app){
   document.getElementById("packs").innerHTML = html;
 }
 
-/* PRICE MAP */
 function getPrice(p){
   if(p == 5200) return 10;
+  if(p == 5500) return 12;
   if(p == 10600) return 20;
   if(p == 27000) return 50;
   if(p == 40000) return 75;
@@ -250,4 +232,4 @@ function getPrice(p){
 </script>
 
 </body>
-  </html>
+</html>
