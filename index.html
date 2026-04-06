@@ -3,127 +3,187 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XO STORE PRO</title>
+<title>XO App</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#f3f4f6;
--webkit-user-select:none;
-touch-action:manipulation;
+background:#f5f5f5;
+direction:rtl;
 }
 
 /* TOP BAR */
 .topbar{
-background:#16a34a;
-color:white;
+background:#dff7e6;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:12px;
-font-weight:bold;
+padding:10px;
+position:sticky;
+top:0;
+z-index:999;
 }
 
-/* MENU BUTTON */
-.menu-btn{
-font-size:22px;
-cursor:pointer;
+.menu{font-size:24px;cursor:pointer}
+.balance{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
-/* PLUS */
 .plus{
-background:white;
-color:#16a34a;
-padding:2px 10px;
+background:#16a34a;
+color:white;
+padding:4px 10px;
 border-radius:50%;
 cursor:pointer;
 }
 
-/* SIDEBAR */
-.sidebar{
-position:fixed;
-top:0;
-right:0;
-width:260px;
-height:100%;
-background:white;
-transform:translateX(100%);
-transition:0.3s ease;
-z-index:1001;
-padding:15px;
-}
-
-.sidebar.open{
-transform:translateX(0);
-}
-
-/* OVERLAY */
-.overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-display:none;
-background:rgba(0,0,0,0.4);
-z-index:1000;
-}
-
-/* MENU ITEMS */
-.menu-item{
-padding:12px;
+/* NEWS BAR */
+.news{
+background:#ffffff;
+padding:6px;
+overflow:hidden;
+white-space:nowrap;
 border-bottom:1px solid #eee;
-cursor:pointer;
+font-size:14px;
 }
 
-/* PAGE */
-.page{
-display:none;
-padding:15px;
+.news span{
+display:inline-block;
+padding-left:100%;
+animation:move 10s linear infinite;
 }
 
-.active{
-display:block;
+@keyframes move{
+0%{transform:translateX(0)}
+100%{transform:translateX(-100%)}
 }
 
-/* APPS */
+/* APPS GRID */
 .apps{
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:10px;
+padding:10px;
 }
 
 .app{
 background:white;
-padding:10px;
 border-radius:10px;
+padding:10px;
 text-align:center;
 position:relative;
+}
+
+.app img{
+width:50px;
+height:50px;
+border-radius:10px;
+}
+
+.app .name{
+font-size:12px;
+margin-top:5px;
 }
 
 .heart{
 position:absolute;
 top:5px;
 left:5px;
+font-size:18px;
+color:#bbb;
 cursor:pointer;
-color:#aaa;
 }
 
 .heart.active{
 color:red;
 }
 
-/* BOX */
-.box{
+/* SIDEBAR */
+.sidebar{
+position:fixed;
+top:0;
+right:-280px;
+width:260px;
+height:100%;
 background:white;
+transition:0.3s;
+z-index:1000;
 padding:10px;
-border-radius:10px;
+}
+
+.sidebar.open{
+right:0;
+}
+
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.3);
+display:none;
+z-index:999;
+}
+
+/* PROFILE */
+.profile{
+text-align:center;
 margin-top:10px;
 }
 
-/* INPUTS */
-input,button,select{
+.profile img{
+width:70px;
+height:70px;
+border-radius:50%;
+background:#ddd;
+}
+
+.divider{
+height:1px;
+background:#eee;
+margin:10px 0;
+}
+
+/* MENU ITEMS */
+.item{
+padding:10px;
+cursor:pointer;
+}
+
+/* PAGE */
+.page{
+display:none;
+padding:10px;
+}
+
+.active{display:block}
+
+/* RECHARGE */
+.cards{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.card{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+cursor:pointer;
+}
+
+.card img{
+width:50px;
+height:50px;
+}
+
+/* FORM */
+input,button{
 width:100%;
 padding:10px;
 margin-top:8px;
@@ -134,172 +194,145 @@ border:1px solid #ddd;
 button{
 background:#16a34a;
 color:white;
-cursor:pointer;
+border:none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- OVERLAY -->
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+<!-- SIDEBAR -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="sidebar" id="sidebar">
+
+<div class="profile">
+<img id="userImg">
+<div id="userName">المستخدم</div>
+<div>💰 <span id="userBalance">0</span>$</div>
+</div>
+
+<div class="divider"></div>
+
+<div class="item" onclick="showPage('home')">🏠 الرئيسية</div>
+<div class="item" onclick="showPage('recharge')">💳 شحن</div>
+<div class="item" onclick="showPage('wallet')">💼 محفظتي</div>
+<div class="item" onclick="showPage('fav')">❤️ المفضلة</div>
+
+</div>
 
 <!-- TOP -->
 <div class="topbar">
-<div class="menu-btn" onclick="openMenu()">☰</div>
+<div class="menu" onclick="toggleSidebar()">☰</div>
 
-<div>
-الرصيد: <span id="balanceTop">0</span>$
-<span class="plus" onclick="openPage('redeem')">+</span>
+<div class="balance">
+💰 <span id="balance">0</span>$
+<div class="plus" onclick="showPage('recharge')">+</div>
 </div>
 </div>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-<div class="menu-item" onclick="openPage('home')">🏠 الرئيسية</div>
-<div class="menu-item" onclick="openPage('redeem')">💳 إضافة الرصيد</div>
-<div class="menu-item" onclick="openPage('wallet')">💼 المحفظة</div>
-<div class="menu-item" onclick="openPage('favorites')">❤️ المفضلة</div>
+<!-- NEWS -->
+<div class="news">
+<span>📞 خدمة العملاء +63 955 472 1005 — مرحباً بك في التطبيق — أفضل تجربة مستخدم 🚀</span>
 </div>
 
 <!-- HOME -->
-<div id="home" class="page active">
-<h3>التطبيقات</h3>
-<div class="apps" id="apps"></div>
+<div class="page active" id="home">
+
+<div class="apps">
+
+<!-- apps -->
+<script>
+const apps=[
+"زينا - Xena",
+"يو بارتي - YoParti",
+"سوجو - Sugo",
+"فورفان - 4Fun",
+"اهلن شات - Ahlan Chat",
+"سول شيل - Soul Chill",
+"يا اهلن - Yaahlan",
+"سول ستار - Soul Star"
+];
+
+document.write(apps.map(a=>`
+<div class="app">
+<div class="heart" onclick="toggleHeart(this)">❤</div>
+<img src="https://via.placeholder.com/50">
+<div class="name">${a}</div>
+</div>
+`).join(''));
+</script>
+
+</div>
 </div>
 
-<!-- FAVORITES -->
-<div id="favorites" class="page">
-<h3>المفضلة</h3>
-<div id="favList"></div>
+<!-- RECHARGE -->
+<div class="page" id="recharge">
+
+<h3>شحن الرصيد</h3>
+
+<div class="cards">
+
+<div class="card" onclick="selectMethod('cash')">
+<img src="https://via.placeholder.com/50">
+<div>شام كاش</div>
+</div>
+
+<div class="card" onclick="selectMethod('bank')">
+<img src="https://via.placeholder.com/50">
+<div>زرعات بنك</div>
+</div>
+
+</div>
+
+<div id="formArea"></div>
+
 </div>
 
 <!-- WALLET -->
-<div id="wallet" class="page">
+<div class="page" id="wallet">
 <h3>المحفظة</h3>
-<p>الوارد: <span id="income">0</span>$</p>
-<p>المصروف: <span id="spent">0</span>$</p>
 </div>
 
-<!-- REDEEM -->
-<div id="redeem" class="page">
-<h3>إضافة الرصيد 💳</h3>
-
-<button onclick="showMethod('cash')">شام كاش</button>
-<button onclick="showMethod('bank')">زرعات بنك</button>
-
-<div id="methodBox"></div>
+<!-- FAVORITE -->
+<div class="page" id="fav">
+<h3>المفضلة</h3>
 </div>
 
 <script>
 
-/* BOT */
-const BOT_TOKEN = "PUT_BOT_TOKEN";
-const CHAT_ID = "PUT_CHAT_ID";
+const BOT_TOKEN="PUT_BOT_TOKEN";
+const CHAT_ID="PUT_CHAT_ID";
 
-/* DATA */
-let income = 0;
-let spent = 0;
-let favorites = [];
-
-/* APPS */
-const apps = [
-{name:"يا أهلاً",img:"https://via.placeholder.com/100"},
-{name:"Game",img:"https://via.placeholder.com/100"},
-{name:"VIP",img:"https://via.placeholder.com/100"}
-];
-
-/* OPEN MENU (iPhone FIXED) */
-function openMenu(){
-document.getElementById("sidebar").classList.add("open");
-document.getElementById("overlay").style.display="block";
+function toggleSidebar(){
+document.getElementById("sidebar").classList.toggle("open");
+document.getElementById("overlay").style.display =
+document.getElementById("sidebar").classList.contains("open") ? "block":"none";
 }
 
-/* CLOSE MENU */
-function closeMenu(){
-document.getElementById("sidebar").classList.remove("open");
-document.getElementById("overlay").style.display="none";
-}
-
-/* NAV */
-function openPage(id){
+function showPage(id){
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 document.getElementById(id).classList.add("active");
-closeMenu();
+toggleSidebar();
 }
 
-/* RENDER APPS */
-function renderApps(){
-let box=document.getElementById("apps");
-box.innerHTML="";
-
-apps.forEach(a=>{
-box.innerHTML+=`
-<div class="app">
-<div class="heart" onclick="toggleFav('${a.name}',this)">❤</div>
-<div>${a.name}</div>
-</div>`;
-});
-}
-
-/* FAVORITES */
-function toggleFav(name,el){
+function toggleHeart(el){
 el.classList.toggle("active");
-
-if(!favorites.includes(name)){
-favorites.push(name);
-}else{
-favorites=favorites.filter(f=>f!==name);
 }
 
-renderFav();
-}
+function selectMethod(type){
 
-/* FAVORITES LIST */
-function renderFav(){
-let box=document.getElementById("favList");
-box.innerHTML="";
+document.getElementById("formArea").innerHTML=`
+<h4>${type==="cash"?"شام كاش":"زرعات بنك"}</h4>
 
-favorites.forEach(f=>{
-box.innerHTML+=`<div class="box">❤️ ${f}</div>`;
-});
-}
-
-/* METHOD */
-function showMethod(type){
-
-if(type==="cash"){
-document.getElementById("methodBox").innerHTML=`
-<div class="box">
-<h4>شام كاش</h4>
-<p>اسم الحساب: Ahmed</p>
-<p>الآيبان: 123456789</p>
-
-<input id="name" placeholder="الاسم">
+<input id="name" placeholder="اسم الشخص">
 <input id="order" placeholder="رقم العملية">
 <input id="amount" placeholder="المبلغ">
 
-<button onclick="send('شام كاش')">شحن</button>
-</div>`;
+<button onclick="send('${type}')">شحن</button>
+`;
 }
 
-if(type==="bank"){
-document.getElementById("methodBox").innerHTML=`
-<div class="box">
-<h4>زرعات بنك</h4>
-<p>اسم الحساب: Ali</p>
-<p>الآيبان: 987654321</p>
-
-<input id="name" placeholder="الاسم">
-<input id="order" placeholder="رقم العملية">
-<input id="amount" placeholder="المبلغ">
-
-<button onclick="send('زرعات بنك')">شحن</button>
-</div>`;
-}
-}
-
-/* SEND TELEGRAM */
 function send(type){
 
 let name=document.getElementById("name").value;
@@ -320,12 +353,8 @@ headers:{"Content-Type":"application/x-www-form-urlencoded"},
 body:`chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`
 });
 
-alert("تم الإرسال ✔️");
+alert("تم إرسال الطلب ✔️");
 }
-
-/* INIT */
-renderApps();
-renderFav();
 
 </script>
 
