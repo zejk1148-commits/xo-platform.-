@@ -2,148 +2,201 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>الرئيسية</title>
+<title>واجهة شحن</title>
 
 <style>
-
-/* 🌐 الخلفية */
 body {
   margin: 0;
   font-family: Arial;
-  background: #f5f5f5;
-  padding-bottom: 80px;
+  direction: rtl;
 }
 
-/* 🔝 الشريط العلوي (الرصيد + زر الإضافة) */
-.top-bar {
-  background: #0a8f5a;
+/* الشريط العلوي */
+.topbar {
+  background: #111;
   color: white;
   padding: 15px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
-.balance {
-  font-size: 16px;
-}
-
-.add-btn {
-  background: white;
-  color: #0a8f5a;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* زر القائمة */
+.menu-btn {
+  font-size: 22px;
   cursor: pointer;
-  font-weight: bold;
 }
 
-/* 🖼️ البانر */
-.banner {
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  color: white;
-  padding: 30px;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-/* 📢 شريط خدمة العملاء */
-.marquee {
-  background: #fff3cd;
-  padding: 10px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.marquee span {
-  display: inline-block;
-  animation: move 10s linear infinite;
-}
-
-@keyframes move {
-  from { transform: translateX(100%); }
-  to { transform: translateX(-100%); }
-}
-
-/* 📁 المجلدات */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  padding: 15px;
-}
-
-.card {
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  border-radius: 15px;
-  padding: 15px;
-  text-align: center;
-  color: white;
-  font-weight: bold;
-}
-
-/* 📌 الشريط السفلي */
-.bottom-bar {
+/* الشريط الجانبي */
+.sidebar {
   position: fixed;
-  bottom: 0;
+  top: 0;
+  right: -260px;
+  width: 260px;
+  height: 100%;
+  background: #222;
+  color: white;
+  transition: 0.3s;
+  padding-top: 20px;
+}
+
+.sidebar.active {
+  right: 0;
+}
+
+/* عناصر */
+.sidebar a {
+  display: block;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+  border-bottom: 1px solid #333;
+}
+
+.sidebar a:hover {
+  background: #333;
+}
+
+/* الخلفية */
+.overlay {
+  position: fixed;
+  top: 0;
   left: 0;
   width: 100%;
-  background: #0d47a1;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
+  height: 100%;
+  display: none;
 }
 
-.bottom-bar div {
+.overlay.active {
+  display: block;
+}
+
+/* المحتوى */
+.content {
+  padding: 20px;
+}
+
+/* كروت */
+.card {
+  background: #f5f5f5;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+button {
+  padding: 10px;
+  margin-top: 10px;
+  width: 100%;
+  border: none;
+  background: #111;
   color: white;
-  text-align: center;
-  font-size: 14px;
-  cursor: pointer;
+  border-radius: 8px;
 }
-
 </style>
+
 </head>
 
 <body>
 
-<!-- 🔝 الرصيد -->
-<div class="top-bar">
-  <div class="balance">رصيدك: 0$</div>
-  <div class="add-btn" onclick="alert('إضافة رصيد')">+</div>
+<div class="topbar">
+  <span class="menu-btn" onclick="openMenu()">☰</span>
+  <span>الرصيد: <span id="balance">0</span></span>
 </div>
 
-<!-- 🖼️ بانر -->
-<div class="banner">
-  سهل كاش
+<div class="sidebar" id="sidebar">
+  <a onclick="showPage('home')">🏠 الرئيسية</a>
+  <a onclick="showPage('charge')">💳 إضافة رصيد</a>
+  <a onclick="showPage('orders')">📦 طلباتي</a>
+  <a onclick="showPage('payments')">💰 دفعاتي</a>
+  <a onclick="showPage('wallet')">👛 المحفظة</a>
 </div>
 
-<!-- 📢 خدمة العملاء -->
-<div class="marquee">
-  <span>خدمة العملاء: +63 955 472 1005</span>
-</div>
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
-<!-- 📁 الأقسام -->
-<div class="grid">
+<div class="content" id="content"></div>
 
-  <div class="card">تطبيقات الشات</div>
-  <div class="card">قسم الألعاب</div>
-  <div class="card">بطاقات المتاجر</div>
-  <div class="card">قسم الأرقام</div>
+<script>
+let sidebar = document.getElementById("sidebar");
+let overlay = document.getElementById("overlay");
 
-</div>
+// فتح/إغلاق
+function openMenu() {
+  sidebar.classList.add("active");
+  overlay.classList.add("active");
+}
+function closeMenu() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+}
 
-<!-- 📌 الشريط السفلي -->
-<div class="bottom-bar">
-  <div>🏠<br>الرئيسية</div>
-  <div>💼<br>محفظتي</div>
-  <div>⭐<br>المفضلة</div>
-  <div>📦<br>طلباتي</div>
-  <div>💳<br>دفعاتي</div>
-</div>
+// الصفحات
+function showPage(page) {
+  let content = document.getElementById("content");
+
+  if (page === "home") {
+    content.innerHTML = `
+      <h2>🏠 الرئيسية</h2>
+      <div class="card">مرحبا بك في موقع الشحن</div>
+      <div class="card">رصيدك الحالي: ${localStorage.getItem("balance") || 0}</div>
+    `;
+  }
+
+  if (page === "charge") {
+    content.innerHTML = `
+      <h2>💳 إضافة رصيد</h2>
+      <div class="card">
+        <p>اختر قيمة الشحن</p>
+        <button onclick="addBalance(10)">شحن 10</button>
+        <button onclick="addBalance(50)">شحن 50</button>
+      </div>
+    `;
+  }
+
+  if (page === "orders") {
+    content.innerHTML = `
+      <h2>📦 طلباتي</h2>
+      <div class="card">لا يوجد طلبات حالياً</div>
+    `;
+  }
+
+  if (page === "payments") {
+    content.innerHTML = `
+      <h2>💰 دفعاتي</h2>
+      <div class="card">لا يوجد دفعات</div>
+    `;
+  }
+
+  if (page === "wallet") {
+    content.innerHTML = `
+      <h2>👛 المحفظة</h2>
+      <div class="card">رصيدك: ${localStorage.getItem("balance") || 0}</div>
+      <button onclick="withdraw()">سحب</button>
+    `;
+  }
+
+  closeMenu();
+}
+
+// الرصيد
+function addBalance(amount) {
+  let balance = parseInt(localStorage.getItem("balance") || 0);
+  balance += amount;
+  localStorage.setItem("balance", balance);
+  document.getElementById("balance").innerText = balance;
+  alert("تم الشحن بنجاح");
+}
+
+// سحب
+function withdraw() {
+  alert("ميزة السحب لاحقاً");
+}
+
+// تحميل
+window.onload = function () {
+  let balance = localStorage.getItem("balance") || 0;
+  document.getElementById("balance").innerText = balance;
+  showPage("home");
+};
+</script>
 
 </body>
 </html>
