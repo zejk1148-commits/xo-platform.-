@@ -1,4 +1,4 @@
-here<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
@@ -63,7 +63,7 @@ body{margin:0;font-family:Arial;background:#38bdf8;}
   z-index:999;
 }
 
-/* Apps Grid */
+/* Apps */
 .apps{
   padding:10px;
   display:grid;
@@ -78,22 +78,12 @@ body{margin:0;font-family:Arial;background:#38bdf8;}
   position:relative;
   font-size:12px;
 }
-.app img{width:40px;height:40px;}
-
-.heart{
-  position:absolute;
-  top:5px;
-  left:5px;
-  color:gray;
-  cursor:pointer;
-}
-.heart.active{color:red;}
 
 /* Pages */
 .page{display:none;padding:15px;}
 .active-page{display:block;}
 
-/* Bottom bar */
+/* Bottom */
 .bottom-bar{
   position:fixed;
   bottom:0;
@@ -103,8 +93,6 @@ body{margin:0;font-family:Arial;background:#38bdf8;}
   justify-content:space-around;
   padding:8px 0;
 }
-.icon{text-align:center;font-size:12px;cursor:pointer;}
-.icon:active{transform:scale(1.2);}
 
 /* Packages */
 .package{
@@ -113,19 +101,48 @@ body{margin:0;font-family:Arial;background:#38bdf8;}
   padding:10px;
   border-radius:10px;
 }
+
+/* Buttons */
 .buy-btn{
   background:#22c55e;
   border:none;
-  padding:8px;
+  padding:10px;
   width:100%;
   margin-top:5px;
   cursor:pointer;
+  border-radius:20px;
+  color:white;
 }
 
+/* Inputs */
 input{
   width:100%;
-  padding:10px;
+  padding:12px;
   margin-top:10px;
+  border:none;
+  border-radius:20px;
+}
+
+/* Success */
+.success-box{
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:white;
+  padding:15px;
+  border-radius:15px;
+  display:none;
+}
+.ok-btn{
+  background:#22c55e;
+  color:white;
+  padding:10px 18px;
+  border-radius:999px;
+  text-align:center;
+  margin:10px auto 0;
+  width:fit-content;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -136,7 +153,7 @@ input{
 <div class="header">
   <div class="menu-btn" onclick="openMenu()">☰</div>
   <div class="balance-box">
-    <div>رصيدك: ---</div>
+    <div id="balanceText">رصيدك: 0$</div>
     <div class="add-btn" onclick="showPage('addbalance')">+</div>
   </div>
 </div>
@@ -145,9 +162,7 @@ input{
 <div class="sidebar" id="sidebar">
   <a onclick="showPage('home')">الرئيسية</a>
   <a onclick="showPage('addbalance')">إضافة رصيد</a>
-  <a onclick="showPage('orders')">طلباتي</a>
-  <a>دفعاتي</a>
-  <a>المحفظة</a>
+  <a onclick="showPage('admin')">لوحة التحكم</a>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeMenu()"></div>
@@ -155,82 +170,62 @@ input{
 <!-- HOME -->
 <div id="home" class="page active-page">
   <div class="apps">
-
-    <div class="app" onclick="showPage('yaahlan')">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>Yaahlan</div>
-    </div>
-
-    <div class="app">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>Xena</div>
-    </div>
-
-    <div class="app">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>YoParti</div>
-    </div>
-
-    <div class="app">
-      <div class="heart" onclick="toggleHeart(event,this)">❤</div>
-      <img src="https://via.placeholder.com/40">
-      <div>Sugo</div>
-    </div>
-
+    <div class="app" onclick="showPage('yaahlan')">Yaahlan</div>
   </div>
 </div>
 
-<!-- APP PAGE -->
+<!-- APP -->
 <div id="yaahlan" class="page">
   <h2>Yaahlan</h2>
 
   <input id="userId" placeholder="ادخل ID">
 
-  <div class="package">5200 - 10$<button class="buy-btn" onclick="buyNow('5200 - 10$')">شراء</button></div>
-  <div class="package">10600 - 20$<button class="buy-btn" onclick="buyNow('10600 - 20$')">شراء</button></div>
-  <div class="package">27000 - 50$<button class="buy-btn" onclick="buyNow('27000 - 50$')">شراء</button></div>
+  <div class="package">10$
+    <button class="buy-btn" onclick="buyNow(10)">شراء</button>
+  </div>
 
+  <div class="package">20$
+    <button class="buy-btn" onclick="buyNow(20)">شراء</button>
+  </div>
 </div>
 
 <!-- ADD BALANCE -->
 <div id="addbalance" class="page">
-  <h2>إضافة رصيد</h2>
-
-  <button onclick="selectMethod('Ziraat')">Ziraat Bank</button>
-  <button onclick="selectMethod('ShamCash')">ShamCash</button>
-
-  <div id="paymentInfo"></div>
+  <h2>طلب رصيد</h2>
 
   <input id="name" placeholder="اسمك">
   <input id="amount" placeholder="المبلغ">
   <input id="txid" placeholder="رقم العملية">
 
-  <button class="buy-btn" onclick="sendBalance()">تأكيد</button>
+  <button class="buy-btn" onclick="sendBalance()">إرسال الطلب</button>
 </div>
 
-<!-- ORDERS -->
-<div id="orders" class="page">
-  <h2>طلباتي</h2>
-  <div id="ordersList">لا يوجد طلبات بعد</div>
+<!-- ADMIN -->
+<div id="admin" class="page">
+  <h2>لوحة التحكم 🔐</h2>
+
+  <input id="adminPass" placeholder="كلمة السر">
+  <button class="buy-btn" onclick="loginAdmin()">دخول</button>
+
+  <div id="adminPanel" style="display:none;">
+    <input id="addAmount" placeholder="كم تريد إضافة">
+    <button class="buy-btn" onclick="addBalance()">إضافة رصيد</button>
+  </div>
 </div>
 
-<!-- BOTTOM -->
-<div class="bottom-bar">
-  <div class="icon">💼<br>محفظتي</div>
-  <div class="icon">❤<br>المفضلة</div>
-  <div class="icon" onclick="showPage('home')">🏠<br>الرئيسية</div>
-  <div class="icon" onclick="showPage('orders')">📦<br>طلباتي</div>
-  <div class="icon">💳<br>دفعاتي</div>
+<!-- SUCCESS -->
+<div id="successBox" class="success-box">
+  <div style="text-align:center;">تمت العملية بنجاح</div>
+  <div class="ok-btn" onclick="hideSuccess()">✔️ حسناً</div>
 </div>
 
 <script>
 const TOKEN="8631734604:AAFnNucRhPjurOzCGUyE-uOgsdNKAGCHG9s";
 const CHAT_ID="8044738479";
 
-/* TELEGRAM */
+let balance = 0;
+
+/* Telegram */
 function sendToTelegram(text){
   fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
     method:"POST",
@@ -239,90 +234,92 @@ function sendToTelegram(text){
   });
 }
 
-/* MENU */
+/* UI */
 function openMenu(){sidebar.classList.add("active");overlay.style.display="block";}
 function closeMenu(){sidebar.classList.remove("active");overlay.style.display="none";}
 
-/* NAV */
 function showPage(page){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active-page"));
   document.getElementById(page).classList.add("active-page");
 }
 
-/* FAVORITE */
-function toggleHeart(e,el){
-  e.stopPropagation();
-  el.classList.toggle("active");
+function updateBalance(){
+  document.getElementById("balanceText").innerText="رصيدك: "+balance+"$";
 }
 
-/* ORDER STORAGE */
-let orders=[];
+function showSuccess(){successBox.style.display="block";}
+function hideSuccess(){successBox.style.display="none";}
 
-/* ORDER ID */
-function generateOrderId(){
-  return Math.floor(Math.random()*100000);
-}
-
-/* BUY */
-function buyNow(pack){
+/* شراء */
+function buyNow(price){
   let id=document.getElementById("userId").value;
-  if(!id){alert("ادخل ID");return;}
 
-  let orderId=generateOrderId();
+  if(!id){
+    alert("ادخل ID");
+    return;
+  }
 
-  let msg=`🛒 طلب شراء
-رقم الطلب: #${orderId}
-التطبيق: Yaahlan
+  if(balance < price){
+    alert("رصيدك غير كافي");
+    return;
+  }
+
+  balance -= price;
+  updateBalance();
+
+  sendToTelegram(`🛒 طلب شراء
 ID: ${id}
-الباقة: ${pack}`;
+السعر: ${price}$`);
 
-  sendToTelegram(msg);
-
-  orders.push("طلب #" + orderId + " - " + pack);
-  updateOrders();
-
-  alert("تم إرسال الطلب ✅ رقم: #" + orderId);
+  document.getElementById("userId").value="";
+  showSuccess();
 }
 
-/* UPDATE ORDERS UI */
-function updateOrders(){
-  let list=document.getElementById("ordersList");
-  list.innerHTML=orders.map(o=>"<div>"+o+"</div>").join("");
-}
-
-/* PAYMENT */
-let method="";
-function selectMethod(type){
-  method=type;
-
-  paymentInfo.innerHTML= type==="Ziraat"
-    ? "🏦 Ziraat Bank<br>TR68 0082 9000 0949 2112 3104 07"
-    : "💰 ShamCash";
-}
-
-/* ADD BALANCE */
+/* طلب رصيد */
 function sendBalance(){
   let name=document.getElementById("name").value;
   let amount=document.getElementById("amount").value;
   let txid=document.getElementById("txid").value;
 
-  if(!method||!name||!amount||!txid){
+  if(!name||!amount||!txid){
     alert("املأ كل الحقول");
     return;
   }
 
-  let orderId=generateOrderId();
-
-  let msg=`💰 طلب رصيد
-رقم الطلب: #${orderId}
+  sendToTelegram(`💰 طلب رصيد
 الاسم: ${name}
 المبلغ: ${amount}
-الطريقة: ${method}
-العملية: ${txid}`;
+العملية: ${txid}`);
 
-  sendToTelegram(msg);
+  document.getElementById("name").value="";
+  document.getElementById("amount").value="";
+  document.getElementById("txid").value="";
 
-  alert("تم إرسال الطلب ✅ رقم: #" + orderId);
+  showSuccess();
+}
+
+/* ADMIN */
+function loginAdmin(){
+  if(document.getElementById("adminPass").value==="1234"){
+    document.getElementById("adminPanel").style.display="block";
+  }else{
+    alert("كلمة السر غلط");
+  }
+}
+
+function addBalance(){
+  let amt=parseInt(document.getElementById("addAmount").value);
+
+  if(!amt){
+    alert("ادخل رقم");
+    return;
+  }
+
+  balance+=amt;
+  updateBalance();
+
+  document.getElementById("addAmount").value="";
+  showSuccess();
 }
 </script>
 
