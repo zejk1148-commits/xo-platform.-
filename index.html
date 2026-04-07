@@ -16,18 +16,14 @@ html, body {
   background:#f5f5f5;
 }
 
-/* ✅ حذف التثبيت الغلط */
-body{
-  position: relative;
-}
+body{position: relative;}
 
-/* 🔥 رفع خفيف للهيدر بدون ما يختفي */
 .header{
   background:linear-gradient(to left,#2ecc71,#27ae60);
   color:white;
   padding:12px;
-  padding-top:22px; /* تعويض */
-  margin-top:-10px; /* رفع خفيف */
+  padding-top:22px;
+  margin-top:-10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -36,14 +32,12 @@ body{
   z-index:1000;
 }
 
-/* 🔥 زر القائمة واضح */
 .header div:first-child{
   z-index:999999;
   position:relative;
   font-size:20px;
 }
 
-/* باقي الكود مثل ما هو */
 .sidebar{
   position:fixed;
   top:0;
@@ -257,22 +251,6 @@ body{
 
 <script>
 
-/* 🔥 منع double tap zoom */
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function (event) {
-  let now = (new Date()).getTime();
-  if (now - lastTouchEnd <= 300) {
-    event.preventDefault();
-  }
-  lastTouchEnd = now;
-}, false);
-
-/* 🔥 منع gesture zoom */
-document.addEventListener('gesturestart', function (e) {
-  e.preventDefault();
-});
-
-/* 💰 الرصيد */
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
 
 function updateBalance(){
@@ -280,17 +258,6 @@ balanceText.innerText = "الرصيد: $" + balance;
 }
 updateBalance();
 
-/* SIDEBAR */
-function toggleSidebar(){
-  sidebar.classList.toggle("open");
-  overlay.style.display = sidebar.classList.contains("open") ? "block" : "none";
-}
-overlay.onclick=()=>{
-  sidebar.classList.remove("open");
-  overlay.style.display="none";
-}
-
-/* APPS */
 const apps = [
 {id:"yaahlan", name:"يا أهلا", img:"https://i.ibb.co/G307spDQ/image.png",
 packs:[
@@ -301,86 +268,28 @@ packs:[
   {amount:40000, price:75},
   {amount:52500, price:100}
 ]},
-{id:"zinalive", name:"Zina Live", img:"https://i.ibb.co/gM9GsQbt/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"sugo", name:"Sugo", img:"https://i.ibb.co/qVF1fnS/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"yoparty", name:"YoParty", img:"https://i.ibb.co/8n3DfwWT/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"4fun", name:"4fun", img:"https://i.ibb.co/7tJjGrsn/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"soltchen", name:"Soltchen", img:"https://i.ibb.co/TMqz7RhY/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"soulstar", name:"Soul Star", img:"https://i.ibb.co/VW6061sh/image.jpg", packs:[2500,5200,10600,27000]},
+{id:"zinalive", name:"Zina Live", img:"https://i.ibb.co/gM9GsQbt/image.jpg", packs:[2500,5200,10600,27000]}
 ];
-
-let favorites = JSON.parse(localStorage.getItem("fav")) || [];
-let orders = JSON.parse(localStorage.getItem("orders")) || [];
-
-function toggleFav(id){
-if(favorites.includes(id)){
-favorites = favorites.filter(x=>x!==id);
-}else{
-favorites.push(id);
-}
-localStorage.setItem("fav", JSON.stringify(favorites));
-loadApps();
-}
-
-function loadApps(){
-let html="";
-apps.forEach(app=>{
-let heart = favorites.includes(app.id) ? "❤️" : "🤍";
-
-html+=`
-<div class="card">
-<div class="heart" onclick="toggleFav('${app.id}')">${heart}</div>
-<div onclick="openApp('${app.id}')">
-<img src="${app.img}">
-<div class="card-name">${app.name}</div>
-</div>
-</div>`;
-});
-appsGrid.innerHTML=html;
-}
-loadApps();
-
-function hideAll(){
-home.style.display="none";
-appPage.style.display="none";
-ordersPage.style.display="none";
-balancePage.style.display="none";
-chargePage.style.display="none";
-favPage.style.display="none";
-}
-
-function goHome(){
-hideAll();
-home.style.display="block";
-appTitle.style.display="none";
-}
-
-function openBalance(){hideAll();balancePage.style.display="block";}
-function openCharge(){hideAll();chargePage.style.display="block";}
-function back(){goHome();}
 
 let currentApp="";
 let selectedPack=0;
 
+/* ✅ التعديل الأول */
 function openApp(id){
-hideAll();
-appPage.style.display="block";
-
 let app = apps.find(a=>a.id===id);
-
 currentApp = app.name;
-appName.innerText = app.name;
-
-appTitle.innerText = app.name;
-appTitle.style.display = "block";
 
 let html="<div class='pack-grid'>";
 app.packs.forEach(p=>{
+
+let amount = typeof p === "object" ? p.amount : p;
+let price  = typeof p === "object" ? p.price  : (p/500);
+
 html+=`
 <div class="pack-card">
-<div>${p} 💎</div>
-<div>$${p/500}</div>
-<div class="buy-btn" onclick="openBuy(${p})">شراء</div>
+<div>${amount} 💎</div>
+<div>$${price}</div>
+<div class="buy-btn" onclick="openBuy(${amount})">شراء</div>
 </div>`;
 });
 html+="</div>";
@@ -388,92 +297,13 @@ html+="</div>";
 packs.innerHTML=html;
 }
 
-function openBuy(p){
-selectedPack=p;
-modal.style.display="flex";
-}
-
+/* ✅ التعديل الثاني */
 function confirmBuy(){
-let id=userId.value;
-if(!id){alert("اكتب ID");return;}
+let app = apps.find(a=>a.name===currentApp);
+let pack = app.packs.find(p => (typeof p==="object"?p.amount:p) == selectedPack);
+let price = typeof pack === "object" ? pack.price : selectedPack/500;
 
-let price = selectedPack/500;
-
-if(balance < price){
-alert("رصيدك لا يكفي ❌");
-return;
-}
-
-balance -= price;
-localStorage.setItem("balance", balance);
-updateBalance();
-
-orders.push({
-app: currentApp,
-pack: selectedPack,
-price: price,
-id: id,
-date: new Date().toLocaleString()
-});
-localStorage.setItem("orders", JSON.stringify(orders));
-
-alert("تم الطلب ✅");
-modal.style.display="none";
-userId.value="";
-}
-
-function closeModal(){
-modal.style.display="none";
-}
-
-function openFav(){
-hideAll();
-favPage.style.display="block";
-
-let favApps = apps.filter(a=>favorites.includes(a.id));
-
-let html="<div class='header'><div onclick='goHome()'>رجوع</div><div>المفضلة</div></div>";
-
-if(favApps.length===0){
-html+="<h3 style='padding:10px'>لا يوجد مفضلة ❤️</h3>";
-}else{
-html+="<div class='grid'>";
-favApps.forEach(app=>{
-html+=`
-<div class="card" onclick="openApp('${app.id}')">
-<img src="${app.img}">
-<div class="card-name">${app.name}</div>
-</div>`;
-});
-html+="</div>";
-}
-
-favPage.innerHTML=html;
-}
-
-function openOrders(){
-hideAll();
-ordersPage.style.display="block";
-
-let html="<div class='header'><div onclick='goHome()'>رجوع</div><div>طلباتي</div></div>";
-
-if(orders.length === 0){
-html+="<h3 style='padding:10px'>لا يوجد طلبات 📦</h3>";
-}else{
-orders.slice().reverse().forEach(o=>{
-html+=`
-<div style="background:white;margin:10px;padding:10px;border-radius:10px">
-<div>📱 ${o.app}</div>
-<div>💎 ${o.pack}</div>
-<div>💰 $${o.price}</div>
-<div>🆔 ${o.id}</div>
-<div style="font-size:12px;color:gray">${o.date}</div>
-</div>
-`;
-});
-}
-
-ordersPage.innerHTML=html;
+alert("السعر: "+price);
 }
 
 </script>
