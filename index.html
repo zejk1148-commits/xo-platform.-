@@ -51,7 +51,7 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(4, minmax(80px, 1fr)); /* ✅ التعديل هنا */
+  grid-template-columns:repeat(4, minmax(80px, 1fr));
   gap:10px;
   padding:10px;
 }
@@ -79,7 +79,6 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
   font-weight:bold;
 }
 
-/* ❤️ القلب */
 .heart{
   position:absolute;
   top:5px;
@@ -124,8 +123,17 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
   background:white;
   padding:20px;
   border-radius:12px;
-  width:80%;
-  max-width:300px;
+  width:85%;
+  max-width:260px;
+  position:relative;
+}
+
+.close-btn{
+  position:absolute;
+  top:8px;
+  left:10px;
+  font-size:18px;
+  cursor:pointer;
 }
 
 .modal input{
@@ -138,7 +146,6 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <h3 style="text-align:center;">القائمة</h3>
 
@@ -151,17 +158,15 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
 
 <div class="overlay" id="overlay"></div>
 
-<!-- HOME -->
 <div id="home">
 <div class="header">
 <div onclick="toggleSidebar()">☰</div>
-<div>الرصيد: $120</div>
+<div id="balanceText">الرصيد: $120</div>
 </div>
 
 <div class="grid" id="appsGrid"></div>
 </div>
 
-<!-- APP PAGE -->
 <div id="appPage" style="display:none">
 <div class="header">
 <div onclick="back()">رجوع</div>
@@ -170,10 +175,8 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
 <div id="packs"></div>
 </div>
 
-<!-- ORDERS -->
 <div id="ordersPage" style="display:none"></div>
 
-<!-- ADD BALANCE -->
 <div id="balancePage" style="display:none; padding:15px;">
   <div class="header">
     <div onclick="goHome()">رجوع</div>
@@ -182,7 +185,6 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
   <h3>قريباً 💰</h3>
 </div>
 
-<!-- CHARGE -->
 <div id="chargePage" style="display:none; padding:15px;">
   <div class="header">
     <div onclick="goHome()">رجوع</div>
@@ -193,19 +195,29 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
   <button onclick="alert('تم الشحن (تجريبي)')">تأكيد</button>
 </div>
 
-<!-- FAVORITES -->
 <div id="favPage" style="display:none; padding:15px;"></div>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
 <div class="modal-content">
+
+<div class="close-btn" onclick="closeModal()">✖</div>
+
 <h3>إدخال ID</h3>
 <input id="userId">
 <button onclick="confirmBuy()">تأكيد</button>
+
 </div>
 </div>
 
 <script>
+
+/* 💰 الرصيد */
+let balance = parseFloat(localStorage.getItem("balance")) || 120;
+
+function updateBalance(){
+balanceText.innerText = "الرصيد: $" + balance;
+}
+updateBalance();
 
 /* SIDEBAR */
 function toggleSidebar(){
@@ -229,8 +241,8 @@ const apps = [
 {id:"soulstar", name:"Soul Star", img:"https://cdn-icons-png.flaticon.com/512/616/616489.png", packs:[2500,5200]}
 ];
 
-/* ❤️ المفضلة */
 let favorites = JSON.parse(localStorage.getItem("fav")) || [];
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
 function toggleFav(id){
 if(favorites.includes(id)){
@@ -242,7 +254,6 @@ localStorage.setItem("fav", JSON.stringify(favorites));
 loadApps();
 }
 
-/* LOAD APPS */
 function loadApps(){
 let html="";
 apps.forEach(app=>{
@@ -261,7 +272,6 @@ appsGrid.innerHTML=html;
 }
 loadApps();
 
-/* NAVIGATION */
 function hideAll(){
 home.style.display="none";
 appPage.style.display="none";
@@ -276,7 +286,6 @@ function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
 function back(){goHome();}
 
-/* OPEN APP */
 let currentApp="";
 let selectedPack=0;
 
@@ -303,7 +312,6 @@ html+="</div>";
 packs.innerHTML=html;
 }
 
-/* BUY */
 function openBuy(p){
 selectedPack=p;
 modal.style.display="flex";
@@ -311,15 +319,40 @@ modal.style.display="flex";
 
 function confirmBuy(){
 let id=userId.value;
-
 if(!id){alert("اكتب ID");return;}
+
+let price = selectedPack/500;
+
+/* 🚫 منع الشراء */
+if(balance < price){
+alert("رصيدك لا يكفي ❌");
+return;
+}
+
+/* 💰 خصم */
+balance -= price;
+localStorage.setItem("balance", balance);
+updateBalance();
+
+/* 📦 حفظ الطلب */
+orders.push({
+app: currentApp,
+pack: selectedPack,
+price: price,
+id: id,
+date: new Date().toLocaleString()
+});
+localStorage.setItem("orders", JSON.stringify(orders));
 
 alert("تم الطلب ✅");
 modal.style.display="none";
 userId.value="";
 }
 
-/* FAVORITES PAGE */
+function closeModal(){
+modal.style.display="none";
+}
+
 function openFav(){
 hideAll();
 favPage.style.display="block";
@@ -345,11 +378,28 @@ html+="</div>";
 favPage.innerHTML=html;
 }
 
-/* ORDERS */
 function openOrders(){
 hideAll();
 ordersPage.style.display="block";
-ordersPage.innerHTML="<h3 style='padding:10px'>طلباتي (قريباً)</h3>";
+
+let html="<div class='header'><div onclick='goHome()'>رجوع</div><div>طلباتي</div></div>";
+
+if(orders.length === 0){
+html+="<h3 style='padding:10px'>لا يوجد طلبات 📦</h3>";
+}else{
+orders.slice().reverse().forEach(o=>{
+html+=`
+<div style="background:white;margin:10px;padding:10px;border-radius:10px">
+<div>📱 ${o.app}</div>
+<div>💎 ${o.pack}</div>
+<div>💰 $${o.price}</div>
+<div>🆔 ${o.id}</div>
+<div style="font-size:12px;color:gray">${o.date}</div>
+</div>`;
+});
+}
+
+ordersPage.innerHTML=html;
 }
 
 </script>
