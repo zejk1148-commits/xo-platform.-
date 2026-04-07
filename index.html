@@ -16,7 +16,9 @@ html, body {
   background:#f5f5f5;
 }
 
-body{position: relative;}
+body{
+  position: relative;
+}
 
 .header{
   background:linear-gradient(to left,#2ecc71,#27ae60);
@@ -183,7 +185,6 @@ body{position: relative;}
 
 <div class="sidebar" id="sidebar">
   <h3 style="text-align:center;">القائمة</h3>
-
   <a onclick="goHome()">🏠 الرئيسية</a>
   <a onclick="openBalance()">💰 إضافة رصيد</a>
   <a onclick="openCharge()">💳 شحن</a>
@@ -201,7 +202,6 @@ body{position: relative;}
   <div id="appTitle" style="display:none;"></div>
   <div id="balanceText">الرصيد: $120</div>
 </div>
-
 </div>
 
 <div class="grid" id="appsGrid"></div>
@@ -215,37 +215,12 @@ body{position: relative;}
 <div id="packs"></div>
 </div>
 
-<div id="ordersPage" style="display:none"></div>
-
-<div id="balancePage" style="display:none; padding:15px;">
-  <div class="header">
-    <div onclick="goHome()">رجوع</div>
-    <div>إضافة رصيد</div>
-  </div>
-  <h3>قريباً 💰</h3>
-</div>
-
-<div id="chargePage" style="display:none; padding:15px;">
-  <div class="header">
-    <div onclick="goHome()">رجوع</div>
-    <div>شحن</div>
-  </div>
-
-  <input id="codeInput" placeholder="ادخل كود الشحن">
-  <button onclick="alert('تم الشحن (تجريبي)')">تأكيد</button>
-</div>
-
-<div id="favPage" style="display:none; padding:15px;"></div>
-
 <div class="modal" id="modal">
 <div class="modal-content">
-
 <div class="close-btn" onclick="closeModal()">✖</div>
-
 <h3>إدخال ID</h3>
 <input id="userId">
 <button onclick="confirmBuy()">تأكيد</button>
-
 </div>
 </div>
 
@@ -261,29 +236,32 @@ updateBalance();
 const apps = [
 {id:"yaahlan", name:"يا أهلا", img:"https://i.ibb.co/G307spDQ/image.png",
 packs:[
-  {amount:2500, price:5},
-  {amount:5200, price:10},
-  {amount:10600, price:20},
-  {amount:27000, price:50},
-  {amount:40000, price:75},
-  {amount:52500, price:100}
+{amount:2500,price:5},
+{amount:5200,price:10},
+{amount:10600,price:20},
+{amount:27000,price:50},
+{amount:40000,price:75},
+{amount:52500,price:100}
 ]},
-{id:"zinalive", name:"Zina Live", img:"https://i.ibb.co/gM9GsQbt/image.jpg", packs:[2500,5200,10600,27000]}
+{id:"4fun", name:"4fun", img:"https://i.ibb.co/7tJjGrsn/image.jpg", packs:[2500,5200,10600,27000]}
 ];
 
 let currentApp="";
 let selectedPack=0;
 
-/* ✅ التعديل الأول */
 function openApp(id){
-let app = apps.find(a=>a.id===id);
-currentApp = app.name;
+home.style.display="none";
+appPage.style.display="block";
+
+let app=apps.find(a=>a.id===id);
+currentApp=app.name;
+appName.innerText=app.name;
 
 let html="<div class='pack-grid'>";
-app.packs.forEach(p=>{
 
-let amount = typeof p === "object" ? p.amount : p;
-let price  = typeof p === "object" ? p.price  : (p/500);
+app.packs.forEach(p=>{
+let amount = typeof p==="object"?p.amount:p;
+let price = typeof p==="object"?p.price:(p/500);
 
 html+=`
 <div class="pack-card">
@@ -292,18 +270,31 @@ html+=`
 <div class="buy-btn" onclick="openBuy(${amount})">شراء</div>
 </div>`;
 });
-html+="</div>";
 
+html+="</div>";
 packs.innerHTML=html;
 }
 
-/* ✅ التعديل الثاني */
-function confirmBuy(){
-let app = apps.find(a=>a.name===currentApp);
-let pack = app.packs.find(p => (typeof p==="object"?p.amount:p) == selectedPack);
-let price = typeof pack === "object" ? pack.price : selectedPack/500;
+function openBuy(p){
+selectedPack=p;
+modal.style.display="flex";
+}
 
-alert("السعر: "+price);
+function confirmBuy(){
+let app=apps.find(a=>a.name===currentApp);
+let pack=app.packs.find(p=>(typeof p==="object"?p.amount:p)==selectedPack);
+let price=typeof pack==="object"?pack.price:selectedPack/500;
+
+alert("تم الشراء بسعر $"+price);
+}
+
+function closeModal(){
+modal.style.display="none";
+}
+
+function goHome(){
+home.style.display="block";
+appPage.style.display="none";
 }
 
 </script>
