@@ -3,307 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apps Store</title>
+<title>Store Pro</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  direction:rtl;
-  background:#f5f5f5;
-  padding-top:60px; /* مهم عشان الهيدر الثابت */
-}
-
-/* HEADER ثابت */
+body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5;padding-top:60px}
 .header{
-  position:fixed;
-  top:0;
-  right:0;
-  left:0;
-  z-index:1000;
-  background:linear-gradient(to left,#2ecc71,#27ae60);
-  color:white;
-  padding:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+position:fixed;top:0;right:0;left:0;z-index:1000;
+background:linear-gradient(to left,#2ecc71,#27ae60);
+color:white;padding:12px;display:flex;justify-content:space-between
 }
-
-/* SIDEBAR */
-.sidebar{
-  position:fixed;
-  top:0;
-  right:0;
-  width:250px;
-  height:100%;
-  background:#1e1e2f;
-  color:white;
-  padding:15px;
-  transform:translateX(100%);
-  transition:0.3s ease;
-  z-index:999;
-}
-.sidebar.open{transform:translateX(0);}
-.sidebar a{
-  display:block;
-  color:white;
-  text-decoration:none;
-  padding:10px;
-  margin:5px 0;
-  background:#2c2c44;
-  border-radius:8px;
-}
-
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.4);
-  display:none;
-  z-index:998;
-}
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  padding:10px;
-}
-
-.card{
-  background:linear-gradient(to left,#3498db,#2ecc71);
-  color:white;
-  padding:18px;
-  border-radius:12px;
-  text-align:center;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-/* PACKS */
-.pack-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  padding:10px;
-}
-
-.pack-card{
-  background:white;
-  border-radius:12px;
-  padding:15px;
-  text-align:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
-  font-weight:bold;
-}
-
-.mas{color:#2ecc71;margin-bottom:6px;}
-.price{color:#e67e22;}
-
-.buy-btn{
-  margin-top:10px;
-  background:#2ecc71;
-  color:white;
-  padding:8px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-/* MODAL */
-.modal{
-  position:fixed;
-  top:0;left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
-}
-
-.modal-content{
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  width:80%;
-  max-width:300px;
-  text-align:center;
-}
-
-.modal input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border:1px solid #ccc;
-  border-radius:8px;
-}
-
-.modal button{
-  background:#2ecc71;
-  color:white;
-  border:none;
-  padding:10px;
-  width:100%;
-  border-radius:8px;
-  cursor:pointer;
-}
+.box{padding:10px}
+.card{background:#fff;padding:15px;margin:10px;border-radius:10px;cursor:pointer}
+.btn{background:#2ecc71;color:#fff;padding:10px;border-radius:8px;cursor:pointer;margin-top:10px}
+input{width:100%;padding:10px;margin:5px 0}
 </style>
-</head>
 
+</head>
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-  <h3>القائمة</h3>
-  <a href="#">الرئيسية</a>
-  <a href="#">الرصيد</a>
-  <a href="#">طلباتي</a>
-  <a href="#">إضافة رصيد</a>
-</div>
-
-<div class="overlay" id="overlay"></div>
-
-<!-- HEADER ثابت -->
 <div class="header">
-  <div onclick="toggleSidebar()">☰</div>
-  <div>الرصيد: <span id="balance">120</span>$</div>
+<div id="left">تسجيل</div>
+<div>الرصيد: $<span id="balance">0</span></div>
 </div>
 
-<!-- HOME -->
-<div id="home">
+<div class="box">
 
-<div class="grid">
-  <div class="card" onclick="openApp('yaahlan','يا أهلا')">💎 يا أهلا</div>
-  <div class="card" onclick="openApp('xena','Xena')">🥲 Xena</div>
-  <div class="card" onclick="openApp('yoparti','YoParti')">😄 YoParti</div>
-  <div class="card" onclick="openApp('sugo','Sugo')">😜 Sugo</div>
-  <div class="card" onclick="openApp('4fun','4Fun')">😂 4Fun</div>
-  <div class="card" onclick="openApp('ahlan','Ahlan')">😅 Ahlan</div>
-  <div class="card" onclick="openApp('soulchill','Soul Chill')">😁 Soul Chill</div>
-  <div class="card" onclick="openApp('soulstar','Soul Star')">⭐ Soul Star</div>
+<!-- LOGIN -->
+<div id="loginBox">
+<h3>تسجيل الدخول</h3>
+<input id="email" placeholder="email">
+<input id="pass" placeholder="password" type="password">
+<div class="btn" onclick="login()">دخول</div>
+<div class="btn" onclick="register()">تسجيل</div>
 </div>
 
+<!-- STORE -->
+<div id="store" style="display:none">
+
+<h3>المتجر</h3>
+
+<div class="card">
+2500 💎 - 5$
+<div class="btn" onclick="buy(2500,5)">شراء</div>
 </div>
 
-<!-- APP PAGE -->
-<div id="appPage" style="display:none">
+<div class="card">
+5200 💎 - 10$
+<div class="btn" onclick="buy(5200,10)">شراء</div>
+</div>
 
-<div class="grid" id="packs"></div>
+<div class="card">
+10600 💎 - 20$
+<div class="btn" onclick="buy(10600,20)">شراء</div>
+</div>
+
+<div class="btn" onclick="openOrders()">طلباتي</div>
 
 </div>
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h3>إدخال ID</h3>
-    <input id="userId" placeholder="اكتب ID هنا">
-    <button onclick="confirmBuy()">تأكيد الشراء</button>
-  </div>
+<!-- ORDERS -->
+<div id="orders" style="display:none"></div>
+
 </div>
 
-<script>
+<script type="module">
 
-let selectedPack = null;
-let currentApp = "";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// 🔴 عدلهم هنا فقط
-let token = "PUT_YOUR_BOT_TOKEN_HERE";
-let chat_id = "PUT_YOUR_CHAT_ID_HERE";
+import {
+getFirestore,
+doc,
+setDoc,
+getDoc,
+updateDoc,
+collection,
+addDoc,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-/* SIDEBAR */
-function toggleSidebar(){
-  let s = document.getElementById("sidebar");
-  let o = document.getElementById("overlay");
+/* 🔴 حط بيانات Firebase هنا */
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_AUTH_DOMAIN",
+projectId: "YOUR_PROJECT_ID",
+appId: "YOUR_APP_ID"
+};
 
-  s.classList.toggle("open");
-  o.style.display = s.classList.contains("open") ? "block" : "none";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let userId = null;
+
+/* تسجيل */
+window.register = async function(){
+let email = document.getElementById("email").value;
+let pass = document.getElementById("pass").value;
+
+let user = await createUserWithEmailAndPassword(auth,email,pass);
+
+await setDoc(doc(db,"users",user.user.uid),{
+balance:100,
+email:email
+});
+
+alert("تم التسجيل");
 }
 
-overlay.onclick = ()=>{
-  sidebar.classList.remove("open");
-  overlay.style.display="none";
+/* دخول */
+window.login = async function(){
+let email = document.getElementById("email").value;
+let pass = document.getElementById("pass").value;
+
+await signInWithEmailAndPassword(auth,email,pass);
+alert("تم الدخول");
 }
 
-/* NAV */
-function openApp(app,name){
-  currentApp = name;
-  home.style.display="none";
-  appPage.style.display="block";
+/* مراقبة المستخدم */
+onAuthStateChanged(auth, async (user)=>{
+if(user){
+userId = user.uid;
+document.getElementById("loginBox").style.display="none";
+document.getElementById("store").style.display="block";
 
-  const data = {
-    yaahlan:[2500,5200,10600,27000,40000,52500],
-    xena:[2500,5200,10600],
-    yoparti:[2500,5200,10600],
-    sugo:[2500,5200,10600],
-    "4fun":[2500,5200,10600],
-    ahlan:[2500,5200,10600],
-    soulchill:[2500,5200,10600],
-    soulstar:[2500,5200,10600]
-  };
+loadUser();
+}
+});
 
-  let html = "";
+/* تحميل البيانات */
+async function loadUser(){
+let ref = doc(db,"users",userId);
+let snap = await getDoc(ref);
 
-  data[app].forEach(p=>{
-    html += `
-      <div class="pack-card">
-        <div class="mas">${p.toLocaleString()} 💎</div>
-        <div class="price">$${getPrice(p)} 💵</div>
-        <div class="buy-btn" onclick="openBuy(${p})">شراء</div>
-      </div>
-    `;
-  });
-
-  packs.innerHTML = html;
+document.getElementById("balance").innerText = snap.data().balance;
 }
 
-/* PRICE */
-function getPrice(p){
-  if(p==2500)return 5;
-  if(p==5200)return 10;
-  if(p==10600)return 20;
-  if(p==27000)return 50;
-  if(p==40000)return 75;
-  if(p==52500)return 100;
-  return 0;
+/* شراء */
+window.buy = async function(pack,price){
+
+let ref = doc(db,"users",userId);
+let snap = await getDoc(ref);
+
+let bal = snap.data().balance;
+
+if(bal < price){
+alert("رصيد غير كافي");
+return;
 }
 
-/* BUY */
-function openBuy(pack){
-  selectedPack = pack;
-  modal.style.display="flex";
+/* خصم الرصيد */
+await updateDoc(ref,{
+balance: bal - price
+});
+
+/* حفظ الطلب */
+await addDoc(collection(db,"orders"),{
+uid:userId,
+pack:pack,
+price:price,
+date:new Date().toISOString()
+});
+
+alert("تم الشراء");
+
+loadUser();
 }
 
-/* CONFIRM */
-function confirmBuy(){
-  let id = userId.value;
+/* طلباتي */
+window.openOrders = async function(){
 
-  if(id===""){
-    alert("اكتب ID أولاً");
-    return;
-  }
+document.getElementById("store").style.display="none";
+document.getElementById("orders").style.display="block";
 
-  let text = `طلب جديد 💰
-التطبيق: ${currentApp}
-ID: ${id}
-الباقة: ${selectedPack} 💎`;
+let q = await getDocs(collection(db,"orders"));
 
-  fetch(`https://api.telegram.org/bot${token}/sendMessage`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      chat_id:chat_id,
-      text:text
-    })
-  });
+let html = "<h3>طلباتي</h3>";
 
-  alert("تم إرسال الطلب ✅");
+q.forEach(d=>{
+let o = d.data();
+if(o.uid == userId){
+html += `<div class='card'>💎 ${o.pack} - $${o.price}</div>`;
+}
+});
 
-  modal.style.display="none";
-  userId.value="";
+document.getElementById("orders").innerHTML = html;
 }
 
 </script>
