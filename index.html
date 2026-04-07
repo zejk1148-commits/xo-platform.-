@@ -11,9 +11,16 @@ body{
   font-family:Arial;
   direction:rtl;
   background:#f5f5f5;
+  padding-top:60px; /* مهم عشان الهيدر الثابت */
 }
 
+/* HEADER ثابت */
 .header{
+  position:fixed;
+  top:0;
+  right:0;
+  left:0;
+  z-index:1000;
   background:linear-gradient(to left,#2ecc71,#27ae60);
   color:white;
   padding:12px;
@@ -22,6 +29,7 @@ body{
   align-items:center;
 }
 
+/* SIDEBAR */
 .sidebar{
   position:fixed;
   top:0;
@@ -57,6 +65,7 @@ body{
   z-index:998;
 }
 
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -74,6 +83,7 @@ body{
   font-weight:bold;
 }
 
+/* PACKS */
 .pack-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -102,6 +112,7 @@ body{
   cursor:pointer;
 }
 
+/* MODAL */
 .modal{
   position:fixed;
   top:0;left:0;
@@ -145,6 +156,7 @@ body{
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <h3>القائمة</h3>
   <a href="#">الرئيسية</a>
@@ -155,11 +167,14 @@ body{
 
 <div class="overlay" id="overlay"></div>
 
-<div id="home">
+<!-- HEADER ثابت -->
 <div class="header">
   <div onclick="toggleSidebar()">☰</div>
-  <div>الرصيد: 120$</div>
+  <div>الرصيد: <span id="balance">120</span>$</div>
 </div>
+
+<!-- HOME -->
+<div id="home">
 
 <div class="grid">
   <div class="card" onclick="openApp('yaahlan','يا أهلا')">💎 يا أهلا</div>
@@ -171,16 +186,17 @@ body{
   <div class="card" onclick="openApp('soulchill','Soul Chill')">😁 Soul Chill</div>
   <div class="card" onclick="openApp('soulstar','Soul Star')">⭐ Soul Star</div>
 </div>
+
 </div>
 
+<!-- APP PAGE -->
 <div id="appPage" style="display:none">
-<div class="header">
-  <div onclick="back()">رجوع</div>
-  <div id="appName"></div>
-</div>
-<div id="packs"></div>
+
+<div class="grid" id="packs"></div>
+
 </div>
 
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h3>إدخال ID</h3>
@@ -194,13 +210,15 @@ body{
 let selectedPack = null;
 let currentApp = "";
 
-// ⚠️ عدلهم فقط
+// 🔴 عدلهم هنا فقط
 let token = "PUT_YOUR_BOT_TOKEN_HERE";
-let chat_id = "PUT_CHAT_ID_HERE";
+let chat_id = "PUT_YOUR_CHAT_ID_HERE";
 
+/* SIDEBAR */
 function toggleSidebar(){
   let s = document.getElementById("sidebar");
   let o = document.getElementById("overlay");
+
   s.classList.toggle("open");
   o.style.display = s.classList.contains("open") ? "block" : "none";
 }
@@ -210,19 +228,11 @@ overlay.onclick = ()=>{
   overlay.style.display="none";
 }
 
-function showApp(){
-  home.style.display="none";
-  appPage.style.display="block";
-}
-
-function back(){
-  home.style.display="block";
-  appPage.style.display="none";
-}
-
+/* NAV */
 function openApp(app,name){
   currentApp = name;
-  showApp();
+  home.style.display="none";
+  appPage.style.display="block";
 
   const data = {
     yaahlan:[2500,5200,10600,27000,40000,52500],
@@ -235,24 +245,22 @@ function openApp(app,name){
     soulstar:[2500,5200,10600]
   };
 
-  appName.innerText = name;
-
-  let html = "<div class='pack-grid'>";
+  let html = "";
 
   data[app].forEach(p=>{
     html += `
-      <div class='pack-card'>
-        <div class='mas'>${p.toLocaleString()} 💎</div>
-        <div class='price'>$${getPrice(p)} 💵</div>
-        <div class='buy-btn' onclick="openBuy(${p})">شراء</div>
+      <div class="pack-card">
+        <div class="mas">${p.toLocaleString()} 💎</div>
+        <div class="price">$${getPrice(p)} 💵</div>
+        <div class="buy-btn" onclick="openBuy(${p})">شراء</div>
       </div>
     `;
   });
 
-  html += "</div>";
   packs.innerHTML = html;
 }
 
+/* PRICE */
 function getPrice(p){
   if(p==2500)return 5;
   if(p==5200)return 10;
@@ -263,11 +271,13 @@ function getPrice(p){
   return 0;
 }
 
+/* BUY */
 function openBuy(pack){
   selectedPack = pack;
   modal.style.display="flex";
 }
 
+/* CONFIRM */
 function confirmBuy(){
   let id = userId.value;
 
