@@ -434,3 +434,29 @@ ordersPage.innerHTML=html;
 
 </body>
   </html>
+/* حل الفراغ + ضبط الصفحة */
+html, body {
+  height: auto;
+  min-height: 100%;
+}
+
+/* تأكيد إن المحتوى يبدأ من فوق */
+#home {
+  margin: 0;
+  padding: 0;
+}
+
+/* منع أي فراغ غريب */
+body::before {
+  content: none !important;
+}
+
+/* تحسين عرض الصفحة */
+.header {
+  height: 55px;
+}
+
+/* تأكيد إن الشبكة تطلع مباشرة */
+.grid {
+  margin-top: 5px;
+}
