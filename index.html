@@ -6,20 +6,16 @@
 <title>Pro Store</title>
 
 <style>
-html,body{
-  width:100%;
-  overflow-x:hidden;
-}
-
 body{
   margin:0;
   font-family:Arial;
   direction:rtl;
   background:#f5f5f5;
-  padding-top:60px;
 }
 
+/* HEADER */
 .header{
+  display:none;
   position:fixed;
   top:0;
   right:0;
@@ -33,15 +29,26 @@ body{
   align-items:center;
 }
 
+/* LOGIN PAGE */
+.login-page{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:white;
+}
+
 .login-card{
   width:90%;
   max-width:320px;
-  margin:50px auto;
-  background:white;
   padding:20px;
   border-radius:15px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
   text-align:center;
+}
+
+.login-card h2{
+  margin-bottom:15px;
 }
 
 .login-card input{
@@ -64,14 +71,20 @@ body{
   cursor:pointer;
 }
 
-.login-card button:nth-child(4){
+.login-card button:nth-child(5){
   background:#3498db;
 }
 
 #errorBox{
-  color:red;
   font-size:13px;
   margin-top:5px;
+  color:red;
+}
+
+/* STORE */
+.store{
+  display:none;
+  padding-top:60px;
 }
 
 .grid{
@@ -111,37 +124,20 @@ body{
   border-radius:8px;
   cursor:pointer;
 }
-
-.modal{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-content{
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  width:80%;
-  max-width:300px;
-}
 </style>
 </head>
 
 <body>
 
-<div class="header">
+<!-- HEADER -->
+<div class="header" id="header">
 <div>الرصيد: $<span id="balance">0</span></div>
 <div onclick="openOrders()">طلباتي</div>
 </div>
 
-<div id="loginBox" class="login-card">
+<!-- LOGIN -->
+<div id="loginPage" class="login-page">
+<div class="login-card">
 <h2>تسجيل الدخول</h2>
 
 <input id="email" placeholder="Email">
@@ -152,8 +148,10 @@ body{
 <button onclick="login()">دخول</button>
 <button onclick="register()">تسجيل</button>
 </div>
+</div>
 
-<div id="store" style="display:none">
+<!-- STORE -->
+<div id="store" class="store">
 
 <div class="grid">
 <div class="card" onclick="showPacks('يا أهلا')">يا أهلا</div>
@@ -164,6 +162,7 @@ body{
 <div id="packs"></div>
 </div>
 
+<!-- ORDERS -->
 <div id="orders" style="display:none"></div>
 
 <script type="module">
@@ -173,7 +172,8 @@ import {
 getAuth,
 createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
-onAuthStateChanged
+onAuthStateChanged,
+signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import {
@@ -199,10 +199,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* تعريف العناصر */
-const loginBox = document.getElementById("loginBox");
+/* Elements */
+const loginPage = document.getElementById("loginPage");
 const store = document.getElementById("store");
 const orders = document.getElementById("orders");
+const header = document.getElementById("header");
+
 const balance = document.getElementById("balance");
 const email = document.getElementById("email");
 const pass = document.getElementById("pass");
@@ -211,15 +213,16 @@ const packs = document.getElementById("packs");
 
 let uid=null;
 
-/* دخول للمتجر */
+/* GO TO APP */
 function goToApp(){
-loginBox.style.display="none";
+loginPage.style.display="none";
 store.style.display="block";
 orders.style.display="none";
+header.style.display="flex";
 load();
 }
 
-/* تسجيل */
+/* REGISTER */
 window.register = async ()=>{
 try{
 let u = await createUserWithEmailAndPassword(auth,email.value,pass.value);
@@ -232,17 +235,26 @@ email:email.value
 });
 
 errorBox.style.color="green";
-errorBox.innerText="تم التسجيل";
+errorBox.innerText="تم إنشاء الحساب";
 
 goToApp();
 
 }catch(e){
 errorBox.style.color="red";
+
+if(e.code==="auth/email-already-in-use"){
+errorBox.innerText="الإيميل مستخدم";
+}
+else if(e.code==="auth/weak-password"){
+errorBox.innerText="كلمة المرور ضعيفة";
+}
+else{
 errorBox.innerText="خطأ في التسجيل";
 }
 }
+}
 
-/* دخول */
+/* LOGIN */
 window.login = async ()=>{
 try{
 let u = await signInWithEmailAndPassword(auth,email.value,pass.value);
@@ -256,38 +268,46 @@ goToApp();
 
 }catch(e){
 errorBox.style.color="red";
-errorBox.innerText="خطأ في البيانات";
+
+if(e.code==="auth/user-not-found"){
+errorBox.innerText="الحساب غير موجود";
+}
+else if(e.code==="auth/wrong-password"){
+errorBox.innerText="كلمة المرور غلط";
+}
+else{
+errorBox.innerText="بيانات غير صحيحة";
+}
 }
 }
 
-/* دخول تلقائي */
+/* AUTO LOGIN */
 onAuthStateChanged(auth,(user)=>{
 if(user){
-uid = user.uid;
+uid=user.uid;
 goToApp();
 }
 });
 
-/* تحميل الرصيد */
+/* LOAD BALANCE */
 async function load(){
 let r=await getDoc(doc(db,"users",uid));
 balance.innerText=r.data().balance;
 }
 
-/* عرض الباقات */
+/* SHOW PACKS */
 window.showPacks = (appName)=>{
-packs.innerHTML = `
+packs.innerHTML=`
 <div class="pack-card">
 <div class="mas">2500000 ماسة</div>
 <div class="price">$5</div>
-<div class="buy-btn" onclick="buy(5,'${appName} - 2.5M')">شراء</div>
+<div class="buy-btn" onclick="buy(5,'${appName}')">شراء</div>
 </div>
 `;
 }
 
-/* شراء */
-window.buy = async (price,pack)=>{
-
+/* BUY */
+window.buy = async(price,pack)=>{
 let r=await getDoc(doc(db,"users",uid));
 let bal=r.data().balance;
 
@@ -307,19 +327,18 @@ price,
 date:new Date()
 });
 
-alert("تم الشراء ✅");
+alert("تم الشراء");
 load();
 }
 
-/* طلباتي */
+/* ORDERS */
 window.openOrders = async ()=>{
-
 store.style.display="none";
 orders.style.display="block";
 
 let q=await getDocs(collection(db,"orders"));
 
-let html="<h3>طلباتي</h3>";
+let html="<h3 style='padding:10px'>طلباتي</h3>";
 
 q.forEach(d=>{
 let o=d.data();
