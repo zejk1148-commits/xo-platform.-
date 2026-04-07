@@ -297,7 +297,15 @@ body{
 </div>
 
 <script>
+function openShamCash(){
+  hideAll();
+  document.getElementById("shamcashPage").style.display = "block";
+}
 
+function openZiraat(){
+  hideAll();
+  document.getElementById("ziraatPage").style.display = "block";
+  }
 /* 🔥 منع double tap zoom */
 let lastTouchEnd = 0;
 document.addEventListener('touchend', function (event) {
