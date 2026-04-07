@@ -15,75 +15,18 @@ body{
 
 /* HEADER */
 .header{
-  display:none;
   position:fixed;
   top:0;
   right:0;
   left:0;
-  z-index:1000;
   background:linear-gradient(to left,#2ecc71,#27ae60);
   color:white;
   padding:12px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
 }
 
-/* LOGIN PAGE */
-.login-page{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:white;
-}
-
-.login-card{
-  width:90%;
-  max-width:320px;
-  padding:20px;
-  border-radius:15px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-  text-align:center;
-}
-
-.login-card h2{
-  margin-bottom:15px;
-}
-
-.login-card input{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border:1px solid #ddd;
-  border-radius:10px;
-}
-
-.login-card button{
-  width:100%;
-  padding:12px;
-  margin-top:8px;
-  border:none;
-  border-radius:10px;
-  background:#2ecc71;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.login-card button:nth-child(5){
-  background:#3498db;
-}
-
-#errorBox{
-  font-size:13px;
-  margin-top:5px;
-  color:red;
-}
-
-/* STORE */
 .store{
-  display:none;
   padding-top:60px;
 }
 
@@ -101,7 +44,6 @@ body{
   border-radius:12px;
   text-align:center;
   cursor:pointer;
-  font-weight:bold;
 }
 
 .pack-card{
@@ -109,19 +51,14 @@ body{
   margin:10px;
   padding:15px;
   border-radius:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
   text-align:center;
 }
-
-.mas{color:#2ecc71}
-.price{color:#e67e22}
-
 .buy-btn{
-  margin-top:10px;
   background:#2ecc71;
   color:white;
   padding:8px;
   border-radius:8px;
+  margin-top:10px;
   cursor:pointer;
 }
 </style>
@@ -129,29 +66,12 @@ body{
 
 <body>
 
-<!-- HEADER -->
-<div class="header" id="header">
+<div class="header">
 <div>الرصيد: $<span id="balance">0</span></div>
 <div onclick="openOrders()">طلباتي</div>
 </div>
 
-<!-- LOGIN -->
-<div id="loginPage" class="login-page">
-<div class="login-card">
-<h2>تسجيل الدخول</h2>
-
-<input id="email" placeholder="Email">
-<input id="pass" type="password" placeholder="Password">
-
-<div id="errorBox"></div>
-
-<button onclick="login()">دخول</button>
-<button onclick="register()">تسجيل</button>
-</div>
-</div>
-
-<!-- STORE -->
-<div id="store" class="store">
+<div class="store">
 
 <div class="grid">
 <div class="card" onclick="showPacks('يا أهلا')">يا أهلا</div>
@@ -162,20 +82,11 @@ body{
 <div id="packs"></div>
 </div>
 
-<!-- ORDERS -->
 <div id="orders" style="display:none"></div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-onAuthStateChanged,
-signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
 import {
 getFirestore,
 doc,
@@ -196,117 +107,41 @@ appId:"YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* Elements */
-const loginPage = document.getElementById("loginPage");
-const store = document.getElementById("store");
-const orders = document.getElementById("orders");
-const header = document.getElementById("header");
+/* USER ID تلقائي */
+let uid = localStorage.getItem("uid");
 
-const balance = document.getElementById("balance");
-const email = document.getElementById("email");
-const pass = document.getElementById("pass");
-const errorBox = document.getElementById("errorBox");
-const packs = document.getElementById("packs");
+if(!uid){
+uid = "user_" + Date.now();
+localStorage.setItem("uid",uid);
 
-let uid=null;
-
-/* GO TO APP */
-function goToApp(){
-loginPage.style.display="none";
-store.style.display="block";
-orders.style.display="none";
-header.style.display="flex";
-load();
-}
-
-/* REGISTER */
-window.register = async ()=>{
-try{
-let u = await createUserWithEmailAndPassword(auth,email.value,pass.value);
-
-uid = u.user.uid;
-
+/* إنشاء حساب */
 await setDoc(doc(db,"users",uid),{
-balance:100,
-email:email.value
+balance:100
 });
-
-errorBox.style.color="green";
-errorBox.innerText="تم إنشاء الحساب";
-
-goToApp();
-
-}catch(e){
-errorBox.style.color="red";
-
-if(e.code==="auth/email-already-in-use"){
-errorBox.innerText="الإيميل مستخدم";
-}
-else if(e.code==="auth/weak-password"){
-errorBox.innerText="كلمة المرور ضعيفة";
-}
-else{
-errorBox.innerText="خطأ في التسجيل";
-}
-}
 }
 
-/* LOGIN */
-window.login = async ()=>{
-try{
-let u = await signInWithEmailAndPassword(auth,email.value,pass.value);
-
-uid = u.user.uid;
-
-errorBox.style.color="green";
-errorBox.innerText="تم الدخول";
-
-goToApp();
-
-}catch(e){
-errorBox.style.color="red";
-
-if(e.code==="auth/user-not-found"){
-errorBox.innerText="الحساب غير موجود";
-}
-else if(e.code==="auth/wrong-password"){
-errorBox.innerText="كلمة المرور غلط";
-}
-else{
-errorBox.innerText="بيانات غير صحيحة";
-}
-}
-}
-
-/* AUTO LOGIN */
-onAuthStateChanged(auth,(user)=>{
-if(user){
-uid=user.uid;
-goToApp();
-}
-});
-
-/* LOAD BALANCE */
+/* تحميل الرصيد */
 async function load(){
 let r=await getDoc(doc(db,"users",uid));
 balance.innerText=r.data().balance;
 }
 
-/* SHOW PACKS */
+load();
+
+/* عرض الباقات */
 window.showPacks = (appName)=>{
 packs.innerHTML=`
 <div class="pack-card">
-<div class="mas">2500000 ماسة</div>
-<div class="price">$5</div>
+<div>2500000 ماسة</div>
+<div>$5</div>
 <div class="buy-btn" onclick="buy(5,'${appName}')">شراء</div>
 </div>
 `;
 }
 
-/* BUY */
+/* شراء */
 window.buy = async(price,pack)=>{
 let r=await getDoc(doc(db,"users",uid));
 let bal=r.data().balance;
@@ -331,19 +166,19 @@ alert("تم الشراء");
 load();
 }
 
-/* ORDERS */
+/* طلباتي */
 window.openOrders = async ()=>{
-store.style.display="none";
+document.querySelector(".store").style.display="none";
 orders.style.display="block";
 
 let q=await getDocs(collection(db,"orders"));
 
-let html="<h3 style='padding:10px'>طلباتي</h3>";
+let html="<h3>طلباتي</h3>";
 
 q.forEach(d=>{
 let o=d.data();
 if(o.uid==uid){
-html+=`<div class='pack-card'>💎 ${o.pack} - ${o.price}$</div>`;
+html+=`<div class='pack-card'>${o.pack} - ${o.price}$</div>`;
 }
 });
 
