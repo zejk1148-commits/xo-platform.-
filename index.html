@@ -19,7 +19,6 @@ body{
   padding-top:60px;
 }
 
-/* HEADER */
 .header{
   position:fixed;
   top:0;
@@ -34,7 +33,6 @@ body{
   align-items:center;
 }
 
-/* LOGIN */
 .login-card{
   width:90%;
   max-width:320px;
@@ -76,7 +74,6 @@ body{
   margin-top:5px;
 }
 
-/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -94,7 +91,6 @@ body{
   font-weight:bold;
 }
 
-/* PACK */
 .pack-card{
   background:white;
   margin:10px;
@@ -116,7 +112,6 @@ body{
   cursor:pointer;
 }
 
-/* MODAL */
 .modal{
   position:fixed;
   top:0;
@@ -141,13 +136,11 @@ body{
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
 <div>الرصيد: $<span id="balance">0</span></div>
 <div onclick="openOrders()">طلباتي</div>
 </div>
 
-<!-- LOGIN -->
 <div id="loginBox" class="login-card">
 <h2>تسجيل الدخول</h2>
 
@@ -160,29 +153,18 @@ body{
 <button onclick="register()">تسجيل</button>
 </div>
 
-<!-- STORE -->
 <div id="store" style="display:none">
 
 <div class="grid">
-<div class="card" onclick="openApp('yaahlan','يا أهلا')">يا أهلا</div>
-<div class="card" onclick="openApp('xena','Xena')">Xena</div>
-<div class="card" onclick="openApp('sugo','Sugo')">Sugo</div>
+<div class="card" onclick="showPacks('يا أهلا')">يا أهلا</div>
+<div class="card" onclick="showPacks('Xena')">Xena</div>
+<div class="card" onclick="showPacks('Sugo')">Sugo</div>
 </div>
 
 <div id="packs"></div>
 </div>
 
-<!-- ORDERS -->
 <div id="orders" style="display:none"></div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-<div class="modal-content">
-<h3>ID</h3>
-<input id="userId">
-<button onclick="confirmBuy()">تأكيد</button>
-</div>
-</div>
 
 <script type="module">
 
@@ -217,9 +199,19 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+/* تعريف العناصر */
+const loginBox = document.getElementById("loginBox");
+const store = document.getElementById("store");
+const orders = document.getElementById("orders");
+const balance = document.getElementById("balance");
+const email = document.getElementById("email");
+const pass = document.getElementById("pass");
+const errorBox = document.getElementById("errorBox");
+const packs = document.getElementById("packs");
+
 let uid=null;
 
-/* 🔥 تحويل مباشر للمتجر */
+/* دخول للمتجر */
 function goToApp(){
 loginBox.style.display="none";
 store.style.display="block";
@@ -227,12 +219,14 @@ orders.style.display="none";
 load();
 }
 
-/* 🔥 تسجيل */
+/* تسجيل */
 window.register = async ()=>{
 try{
 let u = await createUserWithEmailAndPassword(auth,email.value,pass.value);
 
-await setDoc(doc(db,"users",u.user.uid),{
+uid = u.user.uid;
+
+await setDoc(doc(db,"users",uid),{
 balance:100,
 email:email.value
 });
@@ -248,10 +242,12 @@ errorBox.innerText="خطأ في التسجيل";
 }
 }
 
-/* 🔥 دخول */
+/* دخول */
 window.login = async ()=>{
 try{
-await signInWithEmailAndPassword(auth,email.value,pass.value);
+let u = await signInWithEmailAndPassword(auth,email.value,pass.value);
+
+uid = u.user.uid;
 
 errorBox.style.color="green";
 errorBox.innerText="تم الدخول";
@@ -264,10 +260,10 @@ errorBox.innerText="خطأ في البيانات";
 }
 }
 
-/* 🔥 دخول تلقائي */
-onAuthStateChanged(auth,async(user)=>{
+/* دخول تلقائي */
+onAuthStateChanged(auth,(user)=>{
 if(user){
-uid=user.uid;
+uid = user.uid;
 goToApp();
 }
 });
@@ -276,6 +272,17 @@ goToApp();
 async function load(){
 let r=await getDoc(doc(db,"users",uid));
 balance.innerText=r.data().balance;
+}
+
+/* عرض الباقات */
+window.showPacks = (appName)=>{
+packs.innerHTML = `
+<div class="pack-card">
+<div class="mas">2500000 ماسة</div>
+<div class="price">$5</div>
+<div class="buy-btn" onclick="buy(5,'${appName} - 2.5M')">شراء</div>
+</div>
+`;
 }
 
 /* شراء */
@@ -300,6 +307,7 @@ price,
 date:new Date()
 });
 
+alert("تم الشراء ✅");
 load();
 }
 
