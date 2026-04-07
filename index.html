@@ -369,11 +369,15 @@ appTitle.style.display = "block";
 
 let html="<div class='pack-grid'>";
 app.packs.forEach(p=>{
+
+let amount = typeof p === "object" ? p.amount : p;
+let price  = typeof p === "object" ? p.price  : (p/500);
+
 html+=`
 <div class="pack-card">
-<div>${p} 💎</div>
-<div>$${p/500}</div>
-<div class="buy-btn" onclick="openBuy(${p})">شراء</div>
+<div>${amount} 💎</div>
+<div>$${price}</div>
+<div class="buy-btn" onclick="openBuy(${amount})">شراء</div>
 </div>`;
 });
 html+="</div>";
