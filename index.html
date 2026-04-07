@@ -1,274 +1,253 @@
-<!DOCTYPE html>  <html lang="ar">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>Apps Store</title>  <style>  
-body{  
-  margin:0;  
-  font-family:Arial;  
-  direction:rtl;  
-  background:#f5f5f5;  
-}  
-  
-/* HEADER */  
-.header{  
-  background:linear-gradient(to left,#2ecc71,#27ae60);  
-  color:white;  
-  padding:12px;  
-  display:flex;  
-  justify-content:space-between;  
-  align-items:center;  
-}  
-  
-/* SIDEBAR */  
-.sidebar{  
-  position:fixed;  
-  top:0;  
-  right:0;  
-  width:250px;  
-  height:100%;  
-  background:#1e1e2f;  
-  color:white;  
-  padding:15px;  
-  transform:translateX(100%);  
-  transition:0.3s ease;  
-  z-index:999;  
-}  
-.sidebar.open{transform:translateX(0);}  
-.sidebar a{  
-  display:block;  
-  color:white;  
-  text-decoration:none;  
-  padding:10px;  
-  margin:5px 0;  
-  background:#2c2c44;  
-  border-radius:8px;  
-}  
-  
-/* OVERLAY */  
-.overlay{  
-  position:fixed;  
-  top:0;  
-  left:0;  
-  width:100%;  
-  height:100%;  
-  background:rgba(0,0,0,0.4);  
-  display:none;  
-  z-index:998;  
-}  
-  
-/* GRID */  
-.grid{  
-  display:grid;  
-  grid-template-columns:1fr 1fr;  
-  gap:10px;  
-  padding:10px;  
-}  
-  
-.card{  
-  background:linear-gradient(to left,#3498db,#2ecc71);  
-  color:white;  
-  padding:18px;  
-  border-radius:12px;  
-  text-align:center;  
-  cursor:pointer;  
-  font-weight:bold;  
-}  
-  
-/* PACKS */  
-.pack-grid{  
-  display:grid;  
-  grid-template-columns:1fr 1fr;  
-  gap:10px;  
-  padding:10px;  
-}  
-  
-.pack-card{  
-  background:white;  
-  border-radius:12px;  
-  padding:15px;  
-  text-align:center;  
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);  
-  font-weight:bold;  
-}  
-  
-.mas{  
-  font-size:16px;  
-  color:#2ecc71;  
-  margin-bottom:6px;  
-}  
-  
-.price{  
-  font-size:16px;  
-  color:#e67e22;  
-}  
-  
-/* BUY BUTTON */  
-.buy-btn{  
-  margin-top:10px;  
-  background:#2ecc71;  
-  color:white;  
-  padding:8px;  
-  border-radius:8px;  
-  cursor:pointer;  
-}  
-  
-/* MODAL */  
-.modal{  
-  position:fixed;  
-  top:0;left:0;  
-  width:100%;  
-  height:100%;  
-  background:rgba(0,0,0,0.5);  
-  display:none;  
-  justify-content:center;  
-  align-items:center;  
-  z-index:1000;  
-}  
-  
-.modal-content{  
-  background:white;  
-  padding:20px;  
-  border-radius:12px;  
-  width:80%;  
-  max-width:300px;  
-  text-align:center;  
-}  
-  
-.modal input{  
-  width:100%;  
-  padding:10px;  
-  margin:10px 0;  
-  border:1px solid #ccc;  
-  border-radius:8px;  
-}  
-  
-.modal button{  
-  background:#2ecc71;  
-  color:white;  
-  border:none;  
-  padding:10px;  
-  width:100%;  
-  border-radius:8px;  
-  cursor:pointer;  
-}  
-</style>  </head>  <body>  <div class="sidebar" id="sidebar">  
-  <h3>القائمة</h3>  
-  <a href="#">الرئيسية</a>  
-  <a href="#">الرصيد</a>  
-  <a href="#">طلباتي</a>  
-  <a href="#">إضافة رصيد</a>  
-</div>  <div class="overlay" id="overlay"></div>  <div id="home">  <div class="header">  
-  <div onclick="toggleSidebar()">☰</div>  
-  <div>الرصيد: 120$</div>  
-</div>  <div class="grid">  
-  <div class="card" onclick="openApp('yaahlan')">💎 يا أهلا</div>  
-  <div class="card" onclick="openApp('xena')">🥲 Xena</div>  
-  <div class="card" onclick="openApp('yoparti')">😄 YoParti</div>  
-  <div class="card" onclick="openApp('sugo')">😜 Sugo</div>  
-  <div class="card" onclick="openApp('4fun')">😂 4Fun</div>  
-  <div class="card" onclick="openApp('ahlan')">😅 Ahlan</div>  
-  <div class="card" onclick="openApp('soulchill')">😁 Soul Chill</div>  
-  <div class="card" onclick="openApp('soulstar')">⭐ Soul Star</div>  
-</div>  </div>  <div id="appPage" style="display:none">  <div class="header">  
-  <div onclick="back()">رجوع</div>  
-  <div id="appName"></div>  
-</div>  <div id="packs"></div>  
-</div>  <!-- MODAL -->  <div class="modal" id="modal">  
-  <div class="modal-content">  
-    <h3>إدخال ID</h3>  
-    <input id="userId" placeholder="اكتب ID هنا">  
-    <button onclick="confirmBuy()">تأكيد الشراء</button>  
-  </div>  
-</div>  <script>  
-  
-let selectedPack = null;  
-  
-function toggleSidebar(){  
-  let sidebar = document.getElementById("sidebar");  
-  let overlay = document.getElementById("overlay");  
-  
-  sidebar.classList.toggle("open");  
-  overlay.style.display = sidebar.classList.contains("open") ? "block" : "none";  
-}  
-  
-document.getElementById("overlay").onclick = function(){  
-  document.getElementById("sidebar").classList.remove("open");  
-  this.style.display = "none";  
-}  
-  
-function showApp(app){  
-  document.getElementById("home").style.display="none";  
-  document.getElementById("appPage").style.display="block";  
-}  
-  
-function back(){  
-  document.getElementById("home").style.display="block";  
-  document.getElementById("appPage").style.display="none";  
-}  
-  
-function openApp(app){  
-  
-  showApp();  
-  
-  const data = {  
-    yaahlan:{name:"يا أهلا", packs:[2500,5200,10600,27000,40000,52500]},  
-    xena:{name:"Xena", packs:[2500,5200,10600]},  
-    yoparti:{name:"YoParti", packs:[2500,5200,10600]},  
-    sugo:{name:"Sugo", packs:[2500,5200,10600]},  
-    "4fun":{name:"4Fun", packs:[2500,5200,10600]},  
-    ahlan:{name:"Ahlan", packs:[2500,5200,10600]},  
-    soulchill:{name:"Soul Chill", packs:[2500,5200,10600]},  
-    soulstar:{name:"Soul Star", packs:[2500,5200,10600]}  
-  };  
-  
-  document.getElementById("appName").innerText = data[app].name;  
-  
-  let html = "<div class='pack-grid'>";  
-  
-  data[app].packs.forEach(p=>{  
-    html += `  
-      <div class='pack-card'>  
-        <div class='mas'>${p.toLocaleString()} 💎</div>  
-        <div class='price'>$${getPrice(p)} 💵</div>  
-        <div class='buy-btn' onclick="openBuy(${p})">شراء</div>  
-      </div>  
-    `;  
-  });  
-  
-  html += "</div>";  
-  
-  document.getElementById("packs").innerHTML = html;  
-}  
-  
-function getPrice(p){  
-  if(p == 2500) return 5;  
-  if(p == 5200) return 10;  
-  if(p == 10600) return 20;  
-  if(p == 27000) return 50;  
-  if(p == 40000) return 75;  
-  if(p == 52500) return 100;  
-  return 0;  
-}  
-  
-function openBuy(pack){  
-  selectedPack = pack;  
-  document.getElementById("modal").style.display="flex";  
-}  
-  
-function confirmBuy(){  
-  let id = document.getElementById("userId").value;  
-  
-  if(id === ""){  
-    alert("اكتب ID أولاً");  
-    return;  
-  }  
-  
-  alert("تم الطلب ✅\nID: " + id + "\nPack: " + selectedPack);  
-  
-  document.getElementById("modal").style.display="none";  
-  document.getElementById("userId").value="";  
-}  
-  
-</script>  </body>  
-</html>  
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apps Store</title>
+
+<style>
+body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
+
+.header{
+  background:linear-gradient(to left,#2ecc71,#27ae60);
+  color:white;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.sidebar{
+  position:fixed;top:0;right:0;width:250px;height:100%;
+  background:#1e1e2f;color:white;padding:15px;
+  transform:translateX(100%);transition:.3s;z-index:999;
+}
+.sidebar.open{transform:translateX(0);}
+.sidebar a{display:block;padding:10px;margin:5px 0;background:#2c2c44;border-radius:8px}
+
+.overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.4);display:none;z-index:998;
+}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.card{
+  background:linear-gradient(to left,#3498db,#2ecc71);
+  color:white;padding:18px;border-radius:12px;text-align:center;cursor:pointer;
+}
+
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.pack-card{
+  background:white;border-radius:12px;padding:15px;text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+.buy-btn{
+  margin-top:10px;background:#2ecc71;color:white;
+  padding:8px;border-radius:8px;cursor:pointer;
+}
+
+.modal{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.5);display:none;
+  justify-content:center;align-items:center;
+}
+.modal-content{
+  background:white;padding:20px;border-radius:12px;width:80%;max-width:300px;text-align:center;
+}
+.modal input{
+  width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;border-radius:8px;
+}
+.modal button{
+  background:#2ecc71;color:white;border:none;padding:10px;width:100%;border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar" id="sidebar">
+  <h3>القائمة</h3>
+  <a onclick="goHome()">الرئيسية</a>
+  <a onclick="openOrders()">طلباتي</a>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div id="home">
+<div class="header">
+  <div onclick="toggleSidebar()">☰</div>
+  <div>الرصيد: $<span id="balance">0</span></div>
+</div>
+
+<div class="grid" id="appsGrid"></div>
+</div>
+
+<div id="appPage" style="display:none">
+<div class="header">
+  <div onclick="back()">رجوع</div>
+  <div id="appName"></div>
+</div>
+<div id="packs"></div>
+</div>
+
+<div id="ordersPage" style="display:none"></div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>إدخال ID</h3>
+    <input id="userId">
+    <button onclick="confirmBuy()">تأكيد</button>
+  </div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+getFirestore,doc,setDoc,getDoc,updateDoc,
+collection,addDoc,getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* Firebase */
+const firebaseConfig = {
+apiKey:"YOUR_API_KEY",
+authDomain:"YOUR_AUTH_DOMAIN",
+projectId:"YOUR_PROJECT_ID",
+appId:"YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* UID */
+let uid = localStorage.getItem("uid");
+if(!uid){
+uid="user_"+Date.now();
+localStorage.setItem("uid",uid);
+await setDoc(doc(db,"users",uid),{balance:100});
+}
+
+/* تحميل الرصيد */
+async function load(){
+let r=await getDoc(doc(db,"users",uid));
+balance.innerText=r.data().balance;
+}
+load();
+
+/* 🔥 التطبيقات (عدل هنا فقط) */
+const apps = [
+{id:"yaahlan", name:"يا أهلا", packs:[2500,5200,10600]},
+{id:"xena", name:"Xena", packs:[2500,5200,10600]},
+{id:"sugo", name:"Sugo", packs:[2500,5200,10600]},
+{id:"yoparti", name:"YoParti", packs:[2500,5200,10600]},
+{id:"4fun", name:"4Fun", packs:[2500,5200,10600]},
+{id:"ahlan", name:"Ahlan", packs:[2500,5200,10600]},
+{id:"soulchill", name:"Soul Chill", packs:[2500,5200,10600]},
+{id:"soulstar", name:"Soul Star", packs:[2500,5200,10600]}
+];
+
+/* تحميل التطبيقات */
+function loadApps(){
+let html="";
+apps.forEach(app=>{
+html+=`<div class="card" onclick="openApp('${app.id}')">${app.name}</div>`;
+});
+appsGrid.innerHTML=html;
+}
+loadApps();
+
+/* UI */
+window.toggleSidebar=()=>{
+sidebar.classList.toggle("open");
+overlay.style.display=sidebar.classList.contains("open")?"block":"none";
+}
+overlay.onclick=()=>{sidebar.classList.remove("open");overlay.style.display="none";}
+
+window.goHome=()=>{
+home.style.display="block";
+appPage.style.display="none";
+ordersPage.style.display="none";
+}
+
+/* فتح التطبيق */
+let currentApp="";
+let selectedPack=0;
+
+window.openApp=(id)=>{
+home.style.display="none";
+appPage.style.display="block";
+
+let app = apps.find(a=>a.id===id);
+
+currentApp = app.name;
+appName.innerText = app.name;
+
+let html="<div class='pack-grid'>";
+app.packs.forEach(p=>{
+html+=`
+<div class="pack-card">
+<div>${p} 💎</div>
+<div>$${p/500}</div>
+<div class="buy-btn" onclick="openBuy(${p})">شراء</div>
+</div>`;
+});
+html+="</div>";
+
+packs.innerHTML=html;
+}
+
+window.back=()=>goHome();
+
+/* شراء */
+window.openBuy=(p)=>{
+selectedPack=p;
+modal.style.display="flex";
+}
+
+window.confirmBuy=async()=>{
+let id=userId.value;
+if(!id){alert("اكتب ID");return;}
+
+let r=await getDoc(doc(db,"users",uid));
+let bal=r.data().balance;
+let price=selectedPack/500;
+
+if(bal<price){alert("رصيد غير كافي");return;}
+
+await updateDoc(doc(db,"users",uid),{balance:bal-price});
+
+await addDoc(collection(db,"orders"),{
+uid,
+app:currentApp,
+pack:selectedPack,
+price,
+userId:id,
+date:new Date()
+});
+
+alert("تم الطلب ✅");
+modal.style.display="none";
+userId.value="";
+load();
+}
+
+/* الطلبات */
+window.openOrders=async()=>{
+home.style.display="none";
+ordersPage.style.display="block";
+
+let q=await getDocs(collection(db,"orders"));
+
+let html="<h3>طلباتي</h3>";
+q.forEach(d=>{
+let o=d.data();
+if(o.uid==uid){
+html+=`<div class="pack-card">${o.app} - ${o.pack} 💎 - ${o.price}$</div>`;
+}
+});
+ordersPage.innerHTML=html;
+}
+
+</script>
+
+</body>
+</html>
