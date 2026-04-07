@@ -13,7 +13,6 @@ body{
   background:#f5f5f5;
 }
 
-/* HEADER */
 .header{
   background:linear-gradient(to left,#2ecc71,#27ae60);
   color:white;
@@ -23,7 +22,6 @@ body{
   align-items:center;
 }
 
-/* SIDEBAR */
 .sidebar{
   position:fixed;
   top:0;
@@ -48,7 +46,6 @@ body{
   border-radius:8px;
 }
 
-/* OVERLAY */
 .overlay{
   position:fixed;
   top:0;
@@ -60,7 +57,6 @@ body{
   z-index:998;
 }
 
-/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -78,7 +74,6 @@ body{
   font-weight:bold;
 }
 
-/* PACKS */
 .pack-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -95,18 +90,9 @@ body{
   font-weight:bold;
 }
 
-.mas{
-  font-size:16px;
-  color:#2ecc71;
-  margin-bottom:6px;
-}
+.mas{color:#2ecc71;margin-bottom:6px;}
+.price{color:#e67e22;}
 
-.price{
-  font-size:16px;
-  color:#e67e22;
-}
-
-/* BUY BUTTON */
 .buy-btn{
   margin-top:10px;
   background:#2ecc71;
@@ -116,7 +102,6 @@ body{
   cursor:pointer;
 }
 
-/* MODAL */
 .modal{
   position:fixed;
   top:0;left:0;
@@ -171,36 +156,31 @@ body{
 <div class="overlay" id="overlay"></div>
 
 <div id="home">
-
 <div class="header">
   <div onclick="toggleSidebar()">☰</div>
   <div>الرصيد: 120$</div>
 </div>
 
 <div class="grid">
-  <div class="card" onclick="openApp('yaahlan')">💎 يا أهلا</div>
-  <div class="card" onclick="openApp('xena')">🥲 Xena</div>
-  <div class="card" onclick="openApp('yoparti')">😄 YoParti</div>
-  <div class="card" onclick="openApp('sugo')">😜 Sugo</div>
-  <div class="card" onclick="openApp('4fun')">😂 4Fun</div>
-  <div class="card" onclick="openApp('ahlan')">😅 Ahlan</div>
-  <div class="card" onclick="openApp('soulchill')">😁 Soul Chill</div>
-  <div class="card" onclick="openApp('soulstar')">⭐ Soul Star</div>
+  <div class="card" onclick="openApp('yaahlan','يا أهلا')">💎 يا أهلا</div>
+  <div class="card" onclick="openApp('xena','Xena')">🥲 Xena</div>
+  <div class="card" onclick="openApp('yoparti','YoParti')">😄 YoParti</div>
+  <div class="card" onclick="openApp('sugo','Sugo')">😜 Sugo</div>
+  <div class="card" onclick="openApp('4fun','4Fun')">😂 4Fun</div>
+  <div class="card" onclick="openApp('ahlan','Ahlan')">😅 Ahlan</div>
+  <div class="card" onclick="openApp('soulchill','Soul Chill')">😁 Soul Chill</div>
+  <div class="card" onclick="openApp('soulstar','Soul Star')">⭐ Soul Star</div>
 </div>
-
 </div>
 
 <div id="appPage" style="display:none">
-
 <div class="header">
   <div onclick="back()">رجوع</div>
   <div id="appName"></div>
 </div>
-
 <div id="packs"></div>
 </div>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <h3>إدخال ID</h3>
@@ -212,50 +192,54 @@ body{
 <script>
 
 let selectedPack = null;
+let currentApp = "";
+
+// ⚠️ عدلهم فقط
+let token = "PUT_YOUR_BOT_TOKEN_HERE";
+let chat_id = "PUT_CHAT_ID_HERE";
 
 function toggleSidebar(){
-  let sidebar = document.getElementById("sidebar");
-  let overlay = document.getElementById("overlay");
-
-  sidebar.classList.toggle("open");
-  overlay.style.display = sidebar.classList.contains("open") ? "block" : "none";
+  let s = document.getElementById("sidebar");
+  let o = document.getElementById("overlay");
+  s.classList.toggle("open");
+  o.style.display = s.classList.contains("open") ? "block" : "none";
 }
 
-document.getElementById("overlay").onclick = function(){
-  document.getElementById("sidebar").classList.remove("open");
-  this.style.display = "none";
+overlay.onclick = ()=>{
+  sidebar.classList.remove("open");
+  overlay.style.display="none";
 }
 
-function showApp(app){
-  document.getElementById("home").style.display="none";
-  document.getElementById("appPage").style.display="block";
+function showApp(){
+  home.style.display="none";
+  appPage.style.display="block";
 }
 
 function back(){
-  document.getElementById("home").style.display="block";
-  document.getElementById("appPage").style.display="none";
+  home.style.display="block";
+  appPage.style.display="none";
 }
 
-function openApp(app){
-
+function openApp(app,name){
+  currentApp = name;
   showApp();
 
   const data = {
-    yaahlan:{name:"يا أهلا", packs:[2500,5200,10600,27000,40000,52500]},
-    xena:{name:"Xena", packs:[2500,5200,10600]},
-    yoparti:{name:"YoParti", packs:[2500,5200,10600]},
-    sugo:{name:"Sugo", packs:[2500,5200,10600]},
-    "4fun":{name:"4Fun", packs:[2500,5200,10600]},
-    ahlan:{name:"Ahlan", packs:[2500,5200,10600]},
-    soulchill:{name:"Soul Chill", packs:[2500,5200,10600]},
-    soulstar:{name:"Soul Star", packs:[2500,5200,10600]}
+    yaahlan:[2500,5200,10600,27000,40000,52500],
+    xena:[2500,5200,10600],
+    yoparti:[2500,5200,10600],
+    sugo:[2500,5200,10600],
+    "4fun":[2500,5200,10600],
+    ahlan:[2500,5200,10600],
+    soulchill:[2500,5200,10600],
+    soulstar:[2500,5200,10600]
   };
 
-  document.getElementById("appName").innerText = data[app].name;
+  appName.innerText = name;
 
   let html = "<div class='pack-grid'>";
 
-  data[app].packs.forEach(p=>{
+  data[app].forEach(p=>{
     html += `
       <div class='pack-card'>
         <div class='mas'>${p.toLocaleString()} 💎</div>
@@ -266,37 +250,50 @@ function openApp(app){
   });
 
   html += "</div>";
-
-  document.getElementById("packs").innerHTML = html;
+  packs.innerHTML = html;
 }
 
 function getPrice(p){
-  if(p == 2500) return 5;
-  if(p == 5200) return 10;
-  if(p == 10600) return 20;
-  if(p == 27000) return 50;
-  if(p == 40000) return 75;
-  if(p == 52500) return 100;
+  if(p==2500)return 5;
+  if(p==5200)return 10;
+  if(p==10600)return 20;
+  if(p==27000)return 50;
+  if(p==40000)return 75;
+  if(p==52500)return 100;
   return 0;
 }
 
 function openBuy(pack){
   selectedPack = pack;
-  document.getElementById("modal").style.display="flex";
+  modal.style.display="flex";
 }
 
 function confirmBuy(){
-  let id = document.getElementById("userId").value;
+  let id = userId.value;
 
-  if(id === ""){
+  if(id===""){
     alert("اكتب ID أولاً");
     return;
   }
 
-  alert("تم الطلب ✅\nID: " + id + "\nPack: " + selectedPack);
+  let text = `طلب جديد 💰
+التطبيق: ${currentApp}
+ID: ${id}
+الباقة: ${selectedPack} 💎`;
 
-  document.getElementById("modal").style.display="none";
-  document.getElementById("userId").value="";
+  fetch(`https://api.telegram.org/bot${token}/sendMessage`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      chat_id:chat_id,
+      text:text
+    })
+  });
+
+  alert("تم إرسال الطلب ✅");
+
+  modal.style.display="none";
+  userId.value="";
 }
 
 </script>
