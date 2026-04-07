@@ -311,7 +311,15 @@ packs:[
 
 let favorites = JSON.parse(localStorage.getItem("fav")) || [];
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
+// 🔥 حذف الطلبات يومياً
+let lastClear = localStorage.getItem("lastClearDate");
+let today = new Date().toDateString();
 
+if(lastClear !== today){
+  orders = [];
+  localStorage.setItem("orders", JSON.stringify(orders));
+  localStorage.setItem("lastClearDate", today);
+}
 function toggleFav(id){
 if(favorites.includes(id)){
 favorites = favorites.filter(x=>x!==id);
