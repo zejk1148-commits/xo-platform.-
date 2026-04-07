@@ -136,7 +136,7 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
   cursor:pointer;
 }
 
-/* 🔥 التعديل الأول: تصغير حقل ID */
+/* 🧾 تصغير الإدخال */
 .modal input{
   width:90%;
   padding:8px;
@@ -144,7 +144,7 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
   display:block;
 }
 
-/* 🔥 التعديل الثاني: زر التأكيد */
+/* 🎯 زر التأكيد */
 .modal button{
   display:block;
   margin:10px auto 0;
@@ -175,7 +175,12 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
 <div id="home">
 <div class="header">
 <div onclick="toggleSidebar()">☰</div>
-<div id="balanceText">الرصيد: $120</div>
+
+<div style="display:flex; gap:10px; align-items:center;">
+  <div id="appTitle" style="display:none;"></div>
+  <div id="balanceText">الرصيد: $120</div>
+</div>
+
 </div>
 
 <div class="grid" id="appsGrid"></div>
@@ -295,7 +300,14 @@ chargePage.style.display="none";
 favPage.style.display="none";
 }
 
-function goHome(){hideAll();home.style.display="block";}
+function goHome(){
+hideAll();
+home.style.display="block";
+
+/* ❌ إخفاء اسم التطبيق */
+appTitle.style.display="none";
+}
+
 function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
 function back(){goHome();}
@@ -311,6 +323,10 @@ let app = apps.find(a=>a.id===id);
 
 currentApp = app.name;
 appName.innerText = app.name;
+
+/* 🔥 إظهار اسم التطبيق */
+appTitle.innerText = app.name;
+appTitle.style.display = "block";
 
 let html="<div class='pack-grid'>";
 app.packs.forEach(p=>{
@@ -417,4 +433,4 @@ ordersPage.innerHTML=html;
 </script>
 
 </body>
-</html>
+  </html>
