@@ -233,8 +233,6 @@ body{
   <div class="card" onclick="openShamCash()">
     <img src="https://i.ibb.co/fY1MpH8d/IMG.jpg">
     <div class="card-name">شام كاش</div>
-  </div>
-
   <div class="card" onclick="alert('زراعات قريباً')">
     <img src="https://i.ibb.co/qzq6hMN/IMG.jpg">
     <div class="card-name">زراعات بنك</div>
@@ -242,7 +240,27 @@ body{
 
   </div>
 </div>
+<div id="shamcashPage" style="display:none; padding:15px;">
 
+  <div class="header">
+    <div onclick="goHome()">رجوع</div>
+    <div>شام كاش</div>
+  </div>
+
+  <div style="background:white;padding:15px;border-radius:12px;margin:10px 0;">
+    <div>💳 رقم الحساب: 123456789</div>
+    <div>👤 الاسم: اسمك هنا</div>
+  </div>
+
+  <div style="background:white;padding:15px;border-radius:12px;margin:10px 0;">
+    <input id="senderName" placeholder="اسم المرسل">
+    <input id="amountSent" placeholder="المبلغ">
+    <input id="operationId" placeholder="رقم العملية">
+    <input type="file" id="receiptImage">
+    <button onclick="sendShamCash()">إرسال</button>
+  </div>
+
+</div>
 <div id="chargePage" style="display:none; padding:15px;">
   <div class="header">
     <div onclick="goHome()">رجوع</div>
