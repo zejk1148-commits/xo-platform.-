@@ -136,10 +136,24 @@ body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
   cursor:pointer;
 }
 
+/* 🔥 التعديل الأول: تصغير حقل ID */
 .modal input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
+  width:90%;
+  padding:8px;
+  margin:10px auto;
+  display:block;
+}
+
+/* 🔥 التعديل الثاني: زر التأكيد */
+.modal button{
+  display:block;
+  margin:10px auto 0;
+  background:#2ecc71;
+  color:white;
+  border:none;
+  padding:10px 20px;
+  border-radius:8px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -323,18 +337,15 @@ if(!id){alert("اكتب ID");return;}
 
 let price = selectedPack/500;
 
-/* 🚫 منع الشراء */
 if(balance < price){
 alert("رصيدك لا يكفي ❌");
 return;
 }
 
-/* 💰 خصم */
 balance -= price;
 localStorage.setItem("balance", balance);
 updateBalance();
 
-/* 📦 حفظ الطلب */
 orders.push({
 app: currentApp,
 pack: selectedPack,
@@ -395,7 +406,8 @@ html+=`
 <div>💰 $${o.price}</div>
 <div>🆔 ${o.id}</div>
 <div style="font-size:12px;color:gray">${o.date}</div>
-</div>`;
+</div>
+`;
 });
 }
 
