@@ -103,10 +103,10 @@ border-radius:10px;
 position:relative;
 }
 
-. close-btn {
-الوضع : مطلق ؛
-أعلى : 5 بكسل ؛
-اليسار : 10 بكسل ؛
+.close-btn {
+position:absolute;
+top:5px;
+left:10px;
 font-size:20px;
 cursor:pointer;
 }
@@ -122,17 +122,6 @@ display:block;
 
 <body>
 
-<!-- 🔥 تسجيل الدخول -->
-<div id="loginPage" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;text-align:center;padding-top:100px;">
-<h2>تسجيل الدخول</h2>
-
-<input id="emailInput" placeholder="أدخل الإيميل">
-<input id="passInput" placeholder="أدخل كلمة المرور">
-
-<button onclick="login()">دخول</button>
-
-</div>
-
 <div class="sidebar" id="sidebar">
 <a onclick="goHome()">🏠 الرئيسية</a>
 <a onclick="openBalance()">💰 إضافة رصيد</a>
@@ -142,7 +131,7 @@ display:block;
 
 <div id="overlay"></div>
 
-<div id="home" style="display:none">
+<div id="home">
 <div class="header">
 <div onclick="toggle()">☰</div>
 <div id="balanceText"></div>
@@ -159,7 +148,6 @@ display:block;
 <div id="packs"></div>
 </div>
 
-<!-- الرصيد -->
 <div id="balancePage" style="display:none">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
@@ -184,7 +172,6 @@ display:block;
 </div>
 </div>
 
-<!-- الشحن -->
 <div id="chargePage" style="display:none">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
@@ -198,7 +185,6 @@ display:block;
 </div>
 </div>
 
-<!-- الدفع -->
 <div id="shamSYP" style="display:none">
 <div class="header"><div onclick="openBalance()">رجوع</div><div>شام كاش سوري</div></div>
 <div class="card">
@@ -238,13 +224,11 @@ display:block;
 <button onclick="sendForm(this)">إرسال</button>
 </div>
 
-<!-- الطلبات -->
 <div id="ordersPage" style="display:none">
 <div class="header"><div onclick="goHome()">رجوع</div><div>طلباتي</div></div>
 <div id="ordersList" style="padding:10px;"></div>
 </div>
 
-<!-- مودال -->
 <div class="modal" id="modal">
 <div class="modal-content">
 <div class="close-btn" onclick="closeModal()">✖</div>
@@ -256,26 +240,6 @@ display:block;
 
 <script>
 
-/* 🔥 تسجيل الدخول */
-function login(){
-let email = document.getElementById("emailInput").value;
-let pass = document.getElementById("passInput").value;
-
-if(!email || !pass){
-alert("املأ جميع الحقول");
-return;
-}
-
-localStorage.setItem("userData", JSON.stringify({
-email: email,
-pass: pass
-}));
-
-document.getElementById("loginPage").style.display="none";
-document.getElementById("home").style.display="block";
-}
-goHome();
-/* باقي كودك بدون تغيير */
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
@@ -353,30 +317,8 @@ ordersList.innerHTML=html;
 }
 
 const apps=[
-{
-name:"يا أهلا",
-img:"https://i.ibb.co/G307spDQ/image.png",
-packs:[
-{amount:2500,price:5},
-{amount:5200,price:10},
-{amount:10600,price:20},
-{amount:27000,price:50},
-{amount:40000,price:75},
-{amount:52500,price:100}
-]
-},
-{
-name:"Soltchen",
-img:"https://i.ibb.co/TMqz7RhY/image.jpg",
-packs:[
-{amount:2500,price:5},
-{amount:5200,price:10},
-{amount:10600,price:20},
-{amount:27000,price:50},
-{amount:40000,price:75},
-{amount:52500,price:100}
-]
-},
+{name:"يا أهلا",img:"https://i.ibb.co/G307spDQ/image.png",packs:[{amount:2500,price:5},{amount:5200,price:10},{amount:10600,price:20},{amount:27000,price:50},{amount:40000,price:75},{amount:52500,price:100}]},
+{name:"Soltchen",img:"https://i.ibb.co/TMqz7RhY/image.jpg",packs:[{amount:2500,price:5},{amount:5200,price:10},{amount:10600,price:20},{amount:27000,price:50},{amount:40000,price:75},{amount:52500,price:100}]},
 {name:"Sugo",img:"https://i.ibb.co/qVF1fnS/image.jpg",packs:[{amount:2500,price:5}]},
 {name:"YoParty",img:"https://i.ibb.co/8n3DfwWT/image.jpg",packs:[{amount:2500,price:5}]},
 {name:"Zina Live",img:"https://i.ibb.co/gM9GsQbt/image.jpg",packs:[{amount:2500,price:5}]},
@@ -441,41 +383,28 @@ function goHome(){hideAll();home.style.display="block";}
 function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
 function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
+
 function openShamSYP(){
 hideAll();
 shamSYP.style.display="block";
-
-sendToTelegram(
-"💰 طلب إضافة رصيد\n" +
-"💳 النوع: شام كاش سوري\n" +
-"🕒 الوقت: " + new Date().toLocaleString()
-);
+sendToTelegram("💰 طلب إضافة رصيد\n💳 النوع: شام كاش سوري\n🕒 الوقت: "+new Date().toLocaleString());
 }
 
 function openShamUSD(){
 hideAll();
 shamUSD.style.display="block";
-
-sendToTelegram(
-"💰 طلب إضافة رصيد\n" +
-"💳 النوع: شام كاش دولار\n" +
-"🕒 الوقت: " + new Date().toLocaleString()
-);
+sendToTelegram("💰 طلب إضافة رصيد\n💳 النوع: شام كاش دولار\n🕒 الوقت: "+new Date().toLocaleString());
 }
 
 function openBank(){
 hideAll();
 bankPage.style.display="block";
-
-sendToTelegram(
-"💰 طلب إضافة رصيد\n" +
-"🏦 النوع: بنك\n" +
-"🕒 الوقت: " + new Date().toLocaleString()
-);
+sendToTelegram("💰 طلب إضافة رصيد\n🏦 النوع: بنك\n🕒 الوقت: "+new Date().toLocaleString());
 }
 
-const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
-const CHAT_ID = "8044738479";
+const TELEGRAM_TOKEN="YOUR_TOKEN";
+const CHAT_ID="YOUR_ID";
+
 function sendToTelegram(text){
 fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
 method:"POST",
@@ -483,58 +412,8 @@ headers:{"Content-Type":"application/json"},
 body:JSON.stringify({chat_id:CHAT_ID,text:text})
 });
 }
-function getUser(){
-return JSON.parse(localStorage.getItem("userData")) || {};
-}
-
-/* ربط الشراء */
-const oldConfirmBuy = confirmBuy;
-confirmBuy = function(){
-let user = getUser();
-let time = new Date().toLocaleString();
-
-sendToTelegram(
-"🛒 طلب شراء\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"📱 التطبيق: " + selectedApp + "\n" +
-"💎 الكمية: " + selectedAmount + "\n" +
-"💰 السعر: $" + selectedPrice + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldConfirmBuy();
-};
-
-/* ربط الكود */
-const oldUseCode = useCode;
-useCode = function(){
-let user = getUser();
-let time = new Date().toLocaleString();
-
-sendToTelegram(
-"💰 شحن بكود\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldUseCode();
-};
-
-/* ربط الشحن اليدوي */
-const oldSendForm = sendForm;
-sendForm = function(btn){
-let user = getUser();
-let time = new Date().toLocaleString();
-
-sendToTelegram(
-"💳 طلب شحن يدوي\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldSendForm(btn);
 
 </script>
 
 </body>
-</html>
+  </html>
