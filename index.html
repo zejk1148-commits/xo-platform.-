@@ -454,64 +454,17 @@ return JSON.parse(localStorage.getItem("userData")) || {};
 
 const oldConfirmBuy = confirmBuy;
 confirmBuy = function(){
-let user = getUser();
-let time = new Date().toLocaleString();
 
-sendToTelegram(
-"🛒 طلب شراء\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"📱 التطبيق: " + selectedApp + "\n" +
-"💎 الكمية: " + selectedAmount + "\n" +
-"💰 السعر: $" + selectedPrice + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldConfirmBuy();
-};
-
-const oldUseCode = useCode;
-useCode = function(){
-let user = getUser();
-let time = new Date().toLocaleString();
-
-sendToTelegram(
-"💰 شحن بكود\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldUseCode();
-};
-
-const oldSendForm = sendForm;
-sendForm = function(btn){
-let user = getUser();
-let time = new Date().toLocaleString();
-
-sendToTelegram(
-"💳 طلب شحن يدوي\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldSendForm(btn);
-};
-// 🔥 تعديل الإرسال للتليجرام (بدون تغيير كودك)
-
-const oldConfirmBuy = confirmBuy;
-
-confirmBuy = function(){
-
-// إذا الرصيد ما يكفي → وقف
+// تحقق من الرصيد
 if(balance < selectedPrice){
 alert("رصيدك لا يكفي");
 return;
 }
 
-// نفذ الشراء الأصلي
+// نفذ الشراء
 oldConfirmBuy();
 
-// بعد ما يتم الشراء → أرسل للتليجرام
+// بعد النجاح أرسل
 let user = getUser();
 let time = new Date().toLocaleString();
 
@@ -524,6 +477,8 @@ sendToTelegram(
 "⏰ الوقت: " + time
 );
 
+};
+oldSendForm(btn);
 };
 </script>
 
