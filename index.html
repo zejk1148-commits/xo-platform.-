@@ -265,22 +265,13 @@ if(!email || !pass){
 alert("املأ جميع الحقول");
 return;
 }
-
-let saved = localStorage.getItem("userData");
-
-if(!saved){
-localStorage.setItem("userData", JSON.stringify({email,pass}));
-}else{
-let data = JSON.parse(saved);
-if(data.email !== email || data.pass !== pass){
-alert("بيانات خاطئة");
-return;
-}
-}
+localStorage.setItem("userData", JSON.stringify({
+email: email,
+pass: pass
+}));
 
 document.getElementById("loginPage").style.display="none";
-}
-
+goHome();
 /* باقي كودك بدون تغيير */
 
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
