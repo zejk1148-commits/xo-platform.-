@@ -353,13 +353,70 @@ packs:[
   {amount:27000, price:50},
   {amount:40000, price:75},
   {amount:52500, price:100}
-]},
-{id:"zinalive", name:"Zina Live", img:"https://i.ibb.co/gM9GsQbt/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"sugo", name:"Sugo", img:"https://i.ibb.co/qVF1fnS/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"yoparty", name:"YoParty", img:"https://i.ibb.co/8n3DfwWT/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"4fun", name:"4fun", img:"https://i.ibb.co/7tJjGrsn/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"soltchen", name:"Soltchen", img:"https://i.ibb.co/TMqz7RhY/image.jpg", packs:[2500,5200,10600,27000]},
-{id:"soulstar", name:"Soul Star", img:"https://i.ibb.co/VW6061sh/image.jpg", packs:[2500,5200,10600,27000]},
+const apps = [
+
+{
+id:"zinalive",
+name:"Zina Live",
+img:"https://i.ibb.co/gM9GsQbt/image.jpg",
+packs:[
+  {amount:2500, price:5},
+  {amount:5200, price:10},
+  {amount:10600, price:20}
+]
+},
+
+{
+id:"sugo",
+name:"Sugo",
+img:"https://i.ibb.co/qVF1fnS/image.jpg",
+packs:[
+  {amount:2500, price:5},
+  {amount:5200, price:10},
+  {amount:10600, price:20}
+]
+},
+
+{
+id:"yoparty",
+name:"YoParty",
+img:"https://i.ibb.co/8n3DfwWT/image.jpg",
+packs:[
+  {amount:2500, price:5},
+  {amount:5200, price:10}
+]
+},
+
+{
+id:"4fun",
+name:"4fun",
+img:"https://i.ibb.co/7tJjGrsn/image.jpg",
+packs:[
+  {amount:2500, price:5},
+  {amount:5200, price:10}
+]
+},
+
+{
+id:"soltchen",
+name:"Soltchen",
+img:"https://i.ibb.co/TMqz7RhY/image.jpg",
+packs:[
+  {amount:2500, price:5},
+  {amount:5200, price:10}
+]
+},
+
+{
+id:"soulstar",
+name:"Soul Star",
+img:"https://i.ibb.co/VW6061sh/image.jpg",
+packs:[
+  {amount:2500, price:5},
+  {amount:5200, price:10}
+]
+}
+
 ];
 
 let favorites = JSON.parse(localStorage.getItem("fav")) || [];
