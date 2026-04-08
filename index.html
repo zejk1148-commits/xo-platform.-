@@ -6,87 +6,133 @@
 <title>متجر التطبيقات</title>
 
 <style>
-body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
+body{
+  margin:0;
+  font-family:Arial;
+  direction:rtl;
+  background:#f5f5f5;
+}
 
 .header{
-  background:#2ecc71;
+  background:linear-gradient(to left,#2ecc71,#27ae60);
   color:white;
   padding:12px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
 }
 
 .sidebar{
   position:fixed;
-  right:-200px;
+  right:-220px;
   top:0;
-  width:200px;
+  width:220px;
   height:100%;
-  background:#333;
-  color:white;
+  background:#1e1e2f;
   padding:15px;
   transition:0.3s;
 }
-.sidebar.open{right:0}
+.sidebar.open{right:0;}
 
 .sidebar a{
   display:block;
-  padding:10px;
-  margin:5px 0;
-  background:#444;
+  padding:12px;
+  margin:8px 0;
+  background:#2c2c44;
+  color:white;
+  text-align:center;
+  border-radius:10px;
+  cursor:pointer;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:10px;
   padding:10px;
 }
 
 .card{
   background:white;
+  border-radius:12px;
   padding:10px;
-  border-radius:10px;
   text-align:center;
 }
 
-.pack{background:white;margin:10px;padding:10px;border-radius:10px}
+.card img{
+  width:65px;
+  height:65px;
+  border-radius:14px;
+}
+
+.pack{
+  background:white;
+  margin:10px;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+}
 
 button{
   background:#2ecc71;
   color:white;
   border:none;
   padding:8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.modal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <a onclick="goHome()">🏠 الرئيسية</a>
   <a onclick="openBalance()">💰 إضافة رصيد</a>
   <a onclick="openCharge()">💳 شحن</a>
   <a onclick="openOrders()">📦 طلباتي</a>
+  <a onclick="openFav()">❤️ المفضلة</a>
 </div>
 
+<!-- HOME -->
 <div id="home">
 <div class="header">
 <div onclick="toggle()">☰</div>
 <div>متجر التطبيقات</div>
 </div>
 
-<div class="grid" id="apps"></div>
+<div class="grid" id="appsGrid"></div>
 </div>
 
+<!-- APP PAGE -->
 <div id="appPage" style="display:none">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
 <div id="title"></div>
 </div>
+
 <div id="packs"></div>
 </div>
 
+<!-- BALANCE -->
 <div id="balancePage" style="display:none">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
@@ -94,7 +140,7 @@ button{
 </div>
 </div>
 
-<!-- 🔥 صفحة الشحن -->
+<!-- CHARGE -->
 <div id="chargePage" style="display:none">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
@@ -102,62 +148,134 @@ button{
 </div>
 
 <div style="padding:10px">
-
 <div class="card">💳 تحويل بنكي</div>
 <div class="card">📱 شام كاش</div>
-
 </div>
 </div>
 
-<div id="ordersPage" style="display:none"></div>
+<!-- ORDERS -->
+<div id="ordersPage" style="display:none">
+<div class="header">
+<div onclick="goHome()">رجوع</div>
+<div>طلباتي</div>
+</div>
+
+<div style="padding:10px">
+<p>لا يوجد طلبات 📦</p>
+</div>
+</div>
+
+<!-- FAV -->
+<div id="favPage" style="display:none">
+<div class="header">
+<div onclick="goHome()">رجوع</div>
+<div>المفضلة</div>
+</div>
+
+<div style="padding:10px">
+<p>لا يوجد مفضلة ❤️</p>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>إدخال ID</h3>
+    <input id="userId">
+    <br><br>
+    <button onclick="confirmBuy()">تأكيد</button>
+  </div>
+</div>
 
 <script>
+
+/* SIDEBAR */
 function toggle(){
 sidebar.classList.toggle("open")
 }
 
-const apps=[
-{name:"Zina Live",img:"https://i.ibb.co/gM9GsQbt/image.jpg",packs:[2500,5200]},
-{name:"Sugo",img:"https://i.ibb.co/qVF1fnS/image.jpg",packs:[2500,5200]}
+/* APPS */
+const apps = [
+{name:"YoParty",img:"https://i.ibb.co/8n3DfwWT/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"Sugo",img:"https://i.ibb.co/qVF1fnS/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"Zina Live",img:"https://i.ibb.co/gM9GsQbt/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"يا أهلا",img:"https://i.ibb.co/G307spDQ/image.png",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"Soul Star",img:"https://i.ibb.co/VW6061sh/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"Soltchen",img:"https://i.ibb.co/TMqz7RhY/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"4fun",img:"https://i.ibb.co/7tJjGrsn/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]}
 ];
 
 function loadApps(){
 let html="";
-apps.forEach((a,i)=>{
+apps.forEach((app,i)=>{
 html+=`
 <div class="card" onclick="openApp(${i})">
-<img src="${a.img}" width="50">
-<div>${a.name}</div>
+<img src="${app.img}">
+<div>${app.name}</div>
 </div>`;
 });
-apps.innerHTML=html;
+appsGrid.innerHTML=html;
 }
 loadApps();
+
+/* OPEN APP */
+let selectedPrice=0;
 
 function openApp(i){
 home.style.display="none";
 appPage.style.display="block";
 
-let a=apps[i];
-title.innerText=a.name;
+let app=apps[i];
+title.innerText=app.name;
 
 let html="";
-a.packs.forEach(p=>{
+app.packs.forEach(p=>{
 html+=`
 <div class="pack">
-<div>${p}</div>
-<button>شراء</button>
+<div>${p.amount} 💎</div>
+<div>$${p.price}</div>
+<button onclick="buy(${p.price})">شراء</button>
 </div>`;
 });
-
 packs.innerHTML=html;
 }
 
+/* BUY */
+function buy(price){
+selectedPrice=price;
+modal.style.display="flex";
+}
+
+function confirmBuy(){
+let id=document.getElementById("userId").value;
+if(!id){alert("اكتب ID");return;}
+
+alert("تم الطلب ✅");
+modal.style.display="none";
+userId.value="";
+}
+
+/* PAGES */
 function goHome(){
 home.style.display="block";
 appPage.style.display="none";
 balancePage.style.display="none";
 chargePage.style.display="none";
+ordersPage.style.display="none";
+favPage.style.display="none";
 }
 
 function openBalance(){
@@ -171,8 +289,15 @@ chargePage.style.display="block";
 }
 
 function openOrders(){
-alert("قريباً");
+home.style.display="none";
+ordersPage.style.display="block";
 }
+
+function openFav(){
+home.style.display="none";
+favPage.style.display="block";
+}
+
 </script>
 
 </body>
