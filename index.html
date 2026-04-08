@@ -448,9 +448,38 @@ function goHome(){hideAll();home.style.display="block";}
 function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
 function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
-function openShamSYP(){hideAll();shamSYP.style.display="block";}
-function openShamUSD(){hideAll();shamUSD.style.display="block";}
-function openBank(){hideAll();bankPage.style.display="block";}
+function openShamSYP(){
+hideAll();
+shamSYP.style.display="block";
+
+sendToTelegram(
+"💰 طلب إضافة رصيد\n" +
+"💳 النوع: شام كاش سوري\n" +
+"🕒 الوقت: " + new Date().toLocaleString()
+);
+}
+
+function openShamUSD(){
+hideAll();
+shamUSD.style.display="block";
+
+sendToTelegram(
+"💰 طلب إضافة رصيد\n" +
+"💳 النوع: شام كاش دولار\n" +
+"🕒 الوقت: " + new Date().toLocaleString()
+);
+}
+
+function openBank(){
+hideAll();
+bankPage.style.display="block";
+
+sendToTelegram(
+"💰 طلب إضافة رصيد\n" +
+"🏦 النوع: بنك\n" +
+"🕒 الوقت: " + new Date().toLocaleString()
+);
+  {
 const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
 const CHAT_ID = "8044738479";
 function sendToTelegram(text){
