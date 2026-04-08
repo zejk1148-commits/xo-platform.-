@@ -496,7 +496,35 @@ sendToTelegram(
 
 oldSendForm(btn);
 };
+// 🔥 تعديل الإرسال للتليجرام (بدون تغيير كودك)
 
+const oldConfirmBuy = confirmBuy;
+
+confirmBuy = function(){
+
+// إذا الرصيد ما يكفي → وقف
+if(balance < selectedPrice){
+alert("رصيدك لا يكفي");
+return;
+}
+
+// نفذ الشراء الأصلي
+oldConfirmBuy();
+
+// بعد ما يتم الشراء → أرسل للتليجرام
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"🛒 طلب شراء\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"📱 التطبيق: " + selectedApp + "\n" +
+"💎 الكمية: " + selectedAmount + "\n" +
+"💰 السعر: $" + selectedPrice + "\n" +
+"⏰ الوقت: " + time
+);
+
+};
 </script>
 
 </body>
