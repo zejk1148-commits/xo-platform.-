@@ -451,7 +451,66 @@ function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
 function openShamSYP(){hideAll();shamSYP.style.display="block";}
 function openShamUSD(){hideAll();shamUSD.style.display="block";}
 function openBank(){hideAll();bankPage.style.display="block";}
+const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
+const CHAT_ID = "8044738479";
+function sendToTelegram(text){
+fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({chat_id:CHAT_ID,text:text})
+});
+}
+function getUser(){
+return JSON.parse(localStorage.getItem("userData")) || {};
+}
 
+/* ربط الشراء */
+const oldConfirmBuy = confirmBuy;
+confirmBuy = function(){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"🛒 طلب شراء\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"📱 التطبيق: " + selectedApp + "\n" +
+"💎 الكمية: " + selectedAmount + "\n" +
+"💰 السعر: $" + selectedPrice + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldConfirmBuy();
+};
+
+/* ربط الكود */
+const oldUseCode = useCode;
+useCode = function(){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💰 شحن بكود\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldUseCode();
+};
+
+/* ربط الشحن اليدوي */
+const oldSendForm = sendForm;
+sendForm = function(btn){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💳 طلب شحن يدوي\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldSendForm(btn);
+};
 </script>
 
 </body>
