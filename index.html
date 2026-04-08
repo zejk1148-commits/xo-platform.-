@@ -62,6 +62,13 @@ z-index:998;
   padding:10px;
 }
 
+.pack-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  padding:10px;
+}
+
 .card{
   background:white;
   border-radius:12px;
@@ -77,7 +84,6 @@ z-index:998;
 
 .pack{
   background:white;
-  margin:10px;
   padding:12px;
   border-radius:10px;
   text-align:center;
@@ -117,7 +123,6 @@ button{
   <a onclick="openBalance()">💰 إضافة رصيد</a>
   <a onclick="openCharge()">💳 شحن</a>
   <a onclick="openOrders()">📦 طلباتي</a>
-  <a onclick="openFav()">❤️ المفضلة</a>
 </div>
 
 <div id="overlay"></div>
@@ -136,6 +141,7 @@ button{
 <div onclick="goHome()">رجوع</div>
 <div id="title"></div>
 </div>
+
 <div id="packs"></div>
 </div>
 
@@ -151,24 +157,12 @@ button{
 <div onclick="goHome()">رجوع</div>
 <div>شحن الرصيد</div>
 </div>
-
-<div style="padding:10px">
-<div class="card">💳 تحويل بنكي</div>
-<div class="card">📱 شام كاش</div>
-</div>
 </div>
 
 <div id="ordersPage" style="display:none">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
 <div>طلباتي</div>
-</div>
-</div>
-
-<div id="favPage" style="display:none">
-<div class="header">
-<div onclick="goHome()">رجوع</div>
-<div>المفضلة</div>
 </div>
 </div>
 
@@ -183,6 +177,13 @@ button{
 
 <script>
 
+let balance = 120;
+
+function updateBalance(){
+document.getElementById("balanceText").innerText="الرصيد: $"+balance;
+}
+updateBalance();
+
 function toggle(){
 sidebar.classList.toggle("open");
 overlay.style.display = sidebar.classList.contains("open") ? "block" : "none";
@@ -193,65 +194,50 @@ sidebar.classList.remove("open");
 overlay.style.display="none";
 }
 
-/* التطبيقات */
-const apps = [
-
-{
-name:"YoParty",
-img:"https://i.ibb.co/8n3DfwWT/image.jpg",
-packs:[{amount:2500,price:5},{amount:5200,price:10}]
-},
-
-{
-name:"Sugo",
-img:"https://i.ibb.co/qVF1fnS/image.jpg",
-packs:[{amount:2500,price:5},{amount:5200,price:10}]
-},
-
-{
-name:"Zina Live",
-img:"https://i.ibb.co/gM9GsQbt/image.jpg",
-packs:[{amount:2500,price:5},{amount:5200,price:10}]
-},
-
-{
-name:"يا أهلا",
-img:"https://i.ibb.co/G307spDQ/image.png",
-packs:[
-{amount:2500,price:5},
-{amount:5200,price:10},
-{amount:10600,price:20},
-{amount:27000,price:50},
-{amount:40000,price:75},
-{amount:52500,price:100}
-]
-},
-
-{
-name:"Soul Star",
-img:"https://i.ibb.co/VW6061sh/image.jpg",
-packs:[{amount:2500,price:5},{amount:5200,price:10}]
-},
-
-{
-name:"Soltchen",
-img:"https://i.ibb.co/TMqz7RhY/image.jpg",
-packs:[
-{amount:2500,price:5},
-{amount:5200,price:10},
-{amount:10600,price:20},
-{amount:27000,price:50},
-{amount:40000,price:75},
-{amount:52500,price:100}
-]
-},
-
-{
-name:"4fun",
-img:"https://i.ibb.co/7tJjGrsn/image.jpg",
-packs:[{amount:2500,price:5},{amount:5200,price:10}]
+function hideAll(){
+home.style.display="none";
+appPage.style.display="none";
+balancePage.style.display="none";
+chargePage.style.display="none";
+ordersPage.style.display="none";
 }
 
+/* التطبيقات */
+const apps = [
+{name:"YoParty",img:"https://i.ibb.co/8n3DfwWT/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"Sugo",img:"https://i.ibb.co/qVF1fnS/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"Zina Live",img:"https://i.ibb.co/gM9GsQbt/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"يا أهلا",img:"https://i.ibb.co/G307spDQ/image.png",
+packs:[
+{amount:2500,price:5},
+{amount:5200,price:10},
+{amount:10600,price:20},
+{amount:27000,price:50},
+{amount:40000,price:75},
+{amount:52500,price:100}
+]},
+
+{name:"Soul Star",img:"https://i.ibb.co/VW6061sh/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]},
+
+{name:"Soltchen",img:"https://i.ibb.co/TMqz7RhY/image.jpg",
+packs:[
+{amount:2500,price:5},
+{amount:5200,price:10},
+{amount:10600,price:20},
+{amount:27000,price:50},
+{amount:40000,price:75},
+{amount:52500,price:100}
+]},
+
+{name:"4fun",img:"https://i.ibb.co/7tJjGrsn/image.jpg",
+packs:[{amount:2500,price:5},{amount:5200,price:10}]}
 ];
 
 function loadApps(){
@@ -270,13 +256,13 @@ loadApps();
 let selectedPrice=0;
 
 function openApp(i){
-home.style.display="none";
+hideAll();
 appPage.style.display="block";
 
 let app=apps[i];
 title.innerText=app.name;
 
-let html="";
+let html="<div class='pack-grid'>";
 app.packs.forEach(p=>{
 html+=`
 <div class="pack">
@@ -285,6 +271,8 @@ html+=`
 <button onclick="buy(${p.price})">شراء</button>
 </div>`;
 });
+html+="</div>";
+
 packs.innerHTML=html;
 }
 
@@ -297,26 +285,29 @@ function confirmBuy(){
 let id=document.getElementById("userId").value;
 if(!id){alert("اكتب ID");return;}
 
+if(balance < selectedPrice){
+alert("رصيدك لا يكفي ❌");
+return;
+}
+
+balance -= selectedPrice;
+updateBalance();
+
 alert("تم الطلب ✅");
 modal.style.display="none";
 userId.value="";
 }
 
 function goHome(){
+hideAll();
 home.style.display="block";
-appPage.style.display="none";
-balancePage.style.display="none";
-chargePage.style.display="none";
-ordersPage.style.display="none";
-favPage.style.display="none";
 }
 
-function openBalance(){home.style.display="none";balancePage.style.display="block";}
-function openCharge(){home.style.display="none";chargePage.style.display="block";}
-function openOrders(){home.style.display="none";ordersPage.style.display="block";}
-function openFav(){home.style.display="none";favPage.style.display="block";}
+function openBalance(){hideAll();balancePage.style.display="block";}
+function openCharge(){hideAll();chargePage.style.display="block";}
+function openOrders(){hideAll();ordersPage.style.display="block";}
 
 </script>
 
 </body>
-  </html>
+</html>
