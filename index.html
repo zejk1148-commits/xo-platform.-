@@ -454,17 +454,6 @@ return JSON.parse(localStorage.getItem("userData")) || {};
 
 const oldConfirmBuy = confirmBuy;
 confirmBuy = function(){
-
-// تحقق من الرصيد
-if(balance < selectedPrice){
-alert("رصيدك لا يكفي");
-return;
-}
-
-// نفذ الشراء
-oldConfirmBuy();
-
-// بعد النجاح أرسل
 let user = getUser();
 let time = new Date().toLocaleString();
 
@@ -477,7 +466,37 @@ sendToTelegram(
 "⏰ الوقت: " + time
 );
 
+oldConfirmBuy();
 };
+
+const oldUseCode = useCode;
+useCode = function(){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💰 شحن بكود\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldUseCode();
+};
+
+const oldSendForm = sendForm;
+sendForm = function(btn){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💳 طلب شحن يدوي\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldSendForm(btn);
+};
+
 </script>
 
 </body>
