@@ -317,8 +317,30 @@ ordersList.innerHTML=html;
 }
 
 const apps=[
-{name:"يا أهلا",img:"https://i.ibb.co/G307spDQ/image.png",packs:[{amount:2500,price:5},{amount:5200,price:10},{amount:10600,price:20},{amount:27000,price:50},{amount:40000,price:75},{amount:52500,price:100}]},
-{name:"Soltchen",img:"https://i.ibb.co/TMqz7RhY/image.jpg",packs:[{amount:2500,price:5},{amount:5200,price:10},{amount:10600,price:20},{amount:27000,price:50},{amount:40000,price:75},{amount:52500,price:100}]},
+{
+name:"يا أهلا",
+img:"https://i.ibb.co/G307spDQ/image.png",
+packs:[
+{amount:2500,price:5},
+{amount:5200,price:10},
+{amount:10600,price:20},
+{amount:27000,price:50},
+{amount:40000,price:75},
+{amount:52500,price:100}
+]
+},
+{
+name:"Soltchen",
+img:"https://i.ibb.co/TMqz7RhY/image.jpg",
+packs:[
+{amount:2500,price:5},
+{amount:5200,price:10},
+{amount:10600,price:20},
+{amount:27000,price:50},
+{amount:40000,price:75},
+{amount:52500,price:100}
+]
+},
 {name:"Sugo",img:"https://i.ibb.co/qVF1fnS/image.jpg",packs:[{amount:2500,price:5}]},
 {name:"YoParty",img:"https://i.ibb.co/8n3DfwWT/image.jpg",packs:[{amount:2500,price:5}]},
 {name:"Zina Live",img:"https://i.ibb.co/gM9GsQbt/image.jpg",packs:[{amount:2500,price:5}]},
@@ -383,28 +405,41 @@ function goHome(){hideAll();home.style.display="block";}
 function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
 function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
-
 function openShamSYP(){
 hideAll();
 shamSYP.style.display="block";
-sendToTelegram("💰 طلب إضافة رصيد\n💳 النوع: شام كاش سوري\n🕒 الوقت: "+new Date().toLocaleString());
+
+sendToTelegram(
+"💰 طلب إضافة رصيد\n" +
+"💳 النوع: شام كاش سوري\n" +
+"🕒 الوقت: " + new Date().toLocaleString()
+);
 }
 
 function openShamUSD(){
 hideAll();
 shamUSD.style.display="block";
-sendToTelegram("💰 طلب إضافة رصيد\n💳 النوع: شام كاش دولار\n🕒 الوقت: "+new Date().toLocaleString());
+
+sendToTelegram(
+"💰 طلب إضافة رصيد\n" +
+"💳 النوع: شام كاش دولار\n" +
+"🕒 الوقت: " + new Date().toLocaleString()
+);
 }
 
 function openBank(){
 hideAll();
 bankPage.style.display="block";
-sendToTelegram("💰 طلب إضافة رصيد\n🏦 النوع: بنك\n🕒 الوقت: "+new Date().toLocaleString());
+
+sendToTelegram(
+"💰 طلب إضافة رصيد\n" +
+"🏦 النوع: بنك\n" +
+"🕒 الوقت: " + new Date().toLocaleString()
+);
 }
 
-const TELEGRAM_TOKEN="YOUR_TOKEN";
-const CHAT_ID="YOUR_ID";
-
+const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
+const CHAT_ID = "8044738479";
 function sendToTelegram(text){
 fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
 method:"POST",
@@ -413,7 +448,56 @@ body:JSON.stringify({chat_id:CHAT_ID,text:text})
 });
 }
 
+function getUser(){
+return JSON.parse(localStorage.getItem("userData")) || {};
+}
+
+const oldConfirmBuy = confirmBuy;
+confirmBuy = function(){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"🛒 طلب شراء\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"📱 التطبيق: " + selectedApp + "\n" +
+"💎 الكمية: " + selectedAmount + "\n" +
+"💰 السعر: $" + selectedPrice + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldConfirmBuy();
+};
+
+const oldUseCode = useCode;
+useCode = function(){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💰 شحن بكود\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldUseCode();
+};
+
+const oldSendForm = sendForm;
+sendForm = function(btn){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💳 طلب شحن يدوي\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldSendForm(btn);
+};
+
 </script>
 
 </body>
-  </html>
+</html>
