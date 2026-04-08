@@ -112,6 +112,16 @@ button{
   padding:20px;
   border-radius:10px;
   text-align:center;
+  position:relative;
+}
+
+/* زر الإغلاق */
+.close-btn{
+  position:absolute;
+  top:5px;
+  left:10px;
+  font-size:20px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -145,10 +155,23 @@ button{
 <div id="packs"></div>
 </div>
 
-<div id="balancePage" style="display:none">
+<!-- 🔥 إضافة رصيد مع الصور -->
+<div id="balancePage" style="display:none;padding:10px;">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
 <div>إضافة رصيد</div>
+</div>
+
+<div class="grid">
+<div class="card">
+<img src="https://i.ibb.co/qzq6hMN/IMG.jpg">
+<div>زراعات بنك</div>
+</div>
+
+<div class="card">
+<img src="https://i.ibb.co/fY1MpH8d/IMG.jpg">
+<div>شام كاش</div>
+</div>
 </div>
 </div>
 
@@ -166,8 +189,10 @@ button{
 </div>
 </div>
 
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
+    <div class="close-btn" onclick="closeModal()">❌</div>
     <h3>إدخال ID</h3>
     <input id="userId">
     <br><br>
@@ -177,7 +202,8 @@ button{
 
 <script>
 
-let balance = 120;
+/* 🔥 حفظ الرصيد */
+let balance = parseFloat(localStorage.getItem("balance")) || 120;
 
 function updateBalance(){
 document.getElementById("balanceText").innerText="الرصيد: $"+balance;
@@ -281,6 +307,10 @@ selectedPrice=price;
 modal.style.display="flex";
 }
 
+function closeModal(){
+modal.style.display="none";
+}
+
 function confirmBuy(){
 let id=document.getElementById("userId").value;
 if(!id){alert("اكتب ID");return;}
@@ -291,6 +321,7 @@ return;
 }
 
 balance -= selectedPrice;
+localStorage.setItem("balance", balance);
 updateBalance();
 
 alert("تم الطلب ✅");
