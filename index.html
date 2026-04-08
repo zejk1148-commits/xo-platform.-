@@ -248,21 +248,41 @@ updateBalance();
 
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
-function saveOrder(app, amount, price){
-orders.push({app,amount,price});
+/* 🔥 تعديل: حفظ الطلب مع ID والوقت */
+function saveOrder(app, amount, price, userId){
+const now = new Date();
+orders.push({
+app,
+amount,
+price,
+userId,
+time: now.toLocaleString()
+});
+localStorage.setItem("orders", JSON.stringify(orders));
+localStorage.setItem("lastSaveDate", now.toDateString());
+}
+
+/* 🔥 تعديل: تحميل الطلبات + حذف يومي */
+function loadOrders(){
+let lastDate = localStorage.getItem("lastSaveDate");
+let today = new Date().toDateString();
+
+if(lastDate !== today){
+orders = [];
 localStorage.setItem("orders", JSON.stringify(orders));
 }
 
-function loadOrders(){
 let html="";
 if(orders.length===0){
 html="<p style='text-align:center'>لا يوجد طلبات</p>";
 }else{
 orders.forEach(o=>{
 html+=`<div class="card">
-<div>${o.app}</div>
+<div><b>${o.app}</b></div>
 <div>${o.amount} 💎</div>
 <div>$${o.price}</div>
+<div>ID: ${o.userId}</div>
+<div style="font-size:12px;color:gray">${o.time}</div>
 </div>`;
 });
 }
@@ -361,13 +381,18 @@ modal.style.display="flex";
 
 function closeModal(){modal.style.display="none";}
 
+/* 🔥 تعديل: أخذ ID */
 function confirmBuy(){
+let id=document.getElementById("userId").value;
+
+if(!id){alert("ادخل ID");return;}
 if(balance<selectedPrice){alert("رصيدك لا يكفي");return;}
+
 balance-=selectedPrice;
 localStorage.setItem("balance",balance);
 updateBalance();
 
-saveOrder(selectedApp,selectedAmount,selectedPrice);
+saveOrder(selectedApp,selectedAmount,selectedPrice,id);
 
 modal.style.display="none";
 }
@@ -383,4 +408,4 @@ function openBank(){hideAll();bankPage.style.display="block";}
 </script>
 
 </body>
-  </html>
+</html>
