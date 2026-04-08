@@ -227,31 +227,32 @@ body{
 
 <div id="ordersPage" style="display:none"></div>
 
+<!-- 🔥 صفحات الرصيد -->
 <div id="balancePage" style="display:none; padding:15px;">
   <div class="header">
     <div onclick="goHome()">رجوع</div>
     <div>إضافة رصيد</div>
   </div>
-<div class="grid">
 
-<div class="card" onclick="openShamCash()">
-  <img src="https://i.ibb.co/fY1MpH8d/IMG.jpg">
-  <div class="card-name">شام كاش</div>
+  <div class="grid">
+
+    <div class="card" onclick="openShamCash()">
+      <img src="https://i.ibb.co/fY1MpH8d/IMG.jpg">
+      <div class="card-name">شام كاش</div>
+    </div>
+
+    <div class="card" onclick="openZiraat()">
+      <img src="https://i.ibb.co/qzq6hMN/IMG.jpg">
+      <div class="card-name">زراعات بنك</div>
+    </div>
+
+  </div>
 </div>
 
-<div class="card" onclick="openZiraat()">
-  <img src="https://i.ibb.co/qzq6hMN/IMG.jpg">
-  <div class="card-name">زراعات بنك</div>
-</div>
-
-</div>
-</div>
-
-</div>
-  <div id="ziraatPage" style="display:none; padding:15px;">
-
+<!-- 🔥 صفحة زراعات بنك -->
+<div id="ziraatPage" style="display:none; padding:15px;">
   <div class="header">
-    <div onclick="goHome()">رجوع</div>
+    <div onclick="openBalance()">رجوع</div>
     <div>زراعات بنك</div>
   </div>
 
@@ -267,10 +268,12 @@ body{
     <input type="file">
     <button onclick="alert('تم الإرسال')">إرسال</button>
   </div>
-<div id="shamcashPage" style="display:none; padding:15px;">
+</div>
 
+<!-- 🔥 صفحة شام كاش -->
+<div id="shamcashPage" style="display:none; padding:15px;">
   <div class="header">
-    <div onclick="goHome()">رجوع</div>
+    <div onclick="openBalance()">رجوع</div>
     <div>شام كاش</div>
   </div>
 
@@ -286,6 +289,7 @@ body{
     <input type="file">
     <button onclick="alert('تم الإرسال')">إرسال</button>
   </div>
+</div>
 
 </div>
 
