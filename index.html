@@ -173,7 +173,7 @@ display:block;
 </div>
 </div>
 
-<!-- 🔥 صفحة الشحن (تم تعديلها فقط) -->
+<!-- 🔥 صفحة الشحن (تم تعديلها) -->
 <div id="chargePage" style="display:none">
 <div class="header">
 <div onclick="goHome()">رجوع</div>
@@ -249,19 +249,18 @@ updateBalance();
 
 /* 🔥 الأكواد */
 let codes = {
-"ABC123": 10,
-"VIP50": 50,
-"FREE5": 5
+"CODE1AB5":5,"CODE2CD5":5,"CODE3EF5":5,"CODE4GH5":5,"CODE5IJ5":5,
+"CODE6KL5":5,"CODE7MN5":5,"CODE8OP5":5,"CODE9QR5":5,"CODE10ST5":5,
+"CODE11UV5":5,"CODE12WX5":5,"CODE13YZ5":5,"CODE14AB5":5,"CODE15CD5":5,
+"CODE16EF5":5,"CODE17GH5":5,"CODE18IJ5":5,"CODE19KL5":5,"CODE20MN5":5
 };
 
 function useCode(){
-let code = document.getElementById("codeInput").value.trim();
-
+let code=document.getElementById("codeInput").value.trim();
 if(!code){alert("ادخل الكود");return;}
-
 if(codes[code]){
-balance += codes[code];
-localStorage.setItem("balance", balance);
+balance+=codes[code];
+localStorage.setItem("balance",balance);
 updateBalance();
 alert("تم إضافة $" + codes[code]);
 delete codes[code];
@@ -272,20 +271,11 @@ alert("الكود غير صحيح أو مستخدم");
 
 /* 🔥 التحقق */
 function sendForm(btn){
-
-let container = btn.parentElement;
-let inputs = container.querySelectorAll("input");
-
-let name = inputs[0].value.trim();
-let amount = inputs[1].value.trim();
-let operation = inputs[2].value.trim();
-let file = inputs[3].files.length;
-
-if(!name || !amount || !operation || file === 0){
-alert("⚠️ الرجاء تعبئة جميع الحقول واختيار الصورة");
+let inputs=btn.parentElement.querySelectorAll("input");
+if(!inputs[0].value||!inputs[1].value||!inputs[2].value||inputs[3].files.length===0){
+alert("⚠️ الرجاء تعبئة جميع الحقول");
 return;
 }
-
 alert("✅ تم إرسال الطلب");
 }
 
@@ -306,7 +296,7 @@ bankPage.style.display="none";
 ordersPage.style.display="none";
 }
 
-/* التطبيقات (نفس كودك كامل) */
+/* التطبيقات (نفس كودك الكامل) */
 const apps=[
 {
 name:"يا أهلا",
