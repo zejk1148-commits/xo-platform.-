@@ -227,6 +227,7 @@ display:block;
 
 <div id="ordersPage" style="display:none">
 <div class="header"><div onclick="goHome()">رجوع</div><div>طلباتي</div></div>
+<div id="ordersList" style="padding:10px;"></div>
 </div>
 
 <!-- مودال -->
@@ -244,6 +245,29 @@ display:block;
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+function saveOrder(app, amount, price){
+orders.push({app,amount,price});
+localStorage.setItem("orders", JSON.stringify(orders));
+}
+
+function loadOrders(){
+let html="";
+if(orders.length===0){
+html="<p style='text-align:center'>لا يوجد طلبات</p>";
+}else{
+orders.forEach(o=>{
+html+=`<div class="card">
+<div>${o.app}</div>
+<div>${o.amount} 💎</div>
+<div>$${o.price}</div>
+</div>`;
+});
+}
+ordersList.innerHTML=html;
+}
 
 function toggle(){
 sidebar.classList.toggle("open");
@@ -307,6 +331,8 @@ appsGrid.innerHTML=html;
 loadApps();
 
 let selectedPrice=0;
+let selectedApp="";
+let selectedAmount=0;
 
 function openApp(i){
 hideAll();
@@ -318,7 +344,7 @@ apps[i].packs.forEach(p=>{
 html+=`<div class="pack">
 <div>${p.amount} 💎</div>
 <div>$${p.price}</div>
-<button onclick="buy(${p.price})">شراء</button>
+<button onclick="buy('${apps[i].name}',${p.amount},${p.price})">شراء</button>
 </div>`;
 });
 html+="</div>";
@@ -326,7 +352,9 @@ html+="</div>";
 packs.innerHTML=html;
 }
 
-function buy(price){
+function buy(app,amount,price){
+selectedApp=app;
+selectedAmount=amount;
 selectedPrice=price;
 modal.style.display="flex";
 }
@@ -338,13 +366,16 @@ if(balance<selectedPrice){alert("رصيدك لا يكفي");return;}
 balance-=selectedPrice;
 localStorage.setItem("balance",balance);
 updateBalance();
+
+saveOrder(selectedApp,selectedAmount,selectedPrice);
+
 modal.style.display="none";
 }
 
 function goHome(){hideAll();home.style.display="block";}
 function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
-function openOrders(){hideAll();ordersPage.style.display="block";}
+function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
 function openShamSYP(){hideAll();shamSYP.style.display="block";}
 function openShamUSD(){hideAll();shamUSD.style.display="block";}
 function openBank(){hideAll();bankPage.style.display="block";}
