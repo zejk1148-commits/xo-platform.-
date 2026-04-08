@@ -7,25 +7,131 @@
 
 <style>
 body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
-.header{background:linear-gradient(to left,#2ecc71,#27ae60);color:white;padding:12px;display:flex;justify-content:space-between;align-items:center;}
-.sidebar{position:fixed;right:0;top:0;width:220px;height:100%;background:#1e1e2f;padding:15px;transform:translateX(100%);transition:0.3s;z-index:999;}
+
+.header{
+background:linear-gradient(to left,#2ecc71,#27ae60);
+color:white;
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.sidebar{
+position:fixed;right:0;top:0;
+width:220px;height:100%;
+background:#1e1e2f;
+padding:15px;
+transform:translateX(100%);
+transition:0.3s;
+z-index:999;
+}
 .sidebar.open{transform:translateX(0);}
-.sidebar a{display:block;padding:12px;margin:8px 0;background:#2c2c44;color:white;text-align:center;border-radius:10px;}
-#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:998;}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:10px;}
-.pack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px;}
-.card{background:white;border-radius:12px;padding:10px;text-align:center;cursor:pointer;}
-.card img{width:60px;height:60px;border-radius:12px;}
-.pack{background:white;padding:10px;border-radius:10px;text-align:center;}
-button{background:#2ecc71;color:white;border:none;padding:8px;border-radius:6px;}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;}
-.modal-content{background:white;padding:20px;border-radius:10px;position:relative;}
-.close-btn{position:absolute;top:5px;left:10px;font-size:20px;cursor:pointer;}
-input{width:90%;margin:5px auto;padding:8px;display:block;}
+
+.sidebar a{
+display:block;
+padding:12px;
+margin:8px 0;
+background:#2c2c44;
+color:white;
+text-align:center;
+border-radius:10px;
+}
+
+#overlay{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+z-index:998;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:10px;
+}
+
+.pack-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+padding:10px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:10px;
+text-align:center;
+cursor:pointer;
+}
+
+.card img{
+width:60px;height:60px;border-radius:12px;
+}
+
+.pack{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+button{
+background:#2ecc71;
+color:white;
+border:none;
+padding:8px;
+border-radius:6px;
+}
+
+.modal{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal-content{
+background:white;
+padding:20px;
+border-radius:10px;
+position:relative;
+}
+
+.close-btn{
+position:absolute;
+top:5px;
+left:10px;
+font-size:20px;
+cursor:pointer;
+}
+
+input{
+width:90%;
+margin:5px auto;
+padding:8px;
+display:block;
+}
 </style>
 </head>
 
 <body>
+
+<!-- 🔥 تسجيل الدخول -->
+<div id="loginPage" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;text-align:center;padding-top:100px;">
+<h2>تسجيل الدخول</h2>
+
+<input id="emailInput" placeholder="أدخل الإيميل">
+<input id="passInput" placeholder="أدخل كلمة المرور">
+
+<button onclick="login()">دخول</button>
+
+</div>
 
 <div class="sidebar" id="sidebar">
 <a onclick="goHome()">🏠 الرئيسية</a>
@@ -41,6 +147,7 @@ input{width:90%;margin:5px auto;padding:8px;display:block;}
 <div onclick="toggle()">☰</div>
 <div id="balanceText"></div>
 </div>
+
 <div class="grid" id="appsGrid"></div>
 </div>
 
@@ -94,7 +201,10 @@ input{width:90%;margin:5px auto;padding:8px;display:block;}
 <!-- الدفع -->
 <div id="shamSYP" style="display:none">
 <div class="header"><div onclick="openBalance()">رجوع</div><div>شام كاش سوري</div></div>
-<div class="card"><div>رقم: 123456</div><div>الاسم: اسمك</div></div>
+<div class="card">
+<div>رقم: 123456</div>
+<div>الاسم: اسمك</div>
+</div>
 <input placeholder="اسم المرسل">
 <input placeholder="المبلغ">
 <input placeholder="رقم العملية">
@@ -104,7 +214,10 @@ input{width:90%;margin:5px auto;padding:8px;display:block;}
 
 <div id="shamUSD" style="display:none">
 <div class="header"><div onclick="openBalance()">رجوع</div><div>شام كاش دولار</div></div>
-<div class="card"><div>رقم: 654321</div><div>الاسم: اسمك</div></div>
+<div class="card">
+<div>رقم: 654321</div>
+<div>الاسم: اسمك</div>
+</div>
 <input placeholder="اسم المرسل">
 <input placeholder="المبلغ">
 <input placeholder="رقم العملية">
@@ -114,7 +227,10 @@ input{width:90%;margin:5px auto;padding:8px;display:block;}
 
 <div id="bankPage" style="display:none">
 <div class="header"><div onclick="openBalance()">رجوع</div><div>زراعات بنك</div></div>
-<div class="card"><div>IBAN: TR000000</div><div>الاسم: اسمك</div></div>
+<div class="card">
+<div>IBAN: TR000000</div>
+<div>الاسم: اسمك</div>
+</div>
 <input placeholder="اسم المرسل">
 <input placeholder="المبلغ">
 <input placeholder="رقم العملية">
@@ -140,11 +256,37 @@ input{width:90%;margin:5px auto;padding:8px;display:block;}
 
 <script>
 
+/* 🔥 تسجيل الدخول */
+function login(){
+let email = document.getElementById("emailInput").value;
+let pass = document.getElementById("passInput").value;
+
+if(!email || !pass){
+alert("املأ جميع الحقول");
+return;
+}
+
+let saved = localStorage.getItem("userData");
+
+if(!saved){
+localStorage.setItem("userData", JSON.stringify({email,pass}));
+}else{
+let data = JSON.parse(saved);
+if(data.email !== email || data.pass !== pass){
+alert("بيانات خاطئة");
+return;
+}
+}
+
+document.getElementById("loginPage").style.display="none";
+}
+
+/* باقي كودك بدون تغيير */
+
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
 
-/* الأكواد */
 let codes = {
 "CODE1AB5":5,"CODE2CD5":5,"CODE3EF5":5,"CODE4GH5":5,"CODE5IJ5":5,
 "CODE6KL5":5,"CODE7MN5":5,"CODE8OP5":5,"CODE9QR5":5,"CODE10ST5":5,
@@ -166,33 +308,6 @@ alert("الكود غير صحيح أو مستخدم");
 }
 }
 
-/* الطلبات */
-let orders = JSON.parse(localStorage.getItem("orders")) || [];
-
-function saveOrder(app, amount, price){
-let now = new Date();
-orders.push({app,amount,price,time:now.toLocaleString()});
-localStorage.setItem("orders", JSON.stringify(orders));
-}
-
-function loadOrders(){
-let html="";
-if(orders.length===0){
-html="<p style='text-align:center'>لا يوجد طلبات</p>";
-}else{
-orders.forEach(o=>{
-html+=`<div class="card">
-<div><b>${o.app}</b></div>
-<div>${o.amount} 💎</div>
-<div>$${o.price}</div>
-<div style="font-size:12px;color:gray">${o.time}</div>
-</div>`;
-});
-}
-ordersList.innerHTML=html;
-}
-
-/* التحقق */
 function sendForm(btn){
 let inputs=btn.parentElement.querySelectorAll("input");
 if(!inputs[0].value||!inputs[1].value||!inputs[2].value||inputs[3].files.length===0){
@@ -219,7 +334,31 @@ bankPage.style.display="none";
 ordersPage.style.display="none";
 }
 
-/* التطبيقات */
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+function saveOrder(app, amount, price){
+let now = new Date();
+orders.push({app,amount,price,time:now.toLocaleString()});
+localStorage.setItem("orders", JSON.stringify(orders));
+}
+
+function loadOrders(){
+let html="";
+if(orders.length===0){
+html="<p style='text-align:center'>لا يوجد طلبات</p>";
+}else{
+orders.forEach(o=>{
+html+=`<div class="card">
+<div><b>${o.app}</b></div>
+<div>${o.amount} 💎</div>
+<div>$${o.price}</div>
+<div style="font-size:12px;color:gray">${o.time}</div>
+</div>`;
+});
+}
+ordersList.innerHTML=html;
+}
+
 const apps=[
 {
 name:"يا أهلا",
@@ -300,7 +439,6 @@ balance-=selectedPrice;
 localStorage.setItem("balance",balance);
 updateBalance();
 
-/* حفظ الطلب */
 saveOrder(selectedApp,selectedAmount,selectedPrice);
 
 modal.style.display="none";
