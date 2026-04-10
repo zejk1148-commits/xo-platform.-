@@ -453,7 +453,7 @@ return JSON.parse(localStorage.getItem("userData")) || {};
 }
 
 function confirmBuy(){
-
+let user = getUser();
 let userId = document.getElementById("userId").value.trim();
 
 if(!userId){
