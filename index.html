@@ -345,13 +345,24 @@ shamUSD.style.display="none";
 bankPage.style.display="none";
 ordersPage.style.display="none";
 }
-
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
-
 function saveOrder(app, amount, price){
+let user = getUser();
+
+if(!user.email) return;
+
+let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
+
 let now = new Date();
-orders.push({app,amount,price,time:now.toLocaleString()});
-localStorage.setItem("orders", JSON.stringify(orders));
+
+orders.push({
+  app,
+  amount,
+  price,
+  time: now.toLocaleString()
+});
+
+localStorage.setItem("orders_" + user.email, JSON.stringify(orders));
 }
 
 function loadOrders(){
@@ -497,7 +508,8 @@ return;
 balance -= selectedPrice;
 localStorage.setItem("balance", balance);
 updateBalance();
-
+// 👇 هون بالضبط
+saveOrder(selectedApp, selectedAmount, selectedPrice);
 sendToTelegram(
 "🛒 طلب شراء\n" +
 "👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
