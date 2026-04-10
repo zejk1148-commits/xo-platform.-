@@ -571,25 +571,21 @@ document.getElementById("successPopup").style.display = "none";
 }
 function goWhatsApp(){
 
-// تحديد الصفحة المفتوحة
-let activePage;
+let activePage = document.querySelector(
+  "#shamSYP:not([style*='none']), #shamUSD:not([style*='none']), #bankPage:not([style*='none'])"
+);
 
-if(shamSYP.style.display === "block"){
-  activePage = shamSYP;
-}else if(shamUSD.style.display === "block"){
-  activePage = shamUSD;
-}else if(bankPage.style.display === "block"){
-  activePage = bankPage;
+if(!activePage){
+alert("في مشكلة بتحديد الصفحة");
+return;
 }
 
-// جلب البيانات من نفس الفورم
 let inputs = activePage.querySelectorAll("input");
 
-let name = inputs[0].value;
-let amount = inputs[1].value;
-let operation = inputs[2].value;
+let name = inputs[0]?.value || "";
+let amount = inputs[1]?.value || "";
+let operation = inputs[2]?.value || "";
 
-// تكوين الرسالة
 let message =
 "طلب شحن جديد\n" +
 "----------------------\n" +
@@ -598,10 +594,8 @@ let message =
 "المبلغ: " + amount + "\n" +
 "رقم العملية: " + operation;
 
-// رقمك (بدون +)
 let phone = "639554721005";
 
-// فتح واتساب
 let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 
 window.open(url, "_blank");
