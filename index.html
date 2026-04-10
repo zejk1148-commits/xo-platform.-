@@ -147,6 +147,25 @@ text-align:center;
 width:80%;
 margin:auto;
 }
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:10px;
+}
+
+@media (max-width:600px){
+.grid{
+grid-template-columns:repeat(4,1fr);
+}
+.card{
+padding:5px;
+}
+.card img{
+width:40px;
+height:40px;
+}
+} 
 </style>
 </head>
 
