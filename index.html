@@ -178,7 +178,11 @@ height:40px;
 </div>
 
 <div id="overlay"></div>
-
+<div id="loginPage" style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
+<h2>تسجيل الدخول</h2>
+<input id="emailInput" placeholder="ادخل ايميلك">
+<button onclick="login()">دخول</button>
+</div>
 <div id="home" style="display:none">
 <div class="header">
 <div onclick="toggle()">☰</div>
@@ -600,8 +604,9 @@ let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 window.open(url, "_blank");
 }
 window.onload = function(){
- 
+
 let home = document.getElementById("home");
+let loginPage = document.getElementById("loginPage");
 
 let userData = localStorage.getItem("userData");
 let user = {};
@@ -611,11 +616,15 @@ try{
 }catch(e){
   user = {};
 }
+
 if(user && user.email){
   if(home) home.style.display = "block";
+  if(loginPage) loginPage.style.display = "none";
 }else{
   if(home) home.style.display = "none";
+  if(loginPage) loginPage.style.display = "flex";
 }
+
 };
 function login(){
 let email = document.getElementById("emailInput").value.trim();
