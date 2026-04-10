@@ -621,7 +621,7 @@ home.style.display = "block";
 // عند فتح الموقع
 window.onload = function(){
 let home = document.getElementById("home");
-let user = JSON.parse(localStorage.getItem("userData"));
+let inputs = document.querySelectorAll("input");
 
 if(user && user.email){
 document.getElementById("loginPage").style.display = "none";
