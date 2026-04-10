@@ -628,28 +628,39 @@ if(user && user.email && user.password){
 
 };
 function login(){
-let email = document.getElementById("emailInput").value.trim();
-let password = document.getElementById("passwordInput").value.trim();
+  let email = document.getElementById("emailInput").value.trim();
+  let password = document.getElementById("passwordInput").value.trim();
 
-if(!email || !password){
-alert("ادخل الإيميل وكلمة المرور");
-return;
-}
+  if(!email || !password){
+    alert("ادخل الإيميل وكلمة المرور");
+    return;
+  }
 
-// حفظ المستخدم
-localStorage.setItem("userData", JSON.stringify({
-email: email,
-password: password
-}));
+  let savedUser = JSON.parse(localStorage.getItem("userData"));
 
-// إخفاء تسجيل الدخول
-let loginPage = document.getElementById("loginPage");
-if(loginPage) loginPage.style.display = "none";
-
-// إظهار الموقع
-let home = document.getElementById("home");
-home.style.display = "block";
+  // 🟢 إذا أول مرة (ما في حساب)
+  if(!savedUser){
+    localStorage.setItem("userData", JSON.stringify({
+      email: email,
+      password: password
+    }));
+    alert("تم إنشاء الحساب ✅");
   } 
+  // 🔴 إذا في حساب → تحقق
+  else{
+    if(email !== savedUser.email || password !== savedUser.password){
+      alert("❌ الإيميل أو كلمة المرور غلط");
+      return;
+    }
+  }
+
+  // ✅ دخول
+  let loginPage = document.getElementById("loginPage");
+  if(loginPage) loginPage.style.display = "none";
+
+  let home = document.getElementById("home");
+  home.style.display = "block";
+}
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
