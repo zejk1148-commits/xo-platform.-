@@ -180,7 +180,7 @@ height:40px;
 
 <div id="overlay"></div>
 
-<div id="home">
+<div id="home" style="display:none">
 <div class="header">
 <div onclick="toggle()">☰</div>
 <div id="balanceText"></div>
@@ -600,6 +600,37 @@ let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 
 window.open(url, "_blank");
 }
+function login(){
+let email = document.getElementById("emailInput").value.trim();
+
+if(!email){
+alert("ادخل الإيميل");
+return;
+}
+
+// حفظ المستخدم
+localStorage.setItem("userData", JSON.stringify({email: email}));
+
+// إخفاء تسجيل الدخول
+document.getElementById("loginPage").style.display = "none";
+
+// إظهار الموقع
+home.style.display = "block";
+}
+
+// عند فتح الموقع
+window.onload = function(){
+
+let user = JSON.parse(localStorage.getItem("userData"));
+
+if(user && user.email){
+document.getElementById("loginPage").style.display = "none";
+home.style.display = "block";
+}else{
+document.getElementById("loginPage").style.display = "flex";
+home.style.display = "none";
+}
+};
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
