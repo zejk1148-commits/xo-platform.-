@@ -626,29 +626,6 @@ let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 
 window.open(url, "_blank");
 }
-window.onload = function(){
-
-let home = document.getElementById("home");
-let loginPage = document.getElementById("loginPage");
-
-let userData = localStorage.getItem("userData");
-let user = {};
-
-try{
-  user = JSON.parse(userData);
-}catch(e){
-  user = {};
-}
-
-let isLoggedIn = localStorage.getItem("loggedIn");
-
-if(user && isLoggedIn){
-  if(home) home.style.display = "block";
-  if(loginPage) loginPage.style.display = "none";
-}else{
-  if(home) home.style.display = "none";
-  if(loginPage) loginPage.style.display = "flex";
-  }
 function login(){
 let email = document.getElementById("emailInput").value.trim();
 let password = document.getElementById("passwordInput").value.trim();
@@ -657,7 +634,6 @@ if(!email || !password){
 alert("ادخل الإيميل وكلمة المرور");
 return;
 }
-
 let savedUser = JSON.parse(localStorage.getItem("userData"));
 
 // 🟢 إنشاء حساب
@@ -682,6 +658,30 @@ document.getElementById("loginPage").style.display = "none";
 document.getElementById("home").style.display = "block";
 localStorage.setItem("loggedIn", "true");
 }
+window.onload = function(){
+
+let home = document.getElementById("home");
+let loginPage = document.getElementById("loginPage");
+
+let userData = localStorage.getItem("userData");
+let user = {};
+
+try{
+  user = JSON.parse(userData);
+}catch(e){
+  user = {};
+}
+
+let isLoggedIn = localStorage.getItem("loggedIn");
+
+if(user && isLoggedIn){
+  if(home) home.style.display = "block";
+  if(loginPage) loginPage.style.display = "none";
+}else{
+  if(home) home.style.display = "none";
+  if(loginPage) loginPage.style.display = "flex";
+  }
+
 function logout(){
 localStorage.removeItem("loggedIn");
 
