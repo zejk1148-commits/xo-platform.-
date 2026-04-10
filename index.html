@@ -652,12 +652,20 @@ alert("❌ الإيميل أو كلمة المرور غلط");
 return;
 }
 }
-
 // ✅ دخول
 document.getElementById("loginPage").style.display = "none";
 document.getElementById("home").style.display = "block";
 localStorage.setItem("loggedIn", "true");
 }
+function logout(){
+localStorage.removeItem("loggedIn");
+
+// إرجاع لصفحة تسجيل الدخول
+document.getElementById("home").style.display = "none";
+document.getElementById("loginPage").style.display = "flex";
+}
+window.onload = function(){
+
 let home = document.getElementById("home");
 let loginPage = document.getElementById("loginPage");
 
@@ -678,14 +686,10 @@ if(user && isLoggedIn){
 }else{
   if(home) home.style.display = "none";
   if(loginPage) loginPage.style.display = "flex";
-  }
+}
 
-function logout(){
-localStorage.removeItem("loggedIn");
+document.getElementById("successPopup").style.display = "none";
 
-// إرجاع لصفحة تسجيل الدخول
-document.getElementById("home").style.display = "none";
-document.getElementById("loginPage").style.display = "flex";
 }
 </script>
 <div id="successPopup" class="popup">
