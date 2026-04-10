@@ -45,7 +45,7 @@ background:rgba(0,0,0,0.5);
 display:none;
 z-index:998;
 }
-
+9
 .grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -547,6 +547,9 @@ localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
 originalUseCode();
 
 };
+function closePopup(){
+document.getElementById("successPopup").style.display = "none";
+}
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
