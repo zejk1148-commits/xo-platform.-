@@ -248,6 +248,7 @@ text-decoration:none;
 </div>
 
 <script>
+document.getElementById("successPopup").style.display = "none";
 let selectedMethod = "";
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
