@@ -248,7 +248,9 @@ text-decoration:none;
 </div>
 
 <script>
+window.onload = function() {
 document.getElementById("successPopup").style.display = "none";
+};
 let selectedMethod = "";
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
@@ -400,28 +402,16 @@ modal.style.display="flex";
 function closeModal(){
 modal.style.display="none";
 document.getElementById("userId").value = "";
-  }
-function confirmBuy(){
-if(balance<selectedPrice){alert("رصيدك لا يكفي");return;}
-
-balance-=selectedPrice;
-localStorage.setItem("balance",balance);
-updateBalance();
-
-saveOrder(selectedApp,selectedAmount,selectedPrice);
-
-modal.style.display="none";
-}
-
+  
 function goHome(){hideAll();home.style.display="block";}
 function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
 function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
-423 function openShamSYP(){
-424   hideAll();
-425   shamSYP.style.display="block";
-426   selectedMethod = "شام كاش سوري";
-427 }
+  function openShamSYP(){
+hideAll();
+shamSYP.style.display="block";
+selectedMethod = "شام كاش سوري";
+}
 function openShamUSD(){
 hideAll();
 shamUSD.style.display="block";
