@@ -496,7 +496,37 @@ sendToTelegram(
 
 oldSendForm(btn);
 };
+// ===== منع تكرار الأكواد (إضافة فقط) =====
 
+let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+
+const originalUseCode = useCode;
+
+useCode = function(){
+
+let code = document.getElementById("codeInput").value.trim();
+
+if(!code){
+alert("ادخل الكود");
+return;
+}
+
+// إذا مستخدم من قبل
+if(usedCodes.includes(code)){
+alert("الكود مستخدم من قبل");
+return;
+}
+
+// إذا الكود صحيح خزّنه
+if(codes[code]){
+usedCodes.push(code);
+localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+}
+
+// تشغيل الكود الأصلي
+originalUseCode();
+
+};
 </script>
 
 </body>
