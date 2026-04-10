@@ -1,1 +1,666 @@
 
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر التطبيقات</title>
+
+<style>
+body{margin:0;font-family:Arial;direction:rtl;background:#f5f5f5}
+
+.header{
+background:linear-gradient(to left,#2ecc71,#27ae60);
+color:white;
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.sidebar{
+position:fixed;right:0;top:0;
+width:220px;height:100%;
+background:#1e1e2f;
+padding:15px;
+transform:translateX(100%);
+transition:0.3s;
+z-index:999;
+}
+.sidebar.open{transform:translateX(0);}
+
+.sidebar a{
+display:block;
+padding:12px;
+margin:8px 0;
+background:#2c2c44;
+color:white;
+text-align:center;
+border-radius:10px;
+}
+
+#overlay{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+z-index:998;
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:10px;
+}
+
+.pack-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+padding:10px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:10px;
+text-align:center;
+cursor:pointer;
+}
+
+.card img{
+width:60px;height:60px;border-radius:12px;
+}
+
+.pack{
+background:white;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+button{
+background:#2ecc71;
+color:white;
+border:none;
+padding:8px;
+border-radius:6px;
+}
+
+.modal{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal-content{
+background:white;
+padding:20px;
+border-radius:10px;
+position:relative;
+}
+
+.close-btn {
+position:absolute;
+top:5px;
+left:10px;
+font-size:20px;
+cursor:pointer;
+}
+
+input{
+width:90%;
+margin:5px auto;
+padding:8px;
+display:block;
+}
+#whatsappLink{
+display:block;
+margin-top:10px;
+background:#25D366;
+color:white;
+padding:10px;
+border-radius:8px;
+text-decoration:none;
+  }
+#successPopup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+#successPopup .popup-box{
+background:white;
+padding:20px;
+border-radius:10px;
+text-align:center;
+width:80%;
+margin:auto;
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:10px;
+}
+
+@media (max-width:600px){
+.grid{
+grid-template-columns:repeat(4,1fr);
+}
+.card{
+padding:5px;
+}
+.card img{
+width:40px;
+height:40px;
+}
+} 
+</style>
+</head>
+
+<body>
+
+<div class="sidebar" id="sidebar">
+<a onclick="goHome()">🏠 الرئيسية</a>
+<a onclick="openBalance()">💰 إضافة رصيد</a>
+<a onclick="openCharge()">💳 شحن</a>
+<a onclick="openOrders()">📦 طلباتي</a>
+</div>
+
+<div id="overlay"></div>
+<div id="loginPage" style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
+<h2>تسجيل الدخول</h2>
+<input id="emailInput" placeholder="ادخل ايميلك">
+<input type="password" id="passwordInput" placeholder="كلمة المرور">
+<button onclick="login()">دخول</button>
+</div>
+<div id="home" style="display:none">
+<div class="header">
+<div onclick="toggle()">☰</div>
+<div id="balanceText"></div>
+</div>
+
+<div class="grid" id="appsGrid"></div>
+</div>
+
+<div id="appPage" style="display:none">
+<div class="header">
+<div onclick="goHome()">رجوع</div>
+<div id="title"></div>
+</div>
+<div id="packs"></div>
+</div>
+
+<div id="balancePage" style="display:none">
+<div class="header">
+<div onclick="goHome()">رجوع</div>
+<div>إضافة رصيد</div>
+</div>
+
+<div class="grid">
+<div class="card" onclick="openShamSYP()">
+<img src="https://i.ibb.co/fY1MpH8d/IMG.jpg">
+<div>شام كاش سوري</div>
+</div>
+
+<div class="card" onclick="openShamUSD()">
+<img src="https://i.ibb.co/fY1MpH8d/IMG.jpg">
+<div>شام كاش دولار</div>
+</div>
+
+<div class="card" onclick="openBank()">
+<img src="https://i.ibb.co/qzq6hMN/IMG.jpg">
+<div>زراعات بنك</div>
+</div>
+</div>
+</div>
+
+<div id="chargePage" style="display:none">
+<div class="header">
+<div onclick="goHome()">رجوع</div>
+<div>شحن الرصيد</div>
+</div>
+
+<div style="padding:10px;text-align:center;">
+<h3>إدخال كود الشحن</h3>
+<input id="codeInput" placeholder="أدخل الكود هنا">
+<button onclick="useCode()">تفعيل الكود</button>
+</div>
+</div>
+
+<div id="shamSYP" style="display:none">
+<div class="header"><div onclick="openBalance()">رجوع</div><div>شام كاش سوري</div></div>
+<div class="card">
+<div>رقم: 123456</div>
+<div>الاسم: اسمك</div>
+</div>
+<input placeholder="اسم المرسل">
+<input placeholder="المبلغ">
+<input placeholder="رقم العملية">
+<input type="file">
+<button onclick="sendForm(this)">إرسال</button>
+</div>
+
+<div id="shamUSD" style="display:none">
+<div class="header"><div onclick="openBalance()">رجوع</div><div>شام كاش دولار</div></div>
+<div class="card">
+<div>رقم: 654321</div>
+<div>الاسم: اسمك</div>
+</div>
+<input placeholder="اسم المرسل">
+<input placeholder="المبلغ">
+<input placeholder="رقم العملية">
+<input type="file">
+<button onclick="sendForm(this)">إرسال</button>
+</div>
+
+<div id="bankPage" style="display:none">
+<div class="header"><div onclick="openBalance()">رجوع</div><div>زراعات بنك</div></div>
+<div class="card">
+<div>IBAN: TR000000</div>
+<div>الاسم: اسمك</div>
+</div>
+<input placeholder="اسم المرسل">
+<input placeholder="المبلغ">
+<input placeholder="رقم العملية">
+<input type="file">
+<button onclick="sendForm(this)">إرسال</button>
+</div>
+
+<div id="ordersPage" style="display:none">
+<div class="header"><div onclick="goHome()">رجوع</div><div>طلباتي</div></div>
+<div id="ordersList" style="padding:10px;"></div>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-content">
+<div class="close-btn" onclick="closeModal()">✖</div>
+<h3>إدخال ID</h3>
+<input id="userId">
+<button onclick="confirmBuy()">تأكيد</button>
+</div>
+</div>
+
+<script>
+window.addEventListener("load", function(){
+document.getElementById("successPopup").style.display = "none";
+});
+let selectedMethod = "";
+let balance = parseFloat(localStorage.getItem("balance")) || 120;
+function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
+updateBalance();
+
+let codes = {
+"CODE1AB5":5,"CODE2CD5":5,"CODE3EF5":5,"CODE4GH5":5,"CODE5IJ5":5,
+"CODE6KL5":5,"CODE7MN5":5,"CODE8OP5":5,"CODE9QR5":5,"CODE10ST5":5,
+"CODE11UV5":5,"CODE12WX5":5,"CODE13YZ5":5,"CODE14AB5":5,"CODE15CD5":5,
+"CODE16EF5":5,"CODE17GH5":5,"CODE18IJ5":5,"CODE19KL5":5,"CODE20MN5":5
+};
+
+function useCode(){
+let code=document.getElementById("codeInput").value.trim();
+if(!code){alert("ادخل الكود");return;}
+if(codes[code]){
+balance+=codes[code];
+localStorage.setItem("balance",balance);
+updateBalance();
+alert("تم إضافة $" + codes[code]);
+delete codes[code];
+}else{
+alert("الكود غير صحيح أو مستخدم");
+}
+}
+function sendForm(btn){
+let inputs=btn.parentElement.querySelectorAll("input");
+if(!inputs[0].value||!inputs[1].value||!inputs[2].value||inputs[3].files.length===0){
+alert("⚠️ الرجاء تعبئة جميع الحقول");
+return;
+}
+document.getElementById("successPopup").style.display = "flex";
+}
+
+function toggle(){
+sidebar.classList.toggle("open");
+overlay.style.display=sidebar.classList.contains("open")?"block":"none";
+}
+overlay.onclick=()=>{sidebar.classList.remove("open");overlay.style.display="none";}
+
+function hideAll(){
+home.style.display="none";
+appPage.style.display="none";
+balancePage.style.display="none";
+chargePage.style.display="none";
+shamSYP.style.display="none";
+shamUSD.style.display="none";
+bankPage.style.display="none";
+ordersPage.style.display="none";
+}
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+function saveOrder(app, amount, price){
+let user = getUser();
+
+if(!user.email) return;
+
+let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
+
+let now = new Date();
+
+orders.push({
+  app,
+  amount,
+  price,
+  time: now.toLocaleString()
+});
+
+localStorage.setItem("orders_" + user.email, JSON.stringify(orders));
+}
+function loadOrders(){
+let user = getUser();
+
+if(!user.email){
+ordersList.innerHTML = "<p>لا يوجد مستخدم</p>";
+return;
+}
+
+let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
+
+let html="";
+
+if(orders.length === 0){
+html="<p style='text-align:center'>لا يوجد طلبات</p>";
+}else{
+orders.forEach(o=>{
+html+=`<div class="card">
+<div><b>${o.app}</b></div>
+<div>${o.amount} 💎</div>
+<div>$${o.price}</div>
+<div style="font-size:12px;color:gray">${o.time}</div>
+</div>`;
+});
+}
+
+ordersList.innerHTML=html;
+}
+
+const apps=[
+{
+name:"يا أهلا",
+img:"https://i.ibb.co/G307spDQ/image.png",
+packs:[
+{amount:2500,price:5},
+{amount:5200,price:10},
+{amount:10600,price:20},
+{amount:27000,price:50},
+{amount:40000,price:75},
+{amount:52500,price:100}
+]
+},
+{
+name:"Soltchen",
+img:"https://i.ibb.co/TMqz7RhY/image.jpg",
+packs:[
+{amount:2500,price:5},
+{amount:5200,price:10},
+{amount:10600,price:20},
+{amount:27000,price:50},
+{amount:40000,price:75},
+{amount:52500,price:100}
+]
+},
+{name:"Sugo",img:"https://i.ibb.co/qVF1fnS/image.jpg",packs:[{amount:2500,price:5}]},
+{name:"YoParty",img:"https://i.ibb.co/8n3DfwWT/image.jpg",packs:[{amount:2500,price:5}]},
+{name:"Zina Live",img:"https://i.ibb.co/gM9GsQbt/image.jpg",packs:[{amount:2500,price:5}]},
+{name:"Soul Star",img:"https://i.ibb.co/VW6061sh/image.jpg",packs:[{amount:2500,price:5}]},
+{name:"4fun",img:"https://i.ibb.co/7tJjGrsn/image.jpg",packs:[{amount:2500,price:5}]}
+];
+
+function loadApps(){
+let html="";
+apps.forEach((app,i)=>{
+html+=`<div class="card" onclick="openApp(${i})">
+<img src="${app.img}">
+<div>${app.name}</div></div>`;
+});
+appsGrid.innerHTML=html;
+}
+loadApps();
+
+let selectedPrice=0;
+let selectedApp="";
+let selectedAmount=0;
+
+function openApp(i){
+hideAll();
+appPage.style.display="block";
+title.innerText=apps[i].name;
+
+let html="<div class='pack-grid'>";
+apps[i].packs.forEach(p=>{
+html+=`<div class="pack">
+<div>${p.amount} 💎</div>
+<div>$${p.price}</div>
+<button onclick="buy('${apps[i].name}',${p.amount},${p.price})">شراء</button>
+</div>`;
+});
+html+="</div>";
+packs.innerHTML=html;
+}
+
+function buy(app,amount,price){
+selectedApp=app;
+selectedAmount=amount;
+selectedPrice=price;
+modal.style.display="flex";
+}
+
+function closeModal(){
+modal.style.display="none";
+document.getElementById("userId").value = "";
+} 
+function goHome(){hideAll();home.style.display="block";}
+function openBalance(){hideAll();balancePage.style.display="block";}
+function openCharge(){hideAll();chargePage.style.display="block";}
+function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
+  function openShamSYP(){
+hideAll();
+shamSYP.style.display="block";
+selectedMethod = "شام كاش سوري";
+}
+function openShamUSD(){
+hideAll();
+shamUSD.style.display="block";
+selectedMethod = "شام كاش دولار";
+ }
+
+function openBank(){
+  hideAll();
+  bankPage.style.display="block";
+  selectedMethod = "تحويل بنكي";
+}
+const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
+const CHAT_ID = "8044738479";
+function sendToTelegram(text){
+fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({chat_id:CHAT_ID,text:text})
+});
+}
+
+function getUser(){
+return JSON.parse(localStorage.getItem("userData")) || {};
+}
+
+function confirmBuy(){
+let user = getUser();
+let userId = document.getElementById("userId").value.trim();
+
+if(!userId){
+alert("⚠️ لازم تدخل ID");
+return;
+}
+
+if(balance < selectedPrice){
+alert("رصيدك لا يكفي");
+return;
+}
+
+balance -= selectedPrice;
+localStorage.setItem("balance", balance);
+updateBalance();
+// 👇 هون بالضبط
+saveOrder(selectedApp, selectedAmount, selectedPrice);
+sendToTelegram(
+"🛒 طلب شراء\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"🆔 ID: " + userId + "\n" +
+"📱 التطبيق: " + selectedApp + "\n" +
+"💎 الكمية: " + selectedAmount + "\n" +
+"💰 السعر: $" + selectedPrice + "\n" +
+"⏰ الوقت: " + new Date().toLocaleString()
+);
+
+modal.style.display = "none";
+  }
+
+const oldUseCode = useCode;
+useCode = function(){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💰 شحن بكود\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldUseCode();
+};
+
+const oldSendForm = sendForm;
+sendForm = function(btn){
+let user = getUser();
+let time = new Date().toLocaleString();
+
+sendToTelegram(
+"💳 طلب شحن يدوي\n" +
+"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"⏰ الوقت: " + time
+);
+
+oldSendForm(btn);
+document.getElementById("successPopup").style.display = "flex";
+};
+// ===== منع تكرار الأكواد (إضافة فقط) =====
+
+let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
+
+const originalUseCode = useCode;
+
+useCode = function(){
+
+let code = document.getElementById("codeInput").value.trim();
+
+if(!code){
+alert("ادخل الكود");
+return;
+}
+
+// إذا مستخدم من قبل
+if(usedCodes.includes(code)){
+alert("الكود مستخدم من قبل");
+return;
+}
+
+// إذا الكود صحيح خزّنه
+if(codes[code]){
+usedCodes.push(code);
+localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+}
+
+// تشغيل الكود الأصلي
+originalUseCode();
+
+};
+function closePopup(){
+document.getElementById("successPopup").style.display = "none";
+}
+function goWhatsApp(){
+
+let activePage = document.querySelector(
+  "#shamSYP:not([style*='none']), #shamUSD:not([style*='none']), #bankPage:not([style*='none'])"
+);
+
+if(!activePage){
+alert("في مشكلة بتحديد الصفحة");
+return;
+}
+
+let inputs = activePage ? activePage.querySelectorAll("input") : [];
+
+let name = inputs[0]?.value || "";
+let amount = inputs[1]?.value || "";
+let operation = inputs[2]?.value || "";
+
+let message =
+"طلب شحن جديد\n" +
+"----------------------\n" +
+"طريقة التحويل: " + selectedMethod + "\n" +
+"الاسم: " + name + "\n" +
+"المبلغ: " + amount + "\n" +
+"رقم العملية: " + operation;
+
+let phone = "639554721005";
+
+let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
+
+window.open(url, "_blank");
+}
+}
+function logout(){
+localStorage.removeItem("loggedIn");
+
+// إرجاع لصفحة تسجيل الدخول
+document.getElementById("home").style.display = "none";
+document.getElementById("loginPage").style.display = "flex";
+}
+window.onload = function(){
+
+let home = document.getElementById("home");
+let loginPage = document.getElementById("loginPage");
+
+let isLoggedIn = localStorage.getItem("loggedIn");
+
+if(isLoggedIn){
+  home.style.display = "block";
+  loginPage.style.display = "none";
+}else{
+  home.style.display = "none";
+  loginPage.style.display = "flex";
+}
+document.getElementById("successPopup").style.display = "none";
+}
+</script>
+<div id="successPopup" class="popup">
+  <div class="popup-box">
+    <h3>✅ تم استلام طلبك</h3>
+    <p>سيتم تجهيز طلبك خلال دقائق</p>
+
+    <button onclick="goWhatsApp()">📞 استلام الكود</button>
+    <br><br>
+    <button onclick="closePopup()" style="background:#ccc;color:black;">إغلاق</button>
+  </div>
+</div>
+</body>
+</html>
