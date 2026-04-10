@@ -387,8 +387,10 @@ selectedPrice=price;
 modal.style.display="flex";
 }
 
-function closeModal(){modal.style.display="none";}
-
+function closeModal(){
+modal.style.display="none";
+document.getElementById("userId").value = "";
+  }
 function confirmBuy(){
 if(balance<selectedPrice){alert("رصيدك لا يكفي");return;}
 
