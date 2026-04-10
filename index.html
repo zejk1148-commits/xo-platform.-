@@ -602,7 +602,6 @@ window.open(url, "_blank");
 window.onload = function(){
  
 let home = document.getElementById("home");
-let loginPage = document.getElementById("loginPage");
 
 let userData = localStorage.getItem("userData");
 let user = {};
@@ -612,15 +611,11 @@ try{
 }catch(e){
   user = {};
 }
-
 if(user && user.email){
-  if(loginPage) loginPage.style.display = "none";
   if(home) home.style.display = "block";
 }else{
-  if(loginPage) loginPage.style.display = "flex";
   if(home) home.style.display = "none";
 }
-
 };
 function login(){
 let email = document.getElementById("emailInput").value.trim();
@@ -634,12 +629,11 @@ return;
 localStorage.setItem("userData", JSON.stringify({email: email}));
 
 // إخفاء تسجيل الدخول
-document.getElementById("loginPage").style.display = "none";
 
 // إظهار الموقع
 let home = document.getElementById("home");
 home.style.display = "block";
-{
+} 
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
