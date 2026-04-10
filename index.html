@@ -680,23 +680,9 @@ if(isLoggedIn){
 }
 
 document.getElementById("successPopup").style.display = "none";
-
-  }
-let isLoggedIn = localStorage.getItem("loggedIn");
-
-if(user && isLoggedIn){
-  if(home) home.style.display = "block";
-  if(loginPage) loginPage.style.display = "none";
-}else{
-  if(home) home.style.display = "none";
-  if(loginPage) loginPage.style.display = "flex";
 }
-
-document.getElementById("successPopup").style.display = "none";
-
-}
-localStorage.clear()
 function login(){
+
 let email = document.getElementById("emailInput").value.trim();
 let password = document.getElementById("passwordInput").value.trim();
 
@@ -705,18 +691,31 @@ alert("ادخل الإيميل وكلمة المرور");
 return;
 }
 
-// 🟢 إنشاء حساب جديد دائماً
+let savedUser = JSON.parse(localStorage.getItem("userData"));
+
+// أول مرة → إنشاء حساب
+if(!savedUser){
 localStorage.setItem("userData", JSON.stringify({
 email: email,
 password: btoa(password)
 }));
+alert("تم إنشاء الحساب ✅");
+}
 
-// ✅ دخول مباشر بدون مقارنة
+// تحقق
+else{
+if(email !== savedUser.email || btoa(password) !== savedUser.password){
+alert("❌ الإيميل أو كلمة المرور غلط");
+return;
+}
+}
+
+// دخول
 document.getElementById("loginPage").style.display = "none";
 document.getElementById("home").style.display = "block";
 localStorage.setItem("loggedIn", "true");
 
-alert("تم تسجيل الدخول ✅");
+}
 }
 </script>
 <div id="successPopup" class="popup">
