@@ -181,6 +181,7 @@ height:40px;
 <div id="loginPage" style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
 <h2>تسجيل الدخول</h2>
 <input id="emailInput" placeholder="ادخل ايميلك">
+<input type="password" id="passwordInput" placeholder="كلمة المرور">
 <button onclick="login()">دخول</button>
 </div>
 <div id="home" style="display:none">
@@ -617,7 +618,7 @@ try{
   user = {};
 }
 
-if(user && user.email){
+if(user && user.email && user.password){
   if(home) home.style.display = "block";
   if(loginPage) loginPage.style.display = "none";
 }else{
@@ -628,15 +629,27 @@ if(user && user.email){
 };
 function login(){
 let email = document.getElementById("emailInput").value.trim();
+let password = document.getElementById("passwordInput").value.trim();
 
-if(!email){
-alert("ادخل الإيميل");
+if(!email || !password){
+alert("ادخل الإيميل وكلمة المرور");
 return;
 }
 
 // حفظ المستخدم
-localStorage.setItem("userData", JSON.stringify({email: email}));
+localStorage.setItem("userData", JSON.stringify({
+email: email,
+password: password
+}));
 
+// إخفاء تسجيل الدخول
+let loginPage = document.getElementById("loginPage");
+if(loginPage) loginPage.style.display = "none";
+
+// إظهار الموقع
+let home = document.getElementById("home");
+home.style.display = "block";
+  }
 // إخفاء تسجيل الدخول
 
 // إظهار الموقع
