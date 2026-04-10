@@ -364,10 +364,19 @@ orders.push({
 
 localStorage.setItem("orders_" + user.email, JSON.stringify(orders));
 }
-
 function loadOrders(){
+let user = getUser();
+
+if(!user.email){
+ordersList.innerHTML = "<p>لا يوجد مستخدم</p>";
+return;
+}
+
+let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
+
 let html="";
-if(orders.length===0){
+
+if(orders.length === 0){
 html="<p style='text-align:center'>لا يوجد طلبات</p>";
 }else{
 orders.forEach(o=>{
@@ -378,6 +387,9 @@ html+=`<div class="card">
 <div style="font-size:12px;color:gray">${o.time}</div>
 </div>`;
 });
+}
+
+ordersList.innerHTML=html;
 }
 ordersList.innerHTML=html;
 }
