@@ -650,6 +650,40 @@ if(isLoggedIn){
 }
 document.getElementById("successPopup").style.display = "none";
 }
+function login(){
+
+let email = document.getElementById("emailInput").value.trim();
+let password = document.getElementById("passwordInput").value.trim();
+
+if(!email || !password){
+alert("ادخل الإيميل وكلمة المرور");
+return;
+}
+
+let savedUser = JSON.parse(localStorage.getItem("userData"));
+
+// أول مرة → إنشاء حساب
+if(!savedUser){
+localStorage.setItem("userData", JSON.stringify({
+email: email,
+password: btoa(password)
+}));
+alert("تم إنشاء الحساب ✅");
+}
+
+// تحقق
+else{
+if(email !== savedUser.email || btoa(password) !== savedUser.password){
+alert("❌ الإيميل أو كلمة المرور غلط");
+return;
+}
+}
+
+// دخول
+document.getElementById("loginPage").style.display = "none";
+document.getElementById("home").style.display = "block";
+localStorage.setItem("loggedIn", "true");
+ }
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
