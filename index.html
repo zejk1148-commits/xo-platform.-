@@ -580,7 +580,7 @@ alert("في مشكلة بتحديد الصفحة");
 return;
 }
 
-let inputs = activePage.querySelectorAll("input");
+let inputs = activePage ? activePage.querySelectorAll("input") : [];
 
 let name = inputs[0]?.value || "";
 let amount = inputs[1]?.value || "";
