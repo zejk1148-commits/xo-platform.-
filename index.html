@@ -669,15 +669,19 @@ window.onload = function(){
 let home = document.getElementById("home");
 let loginPage = document.getElementById("loginPage");
 
-let userData = localStorage.getItem("userData");
-let user = {};
+let isLoggedIn = localStorage.getItem("loggedIn");
 
-try{
-  user = JSON.parse(userData);
-}catch(e){
-  user = {};
+if(isLoggedIn){
+  home.style.display = "block";
+  loginPage.style.display = "none";
+}else{
+  home.style.display = "none";
+  loginPage.style.display = "flex";
 }
 
+document.getElementById("successPopup").style.display = "none";
+
+  }
 let isLoggedIn = localStorage.getItem("loggedIn");
 
 if(user && isLoggedIn){
@@ -692,6 +696,28 @@ document.getElementById("successPopup").style.display = "none";
 
 }
 localStorage.clear()
+function login(){
+let email = document.getElementById("emailInput").value.trim();
+let password = document.getElementById("passwordInput").value.trim();
+
+if(!email || !password){
+alert("ادخل الإيميل وكلمة المرور");
+return;
+}
+
+// 🟢 إنشاء حساب جديد دائماً
+localStorage.setItem("userData", JSON.stringify({
+email: email,
+password: btoa(password)
+}));
+
+// ✅ دخول مباشر بدون مقارنة
+document.getElementById("loginPage").style.display = "none";
+document.getElementById("home").style.display = "block";
+localStorage.setItem("loggedIn", "true");
+
+alert("تم تسجيل الدخول ✅");
+}
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
