@@ -538,9 +538,15 @@ originalUseCode();
 
 };
 </script>
-<div id="contactBox">
-<p>⏳ تم استلام طلبك</p>
-<a id="whatsappLink" target="_blank">📞 استلام الكود عبر واتساب</a>
-</div>
+<div id="successPopup" class="popup">
+  <div class="popup-box">
+    <h3>✅ تم استلام طلبك</h3>
+    <p>سيتم تجهيز طلبك خلال دقائق</p>
+
+    <button onclick="goWhatsApp()">استلام الكود</button>
+    <br><br>
+    <button onclick="closePopup()" style="background:#ccc;color:black;">إغلاق</button>
+  </div>
+  </div>
 </body>
 </html>
