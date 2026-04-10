@@ -620,16 +620,29 @@ home.style.display = "block";
 
 // عند فتح الموقع
 window.onload = function(){
-let home = document.getElementById("home");
-let inputs = document.querySelectorAll("input");
 
-if(user && user.email){
-document.getElementById("loginPage").style.display = "none";
-home.style.display = "block";
-}else{
-document.getElementById("loginPage").style.display = "flex";
-home.style.display = "none";
+let home = document.getElementById("home");
+let loginPage = document.getElementById("loginPage");
+
+// قراءة البيانات بدون ما ينهار
+let userData = localStorage.getItem("userData");
+let user = {};
+
+try{
+  user = JSON.parse(userData);
+}catch(e){
+  user = {};
 }
+
+// التحقق
+if(user && user.email){
+  if(loginPage) loginPage.style.display = "none";
+  if(home) home.style.display = "block";
+}else{
+  if(loginPage) loginPage.style.display = "flex";
+  if(home) home.style.display = "none";
+}
+
 };
 </script>
 <div id="successPopup" class="popup">
