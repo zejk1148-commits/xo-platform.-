@@ -409,11 +409,7 @@ function openCharge(){hideAll();chargePage.style.display="block";}
 function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
 function openShamSYP(){
 hideAll();
-shamSYP.style.display="block";
 
-sendToTelegram(
-"💰 طلب إضافة رصيد\n" +
-"💳 النوع: شام كاش سوري\n" +
 "🕒 الوقت: " + new Date().toLocaleString()
 );
 }
