@@ -248,7 +248,7 @@ text-decoration:none;
 </div>
 
 <script>
-
+let selectedMethod = "";
 let balance = parseFloat(localStorage.getItem("balance")) || 120;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
@@ -280,7 +280,7 @@ if(!inputs[0].value||!inputs[1].value||!inputs[2].value||inputs[3].files.length=
 alert("⚠️ الرجاء تعبئة جميع الحقول");
 return;
 }
-alert("✅ تم إرسال الطلب");
+document.getElementById("successPopup").style.display = "flex";
 }
 
 function toggle(){
@@ -416,24 +416,22 @@ function goHome(){hideAll();home.style.display="block";}
 function openBalance(){hideAll();balancePage.style.display="block";}
 function openCharge(){hideAll();chargePage.style.display="block";}
 function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
-function openShamSYP(){
-hideAll();
-shamSYP.style.display="block";
-} 
-function openShamSYP(){
-hideAll();
-shamSYP.style.display="block";
-}
-
+423 function openShamSYP(){
+424   hideAll();
+425   shamSYP.style.display="block";
+426   selectedMethod = "شام كاش سوري";
+427 }
 function openShamUSD(){
 hideAll();
 shamUSD.style.display="block";
-}
+selectedMethod = "شام كاش دولار";
+ }
 
 function openBank(){
-hideAll();
-bankPage.style.display="block";
-  }
+  hideAll();
+  bankPage.style.display="block";
+  selectedMethod = "تحويل بنكي";
+}
 const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
 const CHAT_ID = "8044738479";
 function sendToTelegram(text){
@@ -543,10 +541,10 @@ originalUseCode();
     <h3>✅ تم استلام طلبك</h3>
     <p>سيتم تجهيز طلبك خلال دقائق</p>
 
-    <button onclick="goWhatsApp()">استلام الكود</button>
+    <button onclick="goWhatsApp()">📞 استلام الكود</button>
     <br><br>
     <button onclick="closePopup()" style="background:#ccc;color:black;">إغلاق</button>
   </div>
-  </div>
+</div>
 </body>
 </html>
