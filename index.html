@@ -452,22 +452,35 @@ function getUser(){
 return JSON.parse(localStorage.getItem("userData")) || {};
 }
 
-const oldConfirmBuy = confirmBuy;
-confirmBuy = function(){
-let user = getUser();
-let time = new Date().toLocaleString();
+function confirmBuy(){
+
+let userId = document.getElementById("userId").value.trim();
+
+if(!userId){
+alert("⚠️ لازم تدخل ID");
+return;
+}
+
+if(balance < selectedPrice){
+alert("رصيدك لا يكفي");
+return;
+}
+
+balance -= selectedPrice;
+localStorage.setItem("balance", balance);
+updateBalance();
 
 sendToTelegram(
 "🛒 طلب شراء\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+"🆔 ID: " + userId + "\n" +
 "📱 التطبيق: " + selectedApp + "\n" +
 "💎 الكمية: " + selectedAmount + "\n" +
 "💰 السعر: $" + selectedPrice + "\n" +
-"⏰ الوقت: " + time
+"⏰ الوقت: " + new Date().toLocaleString()
 );
 
-oldConfirmBuy();
-};
+modal.style.display = "none";
+  }
 
 const oldUseCode = useCode;
 useCode = function(){
