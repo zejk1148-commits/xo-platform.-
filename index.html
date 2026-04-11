@@ -317,7 +317,9 @@ window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
 let selectedMethod = "";
-let balance = parseFloat(localStorage.getItem("balance")) || 120;
+let user = getUser();
+let balanceKey = "balance_" + (user.email || "guest");
+let balance = parseFloat(localStorage.getItem(balanceKey)) || 120;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
 
@@ -333,7 +335,7 @@ let code=document.getElementById("codeInput").value.trim();
 if(!code){alert("ادخل الكود");return;}
 if(codes[code]){
 balance+=codes[code];
-localStorage.setItem("balance",balance);
+localStorage.setItem(balanceKey, balance);
 updateBalance();
 alert("تم إضافة $" + codes[code]);
 delete codes[code];
@@ -517,11 +519,9 @@ headers:{"Content-Type":"application/json"},
 body:JSON.stringify({chat_id:CHAT_ID,text:text})
 });
 }
-
 function getUser(){
-return JSON.parse(localStorage.getItem("userData")) || {};
+return JSON.parse(localStorage.getItem("currentUser")) || {};
 }
-
 function confirmBuy(){
 let user = getUser();
 let userId = document.getElementById("userId").value.trim();
@@ -537,7 +537,7 @@ return;
 }
 
 balance -= selectedPrice;
-localStorage.setItem("balance", balance);
+localStorage.setItem(balanceKey, balance);
 updateBalance();
 // 👇 هون بالضبط
 saveOrder(selectedApp, selectedAmount, selectedPrice);
@@ -680,30 +680,25 @@ alert("ادخل الإيميل وكلمة المرور");
 return;
 }
 
-let savedUser = JSON.parse(localStorage.getItem("userData"));
+// جلب المستخدمين
+let users = JSON.parse(localStorage.getItem("users")) || [];
 
-// أول مرة → إنشاء حساب
-if(!savedUser){
-localStorage.setItem("userData", JSON.stringify({
-email: email,
-password: btoa(password)
-}));
-alert("تم إنشاء الحساب ✅");
-}
+// البحث عن المستخدم
+let user = users.find(u => u.email === email && u.password === btoa(password));
 
-// تحقق
-else{
-if(email !== savedUser.email || btoa(password) !== savedUser.password){
+if(!user){
 alert("❌ الإيميل أو كلمة المرور غلط");
 return;
 }
-}
+
+// حفظ المستخدم الحالي
+localStorage.setItem("currentUser", JSON.stringify(user));
 
 // دخول
 document.getElementById("loginPage").style.display = "none";
 document.getElementById("home").style.display = "block";
 localStorage.setItem("loggedIn", "true");
- }
+}
 function openRegister(){
 document.getElementById("loginPage").style.display = "none";
 document.getElementById("registerPage").style.display = "flex";
@@ -713,7 +708,6 @@ function goToLogin(){
 document.getElementById("registerPage").style.display = "none";
 document.getElementById("loginPage").style.display = "flex";
 }
-
 function register(){
 
 let email = document.getElementById("regEmail").value.trim();
@@ -724,17 +718,28 @@ alert("ادخل الإيميل وكلمة المرور");
 return;
 }
 
-// حفظ الحساب
-localStorage.setItem("userData", JSON.stringify({
+// جلب المستخدمين
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+// تحقق إذا موجود
+let exists = users.find(u => u.email === email);
+
+if(exists){
+alert("هذا الحساب موجود بالفعل");
+return;
+}
+
+// إضافة مستخدم
+users.push({
 email: email,
 password: btoa(password)
-}));
+});
+
+localStorage.setItem("users", JSON.stringify(users));
 
 alert("تم إنشاء الحساب ✅");
-
-// يرجع لتسجيل الدخول
 goToLogin();
-  }
+}
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
