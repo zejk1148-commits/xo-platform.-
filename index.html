@@ -185,6 +185,27 @@ height:40px;
 <input type="password" id="passwordInput" placeholder="كلمة المرور">
 <button onclick="login()">دخول</button>
 </div>
+<p style="margin-top:10px;">
+ما عندك حساب؟
+<span onclick="openRegister()" style="color:blue;cursor:pointer;">
+إنشاء حساب جديد
+</span>
+</p>
+<div id="registerPage" style="display:none;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
+<h2>إنشاء حساب</h2>
+
+<input id="regEmail" placeholder="ادخل ايميلك">
+<input type="password" id="regPassword" placeholder="كلمة المرور">
+
+<button onclick="register()">إنشاء حساب</button>
+
+<p style="margin-top:10px;">
+عندك حساب؟
+<span onclick="goToLogin()" style="color:blue;cursor:pointer;">
+تسجيل الدخول
+</span>
+</p>
+</div>
 <div id="home" style="display:none">
 <div class="header">
 <div onclick="toggle()">☰</div>
@@ -684,6 +705,37 @@ document.getElementById("loginPage").style.display = "none";
 document.getElementById("home").style.display = "block";
 localStorage.setItem("loggedIn", "true");
  }
+function openRegister(){
+document.getElementById("loginPage").style.display = "none";
+document.getElementById("registerPage").style.display = "flex";
+}
+
+function goToLogin(){
+document.getElementById("registerPage").style.display = "none";
+document.getElementById("loginPage").style.display = "flex";
+}
+
+function register(){
+
+let email = document.getElementById("regEmail").value.trim();
+let password = document.getElementById("regPassword").value.trim();
+
+if(!email || !password){
+alert("ادخل الإيميل وكلمة المرور");
+return;
+}
+
+// حفظ الحساب
+localStorage.setItem("userData", JSON.stringify({
+email: email,
+password: btoa(password)
+}));
+
+alert("تم إنشاء الحساب ✅");
+
+// يرجع لتسجيل الدخول
+goToLogin();
+  }
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
