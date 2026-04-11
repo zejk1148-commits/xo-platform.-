@@ -368,14 +368,11 @@ shamUSD.style.display="none";
 bankPage.style.display="none";
 ordersPage.style.display="none";
 }
-let orders = JSON.parse(localStorage.getItem("orders")) || [];
 function saveOrder(app, amount, price){
 let user = getUser();
-
 if(!user.email) return;
-
-let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
-
+let key = "orders_" + user.email;
+let orders = JSON.parse(localStorage.getItem(key)) || [];
 let now = new Date();
 
 orders.push({
