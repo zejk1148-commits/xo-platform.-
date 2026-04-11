@@ -317,7 +317,6 @@ window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
 let selectedMethod = "";
-let user = getUser();
 let balanceKey = "balance_" + (user.email || "guest");
 let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
@@ -559,8 +558,8 @@ body:JSON.stringify({chat_id:CHAT_ID,text:text})
 function getUser(){
 return JSON.parse(localStorage.getItem("currentUser")) || {};
 }
-function confirmBuy(){
 let user = getUser();
+function confirmBuy(){
 let userId = document.getElementById("userId").value.trim();
 
 if(!userId){
