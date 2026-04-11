@@ -317,7 +317,6 @@ window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
 let selectedMethod = "";
-let user = getUser();
 let balanceKey = "balance_" + (user.email || "guest");
 let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
