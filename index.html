@@ -195,8 +195,7 @@ height:40px;
 
 <input id="regEmail" placeholder="ادخل ايميلك">
 <input type="password" id="regPassword" placeholder="كلمة المرور">
-
-<button onclick="alert('OK')">إنشاء حساب</button>
+<button onclick="register()">إنشاء حساب</button>
 
 <p style="margin-top:10px;">
 عندك حساب؟
@@ -317,7 +316,7 @@ window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
 let selectedMethod = "";
-let balanceKey = "balance_" + (user.email || "guest");
+let balanceKey = "balance_" + (user?.email || "guest");
 let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
