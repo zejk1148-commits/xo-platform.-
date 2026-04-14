@@ -312,11 +312,24 @@ height:40px;
 </div>
 
 <script>
+let sidebar = document.getElementById("sidebar");
+let overlay = document.getElementById("overlay");
+let home = document.getElementById("home");
+let loginPage = document.getElementById("loginPage");
+let registerPage = document.getElementById("registerPage");
+let appPage = document.getElementById("appPage");
+let balancePage = document.getElementById("balancePage");
+let chargePage = document.getElementById("chargePage");
+let shamSYP = document.getElementById("shamSYP");
+let shamUSD = document.getElementById("shamUSD");
+let bankPage = document.getElementById("bankPage");
+let ordersPage = document.getElementById("ordersPage");
 window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
 let selectedMethod = "";
-let balanceKey = "balance_" + (user?.email || "guest");
+let user = JSON.parse(localStorage.getItem("currentUser")) || {};
+let balanceKey = "balance_" + (user.email || "guest");
 let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
