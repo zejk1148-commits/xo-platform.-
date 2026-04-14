@@ -177,45 +177,6 @@ height:40px;
 <a onclick="openOrders()">📦 طلباتي</a>
 </div>
 
-<div id="overlay"></div>
-<div id="loginPage" style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
-<h2>تسجيل الدخول</h2>
-<input id="emailInput" placeholder="ادخل ايميلك">
-<input type="password" id="passwordInput" placeholder="كلمة المرور">
-<button onclick="login()">دخول</button>
-<p style="margin-top:10px;">
-ما عندك حساب؟
-<button onclick="openRegister()" style="background:none;border:none;color:blue;cursor:pointer;">
-إنشاء حساب جديد
-</span>
-</p>
-</div>
-<div id="registerPage" style="display:none;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
-<h2>إنشاء حساب</h2>
-
-<input id="regEmail" placeholder="ادخل ايميلك">
-<input type="password" id="regPassword" placeholder="كلمة المرور">
-<button onclick="register()">إنشاء حساب</button>
-
-<p style="margin-top:10px;">
-عندك حساب؟
-<span onclick="goToLogin()" style="color:blue;cursor:pointer;">
-تسجيل الدخول
-</span>
-</p>
-</div>
-<div id="home" style="display:none">
-<div class="header">
-<div onclick="toggle()">☰</div>
-<div id="balanceText"></div>
-</div>
-
-<div class="grid" id="appsGrid"></div>
-</div>
-
-<div id="appPage" style="display:none">
-<div class="header">
-<div onclick="goHome()">رجوع</div>
 <div id="title"></div>
 </div>
 <div id="packs"></div>
@@ -315,8 +276,6 @@ height:40px;
 let sidebar = document.getElementById("sidebar");
 let overlay = document.getElementById("overlay");
 let home = document.getElementById("home");
-let loginPage = document.getElementById("loginPage");
-let registerPage = document.getElementById("registerPage");
 let appPage = document.getElementById("appPage");
 let balancePage = document.getElementById("balancePage");
 let chargePage = document.getElementById("chargePage");
@@ -328,8 +287,7 @@ window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
 let selectedMethod = "";
-let user = JSON.parse(localStorage.getItem("currentUser")) || {};
-let balanceKey = "balance_" + (user.email || "guest");
+let balanceKey = "balance_guest";
 let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
@@ -419,50 +377,6 @@ shamUSD.style.display="none";
 bankPage.style.display="none";
 ordersPage.style.display="none";
 }
-function saveOrder(app, amount, price){
-let user = getUser();
-if(!user.email) return;
-let key = "orders_" + user.email;
-let orders = JSON.parse(localStorage.getItem(key)) || [];
-let now = new Date();
-
-orders.push({
-  app,
-  amount,
-  price,
-  time: now.toLocaleString()
-});
-
-localStorage.setItem("orders_" + user.email, JSON.stringify(orders));
-}
-function loadOrders(){
-let user = getUser();
-
-if(!user.email){
-ordersList.innerHTML = "<p>لا يوجد مستخدم</p>";
-return;
-}
-
-let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
-
-let html="";
-
-if(orders.length === 0){
-html="<p style='text-align:center'>لا يوجد طلبات</p>";
-}else{
-orders.forEach(o=>{
-html+=`<div class="card">
-<div><b>${o.app}</b></div>
-<div>${o.amount} 💎</div>
-<div>$${o.price}</div>
-<div style="font-size:12px;color:gray">${o.time}</div>
-</div>`;
-});
-}
-
-ordersList.innerHTML=html;
-}
-
 const apps=[
 {
 name:"يا أهلا",
@@ -539,9 +453,6 @@ modal.style.display="none";
 document.getElementById("userId").value = "";
 } 
 function goHome(){hideAll();home.style.display="block";}
-function openBalance(){hideAll();balancePage.style.display="block";}
-function openCharge(){hideAll();chargePage.style.display="block";}
-function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
   function openShamSYP(){
 hideAll();
 shamSYP.style.display="block";
@@ -567,11 +478,6 @@ headers:{"Content-Type":"application/json"},
 body:JSON.stringify({chat_id:CHAT_ID,text:text})
 });
 }
-function getUser(){
-return JSON.parse(localStorage.getItem("currentUser")) || {};
-}
-let user = getUser();
-function confirmBuy(){
 let userId = document.getElementById("userId").value.trim();
 
 if(!userId){
@@ -588,8 +494,6 @@ balance -= selectedPrice;
 localStorage.setItem(balanceKey, balance);
 updateBalance();
 // 👇 هون بالضبط
-saveOrder(selectedApp, selectedAmount, selectedPrice);
-sendToTelegram(
 "🛒 طلب شراء\n" +
 "👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
 "🆔 ID: " + userId + "\n" +
@@ -631,35 +535,6 @@ oldSendForm(btn);
 document.getElementById("successPopup").style.display = "flex";
 };
 // ===== منع تكرار الأكواد (إضافة فقط) =====
-
-let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
-
-const originalUseCode = useCode;
-
-useCode = function(){
-
-let code = document.getElementById("codeInput").value.trim();
-
-if(!code){
-alert("ادخل الكود");
-return;
-}
-
-// إذا مستخدم من قبل
-if(usedCodes.includes(code)){
-alert("الكود مستخدم من قبل");
-return;
-}
-
-// إذا الكود صحيح خزّنه
-if(codes[code]){
-usedCodes.push(code);
-localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
-}
-
-// تشغيل الكود الأصلي
-originalUseCode();
-
 };
 function closePopup(){
 document.getElementById("successPopup").style.display = "none";
@@ -695,97 +570,10 @@ let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 
 window.open(url, "_blank");
 }
-function logout(){
-localStorage.removeItem("loggedIn");
-
-// إرجاع لصفحة تسجيل الدخول
-document.getElementById("home").style.display = "none";
-document.getElementById("loginPage").style.display = "flex";
-}
-window.onload = function(){
-
-let home = document.getElementById("home");
-let loginPage = document.getElementById("loginPage");
-
-let isLoggedIn = localStorage.getItem("loggedIn");
-
-if(isLoggedIn){
-  home.style.display = "block";
-  loginPage.style.display = "none";
-}else{
-  home.style.display = "none";
-  loginPage.style.display = "flex";
 }
 document.getElementById("successPopup").style.display = "none";
 }
-function login(){
 
-let email = document.getElementById("emailInput").value.trim();
-let password = document.getElementById("passwordInput").value.trim();
-
-if(!email || !password){
-alert("ادخل الإيميل وكلمة المرور");
-return;
-}
-
-// جلب المستخدمين
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-// البحث عن المستخدم
-let user = users.find(u => u.email === email && u.password === btoa(password));
-if(user === undefined){
-alert("❌ الإيميل أو كلمة المرور غلط");
-return;
-  }
-// حفظ المستخدم الحالي
-localStorage.setItem("currentUser", JSON.stringify(user));
-
-// دخول
-document.getElementById("loginPage").style.display = "none";
-document.getElementById("home").style.display = "block";
-localStorage.setItem("loggedIn", "true");
-}
-function openRegister(){
-document.getElementById("loginPage").style.display = "none";
-document.getElementById("registerPage").style.display = "flex";
-}
-
-function goToLogin(){
-document.getElementById("registerPage").style.display = "none";
-document.getElementById("loginPage").style.display = "flex";
-}
-function register(){
-
-let email = document.getElementById("regEmail").value.trim();
-let password = document.getElementById("regPassword").value.trim();
-
-if(!email || !password){
-alert("ادخل الإيميل وكلمة المرور");
-return;
-}
-
-// جلب المستخدمين
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-// تحقق إذا موجود
-let exists = users.find(u => u.email === email);
-
-if(exists){
-alert("هذا الحساب موجود بالفعل");
-return;
-}
-
-// إضافة مستخدم
-users.push({
-email: email,
-password: btoa(password)
-});
-
-localStorage.setItem("users", JSON.stringify(users));
-
-alert("تم إنشاء الحساب ✅");
-goToLogin();
-}
 </script>
 <div id="successPopup" class="popup">
   <div class="popup-box">
