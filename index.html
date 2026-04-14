@@ -506,7 +506,7 @@ updateBalance();
 modal.style.display = "none";
   }
 
-const oldUseCode = useCode;
+const oldUseCode = typeof useCode !== "undefined" ? useCode : function(){};
 useCode = function(){
 let user = getUser();
 let time = new Date().toLocaleString();
