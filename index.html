@@ -520,7 +520,7 @@ sendToTelegram(
 oldUseCode();
 };
 
-const oldSendForm = sendForm;
+const oldSendForm = typeof sendForm !== "undefined" ? sendForm : function(){};
 sendForm = function(btn){
 let user = getUser();
 let time = new Date().toLocaleString();
