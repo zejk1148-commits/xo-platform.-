@@ -185,7 +185,7 @@ height:40px;
 <button onclick="login()">دخول</button>
 <p style="margin-top:10px;">
 ما عندك حساب؟
-<span onclick="openRegister()" style="color:blue;cursor:pointer;">
+<button onclick="openRegister()" style="background:none;border:none;color:blue;cursor:pointer;">
 إنشاء حساب جديد
 </span>
 </p>
@@ -720,12 +720,10 @@ let users = JSON.parse(localStorage.getItem("users")) || [];
 
 // البحث عن المستخدم
 let user = users.find(u => u.email === email && u.password === btoa(password));
-
-if(!user){
+if(user === undefined){
 alert("❌ الإيميل أو كلمة المرور غلط");
 return;
-}
-
+  }
 // حفظ المستخدم الحالي
 localStorage.setItem("currentUser", JSON.stringify(user));
 
