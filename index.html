@@ -313,6 +313,9 @@ height:40px;
 </div>
 
 <script>
+window.onerror = function(msg, url, line){
+alert("خطأ: " + msg + " في السطر: " + line);
+}
 window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
