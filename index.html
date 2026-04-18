@@ -313,6 +313,16 @@ height:40px;
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", function(){
+  let btn = document.getElementById("goRegister");
+  if(btn){
+    btn.onclick = function(){
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("registerPage").style.display = "flex";
+    };
+  }
+});
+alert("JS شغال");
 window.onerror = function(msg, url, line){
 alert("خطأ: " + msg + " في السطر: " + line);
 }
@@ -320,7 +330,7 @@ window.addEventListener("load", function(){
 document.getElementById("successPopup").style.display = "none";
 });
 let selectedMethod = "";
-let balanceKey = "balance_" + (user.email || "guest");
+let balanceKey = "balance_" + ((getUser().email) || "guest");
 let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
 function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
 updateBalance();
