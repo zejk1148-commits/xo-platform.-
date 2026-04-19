@@ -84,6 +84,7 @@ color:white;
 border:none;
 padding:8px;
 border-radius:6px;
+cursor:pointer;
 }
 
 .modal{
@@ -116,6 +117,7 @@ margin:5px auto;
 padding:8px;
 display:block;
 }
+
 #whatsappLink{
 display:block;
 margin-top:10px;
@@ -124,7 +126,8 @@ color:white;
 padding:10px;
 border-radius:8px;
 text-decoration:none;
-  }
+}
+
 #successPopup{
 display:none;
 position:fixed;
@@ -146,11 +149,71 @@ text-align:center;
 width:80%;
 margin:auto;
 }
-.grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
+
+.auth-container {
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:100vh;
+background: linear-gradient(to bottom, #2ecc71, #27ae60);
+}
+
+.auth-box {
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+width:100%;
+max-width:350px;
+}
+
+.auth-box h2 {
+text-align:center;
+color:#2ecc71;
+margin-bottom:20px;
+}
+
+.auth-box input {
+width:95%;
+margin:10px auto;
 padding:10px;
+border:1px solid #ddd;
+border-radius:6px;
+font-size:14px;
+}
+
+.auth-box button {
+width:100%;
+margin-top:15px;
+padding:10px;
+background:#2ecc71;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+}
+
+.auth-box button:hover {
+background:#27ae60;
+}
+
+.auth-link {
+text-align:center;
+margin-top:15px;
+font-size:14px;
+}
+
+.auth-link span {
+color:#2ecc71;
+cursor:pointer;
+text-decoration:underline;
+font-weight:bold;
+}
+
+.auth-link span:hover {
+color:#27ae60;
 }
 
 @media (max-width:600px){
@@ -175,56 +238,62 @@ height:40px;
 <a onclick="openBalance()">💰 إضافة رصيد</a>
 <a onclick="openCharge()">💳 شحن</a>
 <a onclick="openOrders()">📦 طلباتي</a>
+<a onclick="logout()" style="background:#e74c3c;">🚪 تسجيل الخروج</a>
 </div>
 
 <div id="overlay"></div>
-<div id="loginPage" style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
-<h2>تسجيل الدخول</h2>
-<input id="emailInput" placeholder="ادخل ايميلك">
+
+<!-- ✅ صفحة تسجيل الدخول -->
+<div id="loginPage" class="auth-container" style="display:none;">
+<div class="auth-box">
+<h2>🔐 تسجيل الدخول</h2>
+<input id="emailInput" type="email" placeholder="ادخل ايميلك">
 <input type="password" id="passwordInput" placeholder="كلمة المرور">
 <button onclick="login()">دخول</button>
-<p style="margin-top:10px;">
+<div class="auth-link">
 ما عندك حساب؟
-<span onclick="openRegister()" style="color:blue;cursor:pointer;">
-إنشاء حساب جديد
-</span>
-</p>
+<span onclick="openRegister()">إنشاء حساب جديد</span>
 </div>
-<div id="registerPage" style="display:none;flex-direction:column;justify-content:center;align-items:center;height:100vh;">
-<h2>إنشاء حساب</h2>
+</div>
+</div>
 
-<input id="regEmail" placeholder="ادخل ايميلك">
+<!-- ✅ صفحة إنشاء حساب -->
+<div id="registerPage" class="auth-container" style="display:none;">
+<div class="auth-box">
+<h2>✍️ إنشاء حساب جديد</h2>
+<input id="regEmail" type="email" placeholder="ادخل ايميلك">
 <input type="password" id="regPassword" placeholder="كلمة المرور">
-
+<input type="password" id="regPasswordConfirm" placeholder="تأكيد كلمة المرور">
 <button onclick="register()">إنشاء حساب</button>
-
-<p style="margin-top:10px;">
+<div class="auth-link">
 عندك حساب؟
-<span onclick="goToLogin()" style="color:blue;cursor:pointer;">
-تسجيل الدخول
-</span>
-</p>
+<span onclick="goToLogin()">تسجيل الدخول</span>
 </div>
+</div>
+</div>
+
+<!-- ✅ صفحة الرئيسية -->
 <div id="home" style="display:none">
 <div class="header">
-<div onclick="toggle()">☰</div>
+<div onclick="toggle()" style="cursor:pointer;font-size:20px;">☰</div>
 <div id="balanceText"></div>
 </div>
-
 <div class="grid" id="appsGrid"></div>
 </div>
 
+<!-- صفحة التطبيق -->
 <div id="appPage" style="display:none">
 <div class="header">
-<div onclick="goHome()">رجوع</div>
+<div onclick="goHome()" style="cursor:pointer;">رجوع</div>
 <div id="title"></div>
 </div>
 <div id="packs"></div>
 </div>
 
+<!-- صفحة إضافة رصيد -->
 <div id="balancePage" style="display:none">
 <div class="header">
-<div onclick="goHome()">رجوع</div>
+<div onclick="goHome()" style="cursor:pointer;">رجوع</div>
 <div>إضافة رصيد</div>
 </div>
 
@@ -246,9 +315,10 @@ height:40px;
 </div>
 </div>
 
+<!-- صفحة الشحن -->
 <div id="chargePage" style="display:none">
 <div class="header">
-<div onclick="goHome()">رجوع</div>
+<div onclick="goHome()" style="cursor:pointer;">رجوع</div>
 <div>شحن الرصيد</div>
 </div>
 
@@ -259,8 +329,9 @@ height:40px;
 </div>
 </div>
 
+<!-- شام كاش سوري -->
 <div id="shamSYP" style="display:none">
-<div class="header"><div onclick="openBalance()">رجوع</div><div>شام كاش سوري</div></div>
+<div class="header"><div onclick="openBalance()" style="cursor:pointer;">رجوع</div><div>شام كاش سوري</div></div>
 <div class="card">
 <div>رقم: 123456</div>
 <div>الاسم: اسمك</div>
@@ -272,8 +343,9 @@ height:40px;
 <button onclick="sendForm(this)">إرسال</button>
 </div>
 
+<!-- شام كاش دولار -->
 <div id="shamUSD" style="display:none">
-<div class="header"><div onclick="openBalance()">رجوع</div><div>شام كاش دولار</div></div>
+<div class="header"><div onclick="openBalance()" style="cursor:pointer;">رجوع</div><div>شام كاش دولار</div></div>
 <div class="card">
 <div>رقم: 654321</div>
 <div>الاسم: اسمك</div>
@@ -285,8 +357,9 @@ height:40px;
 <button onclick="sendForm(this)">إرسال</button>
 </div>
 
+<!-- تحويل بنكي -->
 <div id="bankPage" style="display:none">
-<div class="header"><div onclick="openBalance()">رجوع</div><div>زراعات بنك</div></div>
+<div class="header"><div onclick="openBalance()" style="cursor:pointer;">رجوع</div><div>زراعات بنك</div></div>
 <div class="card">
 <div>IBAN: TR000000</div>
 <div>الاسم: اسمك</div>
@@ -298,11 +371,13 @@ height:40px;
 <button onclick="sendForm(this)">إرسال</button>
 </div>
 
+<!-- الطلبات -->
 <div id="ordersPage" style="display:none">
-<div class="header"><div onclick="goHome()">رجوع</div><div>طلباتي</div></div>
+<div class="header"><div onclick="goHome()" style="cursor:pointer;">رجوع</div><div>طلباتي</div></div>
 <div id="ordersList" style="padding:10px;"></div>
 </div>
 
+<!-- مودال الشراء -->
 <div class="modal" id="modal">
 <div class="modal-content">
 <div class="close-btn" onclick="closeModal()">✖</div>
@@ -312,31 +387,23 @@ height:40px;
 </div>
 </div>
 
-<script>
-alert("أنا اشتغلت");
-console.log("1");
-document.addEventListener("DOMContentLoaded", function(){
-  let btn = document.getElementById("goRegister");
-  if(btn){
-    btn.onclick = function(){
-      document.getElementById("loginPage").style.display = "none";
-      document.getElementById("registerPage").style.display = "flex";
-    };
-  }
-});
-alert("JS شغال");
-window.onerror = function(msg, url, line){
-alert("خطأ: " + msg + " في السطر: " + line);
-}
-window.addEventListener("load", function(){
-document.getElementById("successPopup").style.display = "none";
-});
-let selectedMethod = "";
-let balanceKey = "balance_" + ((getUser().email) || "guest");
-let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
-function updateBalance(){balanceText.innerText="الرصيد: $"+balance;}
-updateBalance();
+<!-- نافذة النجاح -->
+<div id="successPopup" class="modal">
+  <div class="modal-content" style="width:80%;max-width:400px;">
+    <h3>✅ تم استلام طلبك</h3>
+    <p>سيتم تجهيز طلبك خلال دقائق</p>
+    <button onclick="goWhatsApp()">📞 استلام الكود</button>
+    <br><br>
+    <button onclick="closePopup()" style="background:#ccc;color:black;">إغلاق</button>
+  </div>
+</div>
 
+<script>
+// ✅ الثوابت
+const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
+const CHAT_ID = "8044738479";
+
+// ✅ أكواد الشحن
 let codes = {
 // 💵 أكواد 1$
 "A1B2C3D1":1,"E4F5G6H2":1,"I7J8K9L3":1,"M1N2O3P4":1,"Q5R6S7T5":1,
@@ -373,7 +440,7 @@ let codes = {
 "Z1X2C3V4":50,"B5N6M7Q8":50,"W9E1R2T3":50,"Y4U5I6O7":50,"P8A9S1D2":50,
 "F3G4H5J6":50,"K7L8Z9X1":50,"C2V3B4N5":50,"M6Q7W8E9":50,"R1T2Y3U4":50,
 "I5O6P7A8":50,"S9D1F2G3":50,"H4J5K6L7":50,"Z8X9C1V2":50,"B3N4M5Q6":50,
-"W7E8R9T1":50,"Y2U3I4O5":50,"P6A7S8D9":50,"F1G2H3J4":50,"K5L6Z7X8":50
+"W7E8R9T1":50,"Y2U3I4O5":50,"P6A7S8D9":50,"F1G2H3J4":50,"K5L6Z7X8":50,
 // 👑 أكواد 75$
 "Q1Z2X3C4":75,"V5B6N7M8":75,"A9S1D2F3":75,"G4H5J6K7":75,"L8P9O1I2":75,
 "U3Y4T5R6":75,"E7W8Q9Z1":75,"X2C3V4B5":75,"N6M7A8S9":75,"D1F2G3H4":75,
@@ -384,89 +451,9 @@ let codes = {
 "F7G6H5J4":100,"K3L2Z1X9":100,"C8V7B6N5":100,"M4Q3W2E1":100,"R9T8Y7U6":100,
 "I5O4P3A2":100,"S1D9F8G7":100,"H6J5K4L3":100,"Z2X1C9V8":100,"B7N6M5Q4":100,
 "W3E2R1T9":100,"Y8U7I6O5":100,"P4A3S2D1":100,"F9G8H7J6":100,"K5L4Z3X2":100,
-}; 
-console.log("2");
-function useCode(){
-let code=document.getElementById("codeInput").value.trim();
-if(!code){alert("ادخل الكود");return;}
-if(codes[code]){
-balance+=codes[code];
-localStorage.setItem(balanceKey, balance);
-updateBalance();
-alert("تم إضافة $" + codes[code]);
-delete codes[code];
-}else{
-alert("الكود غير صحيح أو مستخدم");
-}
-}
-function sendForm(btn){
-let inputs=btn.parentElement.querySelectorAll("input");
-if(!inputs[0].value || !inputs[1].value || !inputs[2].value || inputs[3].files.length === 0){
-alert("⚠️ الرجاء تعبئة جميع الحقول");
-}
-document.getElementById("successPopup").style.display = "flex";
-}
+};
 
-function toggle(){
-sidebar.classList.toggle("open");
-overlay.style.display=sidebar.classList.contains("open")?"block":"none";
-}
-overlay.onclick=()=>{sidebar.classList.remove("open");overlay.style.display="none";}
-
-function hideAll(){
-home.style.display="none";
-appPage.style.display="none";
-balancePage.style.display="none";
-chargePage.style.display="none";
-shamSYP.style.display="none";
-shamUSD.style.display="none";
-bankPage.style.display="none";
-ordersPage.style.display="none";
-}
-function saveOrder(app, amount, price){
-let user = getUser();
-if(!user.email) return;
-let key = "orders_" + user.email;
-let orders = JSON.parse(localStorage.getItem(key)) || [];
-let now = new Date();
-
-orders.push({
-  app,
-  amount,
-  price,
-  time: now.toLocaleString()
-});
-
-localStorage.setItem("orders_" + user.email, JSON.stringify(orders));
-}
-function loadOrders(){
-let user = getUser();
-
-if(!user.email){
-ordersList.innerHTML = "<p>لا يوجد مستخدم</p>";
-return;
-}
-
-let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
-
-let html="";
-
-if(orders.length === 0){
-html="<p style='text-align:center'>لا يوجد طلبات</p>";
-}else{
-orders.forEach(o=>{
-html+=`<div class="card">
-<div><b>${o.app}</b></div>
-<div>${o.amount} 💎</div>
-<div>$${o.price}</div>
-<div style="font-size:12px;color:gray">${o.time}</div>
-</div>`;
-});
-}
-
-ordersList.innerHTML=html;
-}
-
+// ✅ التطبيقات
 const apps=[
 {
 name:"يا أهلا",
@@ -499,310 +486,418 @@ packs:[
 {name:"4fun",img:"https://i.ibb.co/7tJjGrsn/image.jpg",packs:[{amount:2500,price:5}]}
 ];
 
-function loadApps(){
-let html="";
-apps.forEach((app,i)=>{
-html+=`<div class="card" onclick="openApp(${i})">
-<img src="${app.img}">
-<div>${app.name}</div></div>`;
-});
-appsGrid.innerHTML=html;
-}
-loadApps();
-
-let selectedPrice=0;
-let selectedApp="";
-let selectedAmount=0;
-
-function openApp(i){
-hideAll();
-appPage.style.display="block";
-title.innerText=apps[i].name;
-
-let html="<div class='pack-grid'>";
-apps[i].packs.forEach(p=>{
-html+=`<div class="pack">
-<div>${p.amount} 💎</div>
-<div>$${p.price}</div>
-<button onclick="buy('${apps[i].name}',${p.amount},${p.price})">شراء</button>
-</div>`;
-});
-html+="</div>";
-packs.innerHTML=html;
-}
-
-function buy(app,amount,price){
-selectedApp=app;
-selectedAmount=amount;
-selectedPrice=price;
-modal.style.display="flex";
-}
-
-function closeModal(){
-modal.style.display="none";
-document.getElementById("userId").value = "";
-} 
-function goHome(){hideAll();home.style.display="block";}
-function openBalance(){hideAll();balancePage.style.display="block";}
-function openCharge(){hideAll();chargePage.style.display="block";}
-function openOrders(){hideAll();ordersPage.style.display="block";loadOrders();}
-  function openShamSYP(){
-hideAll();
-shamSYP.style.display="block";
-selectedMethod = "شام كاش سوري";
-}
-function openShamUSD(){
-hideAll();
-shamUSD.style.display="block";
-selectedMethod = "شام كاش دولار";
- }
-
-function openBank(){
-  hideAll();
-  bankPage.style.display="block";
-  selectedMethod = "تحويل بنكي";
-}
-const TELEGRAM_TOKEN = "8631734604:AAF6IpXFZ40ejHmL6drsqGteNiz7XJNTcmo";
-const CHAT_ID = "8044738479";
-function sendToTelegram(text){
-fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({chat_id:CHAT_ID,text:text})
-});
-}
-function getUser(){
-return JSON.parse(localStorage.getItem("currentUser")) || {};
-}
-let user = getUser();
-function confirmBuy(){
-let userId = document.getElementById("userId").value.trim();
-
-if(!userId){
-alert("⚠️ لازم تدخل ID");
-return;
-}
-
-if(balance < selectedPrice){
-alert("رصيدك لا يكفي");
-return;
-}
-
-balance -= selectedPrice;
-localStorage.setItem(balanceKey, balance);
-updateBalance();
-// 👇 هون بالضبط
-saveOrder(selectedApp, selectedAmount, selectedPrice);
-sendToTelegram(
-"🛒 طلب شراء\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"🆔 ID: " + userId + "\n" +
-"📱 التطبيق: " + selectedApp + "\n" +
-"💎 الكمية: " + selectedAmount + "\n" +
-"💰 السعر: $" + selectedPrice + "\n" +
-"⏰ الوقت: " + new Date().toLocaleString()
-); 
-modal.style.display = "none";
-  }
-
-const oldUseCode = useCode;
-useCode = function(){
-let user = getUser();
-let time = new Date().toLocaleString();
-
-sendToTelegram(
-"💰 شحن بكود\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldUseCode();
-};
-console.log("3");
-const oldSendForm = sendForm;
-sendForm = function(btn){
-let user = getUser();
-let time = new Date().toLocaleString();
-
-sendToTelegram(
-"💳 طلب شحن يدوي\n" +
-"👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
-"⏰ الوقت: " + time
-);
-
-oldSendForm(btn);
-document.getElementById("successPopup").style.display = "flex";
-};
-// ===== منع تكرار الأكواد (إضافة فقط) =====
-
+let selectedMethod = "";
+let selectedPrice = 0;
+let selectedApp = "";
+let selectedAmount = 0;
 let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
 
-const originalUseCode = useCode;
-
-useCode = function(){
-
-let code = document.getElementById("codeInput").value.trim();
-
-if(!code){
-alert("ادخل الكود");
-return;
+function getUser(){
+  return JSON.parse(localStorage.getItem("currentUser")) || {};
 }
 
-// إذا مستخدم من قبل
-if(usedCodes.includes(code)){
-alert("الكود مستخدم من قبل");
-return;
+function updateBalance(){
+  let user = getUser();
+  let balanceKey = "balance_" + (user.email || "guest");
+  let balance = parseFloat(localStorage.getItem(balanceKey)) || 0;
+  document.getElementById("balanceText").innerText = "الرصيد: $" + balance.toFixed(2);
 }
 
-// إذا الكود صحيح خزّنه
-if(codes[code]){
-usedCodes.push(code);
-localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+function getBalance(){
+  let user = getUser();
+  let balanceKey = "balance_" + (user.email || "guest");
+  return parseFloat(localStorage.getItem(balanceKey)) || 0;
 }
 
-// تشغيل الكود الأصلي
-originalUseCode();
-
-};
-function closePopup(){
-document.getElementById("successPopup").style.display = "none";
-}
-function goWhatsApp(){
-
-let activePage = document.querySelector(
-  "#shamSYP:not([style*='none']), #shamUSD:not([style*='none']), #bankPage:not([style*='none'])"
-);
-
-if(!activePage){
-alert("في مشكلة بتحديد الصفحة");
-return;
+function setBalance(amount){
+  let user = getUser();
+  let balanceKey = "balance_" + (user.email || "guest");
+  localStorage.setItem(balanceKey, amount);
+  updateBalance();
 }
 
-let inputs = activePage ? activePage.querySelectorAll("input") : [];
-
-let name = inputs[0]?.value || "";
-let amount = inputs[1]?.value || "";
-let operation = inputs[2]?.value || "";
-
-let message =
-"طلب شحن جديد\n" +
-"----------------------\n" +
-"طريقة التحويل: " + selectedMethod + "\n" +
-"الاسم: " + name + "\n" +
-"المبلغ: " + amount + "\n" +
-"رقم العملية: " + operation;
-
-let phone = "639554721005";
-
-let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
-
-window.open(url, "_blank");
-}
-function logout(){
-localStorage.removeItem("loggedIn");
-
-// إرجاع لصفحة تسجيل الدخول
-document.getElementById("home").style.display = "none";
-document.getElementById("loginPage").style.display = "flex";
-}
-window.onload = function(){
-
-let home = document.getElementById("home");
-let loginPage = document.getElementById("loginPage");
-
-let isLoggedIn = localStorage.getItem("loggedIn");
-
-if(isLoggedIn){
-  home.style.display = "block";
-  loginPage.style.display = "none";
-}else{
-  home.style.display = "none";
-  loginPage.style.display = "flex";
-}
-document.getElementById("successPopup").style.display = "none";
-}
-function login(){
-
-let email = document.getElementById("emailInput").value.trim();
-let password = document.getElementById("passwordInput").value.trim();
-
-if(!email || !password){
-alert("ادخل الإيميل وكلمة المرور");
-return;
-}
-
-// جلب المستخدمين
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-// البحث عن المستخدم
-let user = users.find(u => u.email === email && u.password === btoa(password));
-
-if(!user){
-alert("❌ الإيميل أو كلمة المرور غلط");
-return;
-}
-
-// حفظ المستخدم الحالي
-localStorage.setItem("currentUser", JSON.stringify(user));
-
-// دخول
-document.getElementById("loginPage").style.display = "none";
-document.getElementById("home").style.display = "block";
-localStorage.setItem("loggedIn", "true");
-}
+// ✅ دوال التسجيل والدخول
 function openRegister(){
-document.getElementById("loginPage").style.display = "none";
-document.getElementById("registerPage").style.display = "flex";
+  console.log("✅ فتح صفحة الإنشاء");
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("registerPage").style.display = "flex";
 }
 
 function goToLogin(){
-document.getElementById("registerPage").style.display = "none";
-document.getElementById("loginPage").style.display = "flex";
+  console.log("✅ العودة لصفحة الدخول");
+  document.getElementById("registerPage").style.display = "none";
+  document.getElementById("loginPage").style.display = "flex";
 }
+
 function register(){
+  let email = document.getElementById("regEmail").value.trim();
+  let password = document.getElementById("regPassword").value.trim();
+  let passwordConfirm = document.getElementById("regPasswordConfirm").value.trim();
 
-let email = document.getElementById("regEmail").value.trim();
-let password = document.getElementById("regPassword").value.trim();
+  if(!email || !password || !passwordConfirm){
+    alert("❌ ادخل جميع الحقول");
+    return;
+  }
 
-if(!email || !password){
-alert("ادخل الإيميل وكلمة المرور");
-return;
+  if(password !== passwordConfirm){
+    alert("❌ كلمات المرور غير متطابقة");
+    return;
+  }
+
+  if(password.length < 6){
+    alert("❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  let exists = users.find(u => u.email === email);
+
+  if(exists){
+    alert("❌ هذا الحساب موجود بالفعل");
+    return;
+  }
+
+  users.push({
+    email: email,
+    password: btoa(password)
+  });
+
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("✅ تم إنشاء الحساب بنجاح!");
+  
+  document.getElementById("regEmail").value = "";
+  document.getElementById("regPassword").value = "";
+  document.getElementById("regPasswordConfirm").value = "";
+  
+  goToLogin();
 }
 
-// جلب المستخدمين
-let users = JSON.parse(localStorage.getItem("users")) || [];
+function login(){
+  let email = document.getElementById("emailInput").value.trim();
+  let password = document.getElementById("passwordInput").value.trim();
 
-// تحقق إذا موجود
-let exists = users.find(u => u.email === email);
+  if(!email || !password){
+    alert("❌ ادخل الإيميل وكلمة المرور");
+    return;
+  }
 
-if(exists){
-alert("هذا الحساب موجود بالفعل");
-return;
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  let user = users.find(u => u.email === email && u.password === btoa(password));
+
+  if(!user){
+    alert("❌ الإيميل أو كلمة المرور غلط");
+    return;
+  }
+
+  localStorage.setItem("currentUser", JSON.stringify(user));
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("home").style.display = "block";
+  localStorage.setItem("loggedIn", "true");
+  
+  loadApps();
+  updateBalance();
 }
 
-// إضافة مستخدم
-users.push({
-email: email,
-password: btoa(password)
+function logout(){
+  localStorage.removeItem("loggedIn");
+  localStorage.removeItem("currentUser");
+  document.getElementById("home").style.display = "none";
+  document.getElementById("loginPage").style.display = "flex";
+  document.getElementById("emailInput").value = "";
+  document.getElementById("passwordInput").value = "";
+}
+
+// ✅ دوال التنقل
+function hideAll(){
+  document.getElementById("home").style.display = "none";
+  document.getElementById("appPage").style.display = "none";
+  document.getElementById("balancePage").style.display = "none";
+  document.getElementById("chargePage").style.display = "none";
+  document.getElementById("shamSYP").style.display = "none";
+  document.getElementById("shamUSD").style.display = "none";
+  document.getElementById("bankPage").style.display = "none";
+  document.getElementById("ordersPage").style.display = "none";
+}
+
+function goHome(){
+  sidebar.classList.remove("open");
+  overlay.style.display = "none";
+  hideAll();
+  document.getElementById("home").style.display = "block";
+}
+
+function openBalance(){
+  hideAll();
+  document.getElementById("balancePage").style.display = "block";
+}
+
+function openCharge(){
+  hideAll();
+  document.getElementById("chargePage").style.display = "block";
+}
+
+function openOrders(){
+  hideAll();
+  document.getElementById("ordersPage").style.display = "block";
+  loadOrders();
+}
+
+function openShamSYP(){
+  hideAll();
+  document.getElementById("shamSYP").style.display = "block";
+  selectedMethod = "شام كاش سوري";
+}
+
+function openShamUSD(){
+  hideAll();
+  document.getElementById("shamUSD").style.display = "block";
+  selectedMethod = "شام كاش دولار";
+}
+
+function openBank(){
+  hideAll();
+  document.getElementById("bankPage").style.display = "block";
+  selectedMethod = "تحويل بنكي";
+}
+
+function toggle(){
+  sidebar.classList.toggle("open");
+  overlay.style.display = sidebar.classList.contains("open") ? "block" : "none";
+}
+
+// ✅ دوال التطبيقات والشراء
+function loadApps(){
+  let html = "";
+  apps.forEach((app, i) => {
+    html += `<div class="card" onclick="openApp(${i})">
+      <img src="${app.img}" alt="${app.name}">
+      <div>${app.name}</div>
+    </div>`;
+  });
+  document.getElementById("appsGrid").innerHTML = html;
+}
+
+function openApp(i){
+  hideAll();
+  document.getElementById("appPage").style.display = "block";
+  document.getElementById("title").innerText = apps[i].name;
+
+  let html = "<div class='pack-grid'>";
+  apps[i].packs.forEach(p => {
+    html += `<div class="pack">
+      <div>${p.amount} 💎</div>
+      <div>$${p.price}</div>
+      <button onclick="buy('${apps[i].name}', ${p.amount}, ${p.price})">شراء</button>
+    </div>`;
+  });
+  html += "</div>";
+  document.getElementById("packs").innerHTML = html;
+}
+
+function buy(app, amount, price){
+  selectedApp = app;
+  selectedAmount = amount;
+  selectedPrice = price;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("userId").value = "";
+}
+
+function confirmBuy(){
+  let userId = document.getElementById("userId").value.trim();
+
+  if(!userId){
+    alert("⚠️ لازم تدخل ID");
+    return;
+  }
+
+  let balance = getBalance();
+
+  if(balance < selectedPrice){
+    alert("❌ رصيدك لا يكفي");
+    return;
+  }
+
+  balance -= selectedPrice;
+  setBalance(balance);
+
+  let user = getUser();
+  saveOrder(selectedApp, selectedAmount, selectedPrice);
+
+  sendToTelegram(
+    "🛒 طلب شراء جديد\n" +
+    "👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+    "🆔 ID: " + userId + "\n" +
+    "📱 التطبيق: " + selectedApp + "\n" +
+    "💎 الكمية: " + selectedAmount + "\n" +
+    "💰 السعر: $" + selectedPrice + "\n" +
+    "⏰ الوقت: " + new Date().toLocaleString()
+  );
+
+  document.getElementById("modal").style.display = "none";
+  alert("✅ تم تأكيد الطلب!");
+}
+
+// ✅ دوال الشحن والأكواد
+function useCode(){
+  let code = document.getElementById("codeInput").value.trim();
+
+  if(!code){
+    alert("❌ ادخل الكود");
+    return;
+  }
+
+  if(usedCodes.includes(code)){
+    alert("❌ الكود مستخدم من قبل");
+    return;
+  }
+
+  if(codes[code]){
+    let balance = getBalance();
+    balance += codes[code];
+    setBalance(balance);
+
+    alert("✅ تم إضافة $" + codes[code]);
+
+    usedCodes.push(code);
+    localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+
+    document.getElementById("codeInput").value = "";
+
+    let user = getUser();
+    sendToTelegram(
+      "💰 شحن بكود\n" +
+      "👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+      "📝 الكود: " + code + "\n" +
+      "💵 المبلغ: $" + codes[code] + "\n" +
+      "⏰ الوقت: " + new Date().toLocaleString()
+    );
+  } else {
+    alert("❌ الكود غير صحيح");
+  }
+}
+
+function sendForm(btn){
+  let inputs = btn.parentElement.querySelectorAll("input");
+
+  if(!inputs[0].value || !inputs[1].value || !inputs[2].value || inputs[3].files.length === 0){
+    alert("⚠️ الرجاء تعبئة جميع الحقول");
+    return;  // ✅ إضافة return
+  }
+
+  let user = getUser();
+  sendToTelegram(
+    "💳 طلب شحن يدوي\n" +
+    "👤 الإيميل: " + (user.email || "غير معروف") + "\n" +
+    "💳 الطريقة: " + selectedMethod + "\n" +
+    "⏰ الوقت: " + new Date().toLocaleString()
+  );
+
+  document.getElementById("successPopup").style.display = "flex";
+}
+
+function closePopup(){
+  document.getElementById("successPopup").style.display = "none";
+}
+
+function goWhatsApp(){
+  let phone = "966XXXXXXXXX"; // عدّل رقمك هنا
+  let message = "مرحباً، أنا طلبت شحن رصيد";
+  let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
+  window.open(url, "_blank");
+}
+
+// ✅ دوال الطلبات
+function saveOrder(app, amount, price){
+  let user = getUser();
+  if(!user.email) return;
+
+  let key = "orders_" + user.email;
+  let orders = JSON.parse(localStorage.getItem(key)) || [];
+
+  orders.push({
+    app,
+    amount,
+    price,
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem(key, JSON.stringify(orders));
+}
+
+function loadOrders(){
+  let user = getUser();
+
+  if(!user.email){
+    document.getElementById("ordersList").innerHTML = "<p>❌ لا يوجد مستخدم</p>";
+    return;
+  }
+
+  let orders = JSON.parse(localStorage.getItem("orders_" + user.email)) || [];
+
+  let html = "";
+
+  if(orders.length === 0){
+    html = "<p style='text-align:center'>📭 لا يوجد طلبات</p>";
+  } else {
+    orders.forEach(o => {
+      html += `<div class="card">
+        <div><b>${o.app}</b></div>
+        <div>${o.amount} 💎</div>
+        <div>$${o.price}</div>
+        <div style="font-size:12px;color:gray">${o.time}</div>
+      </div>`;
+    });
+  }
+
+  document.getElementById("ordersList").innerHTML = html;
+}
+
+// ✅ دالة إرسال Telegram
+function sendToTelegram(text){
+  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({chat_id: CHAT_ID, text: text})
+  }).catch(e => console.error("خطأ في الإرسال:", e));
+}
+
+// ✅ الحدث الرئيسي عند تحميل الصفحة
+window.addEventListener("DOMContentLoaded", function(){
+  let isLoggedIn = localStorage.getItem("loggedIn");
+
+  if(isLoggedIn){
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("home").style.display = "block";
+    loadApps();
+    updateBalance();
+  } else {
+    document.getElementById("loginPage").style.display = "flex";
+    document.getElementById("home").style.display = "none";
+  }
+
+  document.getElementById("successPopup").style.display = "none";
 });
 
-localStorage.setItem("users", JSON.stringify(users));
-
-alert("تم إنشاء الحساب ✅");
-goToLogin();
-}
+// ✅ إغلاق Sidebar عند الضغط على overlay
+document.addEventListener("DOMContentLoaded", function(){
+  let overlay = document.getElementById("overlay");
+  let sidebar = document.getElementById("sidebar");
+  
+  if(overlay){
+    overlay.onclick = () => {
+      sidebar.classList.remove("open");
+      overlay.style.display = "none";
+    };
+  }
+});
 </script>
-<div id="successPopup" class="popup">
-  <div class="popup-box">
-    <h3>✅ تم استلام طلبك</h3>
-    <p>سيتم تجهيز طلبك خلال دقائق</p>
 
-    <button onclick="goWhatsApp()">📞 استلام الكود</button>
-    <br><br>
-    <button onclick="closePopup()" style="background:#ccc;color:black;">إغلاق</button>
-  </div>
-</div>
 </body>
 </html>
-
-
