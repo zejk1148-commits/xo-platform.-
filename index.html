@@ -313,6 +313,7 @@ height:40px;
 </div>
 
 <script>
+console.log("1");
 document.addEventListener("DOMContentLoaded", function(){
   let btn = document.getElementById("goRegister");
   if(btn){
@@ -383,6 +384,7 @@ let codes = {
 "I5O4P3A2":100,"S1D9F8G7":100,"H6J5K4L3":100,"Z2X1C9V8":100,"B7N6M5Q4":100,
 "W3E2R1T9":100,"Y8U7I6O5":100,"P4A3S2D1":100,"F9G8H7J6":100,"K5L4Z3X2":100,
 }; 
+console.log("2");
 function useCode(){
 let code=document.getElementById("codeInput").value.trim();
 if(!code){alert("ادخل الكود");return;}
@@ -615,7 +617,7 @@ sendToTelegram(
 
 oldUseCode();
 };
-
+console.log("3");
 const oldSendForm = sendForm;
 sendForm = function(btn){
 let user = getUser();
