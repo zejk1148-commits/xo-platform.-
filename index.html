@@ -1676,13 +1676,17 @@ function confirmBuy(){
   closePopup();
   } 
 function openBuyPopup(i){
-    alert("OK"); // اختبار
+  selectedApp = apps[i].name;
 
-    selectedApp = apps[i].name;
+  document.getElementById("buyPopup").style.display = "flex";
+  document.getElementById("popupTitle").innerText = apps[i].name;
 
-    document.getElementById("buyPopup").style.display = "flex";
-    document.getElementById("popupTitle").innerText = apps[i].name;
-  } 
+  // 👇 يحط الحد الأدنى مباشرة
+  document.getElementById("popupAmount").value = MIN_PURCHASE[selectedApp] || 1;
+
+  // 👇 يحسب السعر فوراً
+  updatePopupPrice();
+}
   function updatePopupPrice(){
 
   let amount = parseFloat(document.getElementById("popupAmount").value);
