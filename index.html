@@ -1421,8 +1421,10 @@ async function loadOrders(){
       return;
     }
     
-    const { data: orders } = await supabaseClient.from("orders").select("*").eq("user_id", user.id);
-    
+    const { data: orders } = await supabaseClient
+  .from("orders")
+  .select("*")
+  .order("created_at", { ascending: false });
     let html='<h3>طلباتي</h3>';
     
     if(!orders || orders.length === 0){
@@ -1431,8 +1433,24 @@ async function loadOrders(){
       orders.forEach(o=>{
         let statusText=o.completed?"✅ تم التنفيذ":"⏳ قيد الانتظار";
         let statusClass=o.completed?"completed":"";
-        html+=`<div class="order-item ${statusClass}"><h3>${o.app}</h3><p><strong>الكمية:</strong> ${o.amount} 💎</p><p><strong>السعر:</strong> $${o.price}</p><p><strong>📅 التاريخ:</strong> ${new Date(o.created_at).toLocaleDateString('ar-EG')}</p><p><strong>⏰ الوقت:</strong> ${new Date(o.created_at).toLocaleTimeString('ar-EG')}</p><div class="status ${o.completed?"completed":"pending"}"><strong>${statusText}</strong></div></div>`;
-      });
+        html+= `<div class="order-item ${statusClass}">
+  <h3>${o.app}</h3>
+  <p><strong>الكمية:</strong> ${o.amount}</p>
+  <p><strong>السعر:</strong> ${o.price}$</p>
+
+  ${
+    o.status === "pending"
+    ? `
+      <button onclick="approveOrder(${o.id})" style="background:green;color:white;padding:6px 10px;border:none;border-radius:6px;">✔ تنفيذ</button>
+      <button onclick="rejectOrder(${o.id})" style="background:red;color:white;padding:6px 10px;border:none;border-radius:6px;">✖ رفض</button>
+      `
+    : o.status === "approved"
+      ? "✔ تم التنفيذ"
+      : "❌ مرفوض"
+  }
+
+</div>`;
+         });
     }
     
     document.getElementById("ordersList").innerHTML=html;
@@ -1478,6 +1496,37 @@ async function loadOrders(){
   alert("✅ تم التنفيذ");
   loadOrders();
   }
+  // تنفيذ الطلب
+async function approveOrder(orderId){
+  const { error } = await supabaseClient
+    .from("orders")
+    .update({ status: "approved", completed: true })
+    .eq("id", orderId);
+
+  if(error){
+    alert("❌ خطأ: " + error.message);
+    return;
+  }
+
+  alert("✔ تم تنفيذ الطلب");
+  loadOrders();
+}
+
+// رفض الطلب
+async function rejectOrder(orderId){
+  const { error } = await supabaseClient
+    .from("orders")
+    .update({ status: "rejected", completed: true })
+    .eq("id", orderId);
+
+  if(error){
+    alert("❌ خطأ: " + error.message);
+    return;
+  }
+
+  alert("❌ تم رفض الطلب");
+  loadOrders();
+}
 async function loadPayments(){
   try {
     const user = getUser();
