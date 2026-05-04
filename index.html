@@ -1683,11 +1683,9 @@ function openBuyPopup(i){
 
   // 👇 يحط الحد الأدنى مباشرة
   document.getElementById("popupAmount").value = MIN_PURCHASE[selectedApp] || 1;
-
-  // 👇 يحسب السعر فوراً
-  updatePopupPrice();
+  document.getElementById("popupAmount").dispatchEvent(new Event("input"));
 }
-  function updatePopupPrice(){
+function updatePopupPrice(){
 
   let amount = parseFloat(document.getElementById("popupAmount").value);
 
