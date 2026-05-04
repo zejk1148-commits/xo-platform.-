@@ -704,7 +704,26 @@ const appPrices = {
   "SoulStar": { 10000: 1.081 },
   "4fun": { 15000: 0.950 }
 };
-
+const MIN_PURCHASE = {
+  "يا أهلا": 1000,
+  "Soul Chill": 1000,
+  "Sugo": 8000,
+  "YoParty": 6000,
+  "Zina Live": 10000,
+  "SoulStar": 10000,
+  "4fun": 15000
+};
+const VIP_LEVELS = [
+  { min: 1000, level: 3 },
+  { min: 500, level: 2 },
+  { min: 50, level: 1 }
+];
+const VIP_DISCOUNTS = {
+  0: 0,
+  1: 0.02, // 2%
+  2: 0.05, // 5%
+  3: 0.10  // 10%
+};
 const apps=[
   {name:"يا أهلا",img:"https://i.ibb.co/G307spDQ/image.png"},
   {name:"Soltchen",img:"https://i.ibb.co/TMqz7RhY/image.jpg"},
@@ -1241,7 +1260,10 @@ function toggle(){
 function loadApps(){
   let html="";
   apps.forEach((app,i)=>{
-    html+=`<div class="card" onclick="openApp(${i})"><img src="${app.img}" alt="${app.name}"><div><strong>${app.name}</strong></div></div>`;
+  html += `<div class="card" onclick="openBuyPopup(${i})">
+  <img src="${app.img}" alt="${app.name}">
+  <div><strong>${app.name}</strong></div>
+</div>`;
   });
   document.getElementById("appsGrid").innerHTML=html;
 }
@@ -1255,8 +1277,6 @@ function openApp(i){
   document.getElementById("appPrice").innerText = "0.00";
 }
 async function buyApp(){
-
-  alert("دخلنا الدالة");
 
   let userId = document.getElementById("gameIdInput")?.value;
 
@@ -1627,7 +1647,110 @@ setInterval(() => {
   }
   syncData();
 }, 30000);
-</script>
+// كودك القديم فوق
 
+function openPopup(appName){
+  document.getElementById("buyPopup").style.display = "flex";
+  document.getElementById("popupTitle").innerText = appName;
+}
+
+function closePopup(){
+  document.getElementById("buyPopup").style.display = "none";
+
+  // تصفير القيم
+  document.getElementById("popupAmount").value = "";
+  document.getElementById("popupUserId").value = "";
+  document.getElementById("popupTotal").value = "";
+  document.getElementById("popupMainPrice").innerText = "$0.00";
+}
+
+function confirmBuy(){
+  let id = document.getElementById("popupUserId").value;
+
+  if(!id){
+    alert("⚠️ لازم تدخل ID");
+    return;
+  }
+
+  alert("✅ تم (تجريبي)");
+  closePopup();
+  } 
+function openBuyPopup(i){
+    alert("OK"); // اختبار
+
+    selectedApp = apps[i].name;
+
+    document.getElementById("buyPopup").style.display = "flex";
+    document.getElementById("popupTitle").innerText = apps[i].name;
+  } 
+  function updatePopupPrice(){
+
+  let amount = parseFloat(document.getElementById("popupAmount").value) || 0;
+
+  let min = MIN_PURCHASE[selectedApp] || 1;
+
+  // 🔴 إذا أقل من الحد الأدنى
+  if (amount < min) {
+    document.getElementById("minwarning").style.display = "block";
+    document.getElementById("minwarning").innerText = " أقل كمية: " + min;
+
+    document.getElementById("popupTotal").value = "0.00";
+    document.getElementById("popupMainPrice").innerText = "$0.00";
+    return;
+  } else {
+    document.getElementById("minwarning").style.display = "none";
+  }
+
+  // 🔵 إذا الإدخال فاضي
+  if (!amount || amount <= 0){
+    document.getElementById("popupTotal").value = "0.00";
+    document.getElementById("popupMainPrice").innerText = "$0.00";
+    return;
+  }
+
+  let basePrice = appPrices[selectedApp];
+
+  if (typeof basePrice === "object") {
+    basePrice = Object.values(basePrice)[0];
+  }
+
+ let qty = parseFloat(Object.keys(appPrices[selectedApp])[0]);
+  let pricePerUnit = basePrice / qty;
+  let total = amount * pricePerUnit;
+
+  document.getElementById("popupTotal").value = total.toFixed(3);
+  document.getElementById("popupMainPrice").innerText = "$" + total.toFixed(3);
+  }
+</script>
+<div id="buyPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+
+  <div style="width:90%; max-width:400px; background:white; border-radius:20px; padding:20px; text-align:center;">
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+
+  <div id="popupMainPrice" style="background:#0d6efd; color:white; padding:8px 15px; border-radius:20px;">
+    $0.00
+  </div>
+
+    </div>
+    <h3 id="popupTitle">اسم التطبيق</h3>
+
+    <div style="display:flex; gap:10px; margin:10px 0;">
+      <input id="popupAmount" type="number" placeholder="العدد" style="width:50%; padding:10px;" oninput="updatePopupPrice()">
+      <div id="minWarning" style="color:red; font-size:13px; display:none;"></div>
+      <input id="popupTotal" type="text" placeholder="السعر" disabled style="width:50%; padding:10px;">
+    </div>
+
+    <input id="popupUserId" placeholder="ID المستخدم" style="width:100%; padding:10px; margin-bottom:10px;">
+
+    <div style="display:flex; gap:10px;">
+      <button onclick="closePopup()" style="width:50%;">إلغاء</button>
+      <button onclick="confirmBuy()" style="width:50%;">شراء</button>
+    </div>
+
+  </div>
+
+</div>
 </body>
   </html>
+
