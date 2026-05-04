@@ -1392,15 +1392,21 @@ async function saveOrder(app, amount, price, gameId){
     const user = getUser();
     if(!user.id) return;
     
-    await supabaseClient.from("orders").insert([{
-      user_id: user.id,
-      user_email: user.email,
-      app: app,
-      amount: amount,
-      price: price,
-      game_id: gameId,
-      completed: false
-    }]);
+const { error } = await supabaseClient.from("orders").insert([{
+  user_id: user.id,
+  user_email: user.email,
+  app: app,
+  amount: amount,
+  price: price,
+  game_id: gameId,
+  completed: false
+}]);
+
+if (error) {
+  console.log("ORDER ERROR:", error);
+  alert("❌ خطأ: " + error.message);
+  return;
+  }
   } catch(error) {
     console.error("خطأ في حفظ الطلب:", error);
     throw error;
