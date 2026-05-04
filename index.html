@@ -1440,7 +1440,44 @@ async function loadOrders(){
     console.error("خطأ في تحميل الطلبات:", error);
   }
 }
+  async function completeOrder(orderId){
 
+  // 1. جيب بيانات الطلب
+  const { data: order, error: fetchError } = await supabaseClient
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .single();
+
+  if(fetchError){
+    alert("❌ خطأ في جلب الطلب");
+    return;
+  }
+
+  // 2. حدّث الحالة
+  const { error } = await supabaseClient
+    .from("orders")
+    .update({ completed: true })
+    .eq("id", orderId);
+
+  if(error){
+    alert("❌ " + error.message);
+    return;
+  }
+
+  // 3. إرسال رسالة تيليجرام 🔥
+  sendToTelegram(
+    "✅ تم تنفيذ الطلب\n" +
+    "👤 المستخدم: " + order.user_email + "\n" +
+    "🎮 التطبيق: " + order.app + "\n" +
+    "🆔 ID: " + order.game_id + "\n" +
+    "💎 الكمية: " + order.amount + "\n" +
+    "💰 السعر: $" + order.price
+  );
+
+  alert("✅ تم التنفيذ");
+  loadOrders();
+  }
 async function loadPayments(){
   try {
     const user = getUser();
