@@ -1255,48 +1255,52 @@ function openApp(i){
 }
   async function buyApp(){
 
-  let userId = prompt("ادخل ID اللاعب:");
-if(!userId){
-  alert("⚠️ لازم تدخل ID");
-  return;
+  let userId = document.getElementById("gameIdInput").value;
+
+  if(!userId || userId.trim() === ""){
+    alert("⚠️ لازم تدخل ID");
+    return;
   }
+
   let amount = parseFloat(document.getElementById("appAmount").value);
+
   if(!amount || amount <= 0){
     alert("❌ ادخل كمية صحيحة");
     return;
   }
-  
-  let priceStr = document.getElementById("appPrice").innerText;
-  let price = parseFloat(priceStr);
-  
+
+  let price = parseFloat(document.getElementById("appPrice").innerText);
+
   if(price <= 0){
-    alert("❌ هذه الكمية غير صحيحة");
+    alert("❌ السعر خطأ");
     return;
   }
-  
+
   try {
     let balance = await getBalance();
+
     if(balance < price){
       alert("❌ رصيدك لا يكفي");
       return;
     }
-    
+
     let newBalance = balance - price;
     await setBalance(newBalance);
-    
+
     const user = getUser();
     await saveOrder(selectedApp, amount, price, userId);
-    
-    sendToTelegram("🛒 طلب شراء جديد\n👤 الإيميل: "+(user.email||"غير معروف")+"\n🆔 ID اللعبة: "+userId+"\n📱 التطبيق: "+selectedApp+"\n💎 الكمية: "+amount+"\n💰 السعر: $"+price.toFixed(2)+"\n📅 التاريخ: "+new Date().toLocaleDateString('ar-EG')+"\n⏰ الوقت: "+new Date().toLocaleTimeString('ar-EG'));
-    
-    alert("✅ تم تأكيد الطلب!");
+
+    sendToTelegram("🛒 طلب جديد");
+
+    alert("✅ تم تأكيد الطلب");
     syncData();
     goHome();
-  } catch(error) {
-    console.error("خطأ في الشراء:", error);
-    alert("❌ خطأ: " + error.message);
+
+  } catch(error){
+    console.error(error);
+    alert("❌ " + error.message);
   }
-}
+  }
 
 async function sendFormWithImage(type){
   let amountInput, imageInput, method, currencyType;
