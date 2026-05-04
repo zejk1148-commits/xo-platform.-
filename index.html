@@ -1685,14 +1685,22 @@ function openBuyPopup(i){
   } 
   function updatePopupPrice(){
 
-  let amount = parseFloat(document.getElementById("popupAmount").value) || 0;
+  let amount = parseFloat(document.getElementById("popupAmount").value);
+
+  // 1️⃣ تحقق من الإدخال
+  if (!amount || amount <= 0){
+    document.getElementById("popupTotal").value = "0.00";
+    document.getElementById("popupMainPrice").innerText = "$0.00";
+    document.getElementById("minwarning").style.display = "none";
+    return;
+  }
 
   let min = MIN_PURCHASE[selectedApp] || 1;
 
-  // 🔴 إذا أقل من الحد الأدنى
+  // 2️⃣ تحقق من الحد الأدنى
   if (amount < min) {
     document.getElementById("minwarning").style.display = "block";
-    document.getElementById("minwarning").innerText = " أقل كمية: " + min;
+    document.getElementById("minwarning").innerText = "اقل كمية: " + min;
 
     document.getElementById("popupTotal").value = "0.00";
     document.getElementById("popupMainPrice").innerText = "$0.00";
@@ -1701,20 +1709,15 @@ function openBuyPopup(i){
     document.getElementById("minwarning").style.display = "none";
   }
 
-  // 🔵 إذا الإدخال فاضي
-  if (!amount || amount <= 0){
-    document.getElementById("popupTotal").value = "0.00";
-    document.getElementById("popupMainPrice").innerText = "$0.00";
-    return;
-  }
-
+  // 3️⃣ حساب السعر
   let basePrice = appPrices[selectedApp];
 
   if (typeof basePrice === "object") {
     basePrice = Object.values(basePrice)[0];
   }
 
- let qty = parseFloat(Object.keys(appPrices[selectedApp])[0]);
+  let qty = parseFloat(Object.keys(appPrices[selectedApp])[0]);
+
   let pricePerUnit = basePrice / qty;
   let total = amount * pricePerUnit;
 
