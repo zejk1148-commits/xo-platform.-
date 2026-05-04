@@ -1718,7 +1718,7 @@ function updatePopupPrice(){
     basePrice = Object.values(basePrice)[0];
   }
 
-  let qty = parseFloat(Object.keys(appPrices[selectedApp])[0]);
+let qty = 1;
 
   let pricePerUnit = basePrice / qty;
   let total = amount * pricePerUnit;
