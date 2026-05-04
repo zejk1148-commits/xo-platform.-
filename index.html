@@ -1253,14 +1253,14 @@ function openApp(i){
   document.getElementById("appAmount").value = "";
   document.getElementById("appPrice").innerText = "0.00";
 }
+  async function buyApp(){
 
-async function buyApp(){
-  let userId=prompt("ادخل ID اللاعب:");
-  if(!userId){
+  let userId = document.getElementById("gameIdInput").value;
+
+  if(!userId || userId.trim() === ""){
     alert("⚠️ لازم تدخل ID");
     return;
   }
-  
   let amount = parseFloat(document.getElementById("appAmount").value);
   if(!amount || amount <= 0){
     alert("❌ ادخل كمية صحيحة");
