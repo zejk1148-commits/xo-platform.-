@@ -1314,6 +1314,49 @@ async function confirmBuy() {
     alert("❌ فشل الطلب: " + error.message);
   }
 }
+function updatePopupPrice(){
+  let amountInput = document.getElementById("popupAmount");
+  let priceInput = document.getElementById("popupTotal");
+  let priceText = document.getElementById("popupMainPrice");
+  let minWarning = document.getElementById("minWarning");
+
+  if (!amountInput || !priceInput) return;
+
+  let amount = parseFloat(amountInput.value);
+  
+  if (!amount || amount <= 0){
+    priceInput.value = "0.00";
+    if(priceText) priceText.innerText = "$0.00";
+    if(minWarning) minWarning.style.display = "none";
+    return;
+  }
+
+  let min = MIN_PURCHASE[selectedApp] || 1;
+
+  if (amount < min) {
+    if(minWarning) {
+      minWarning.style.display = "block";
+      minWarning.innerText = "أقل كمية: " + min;
+    }
+    priceInput.value = "0.00";
+    if(priceText) priceText.innerText = "$0.00";
+    return;
+  } else {
+    if(minWarning) minWarning.style.display = "none";
+  }
+
+  let priceData = appPrices[selectedApp];
+  let finalPrice = 0;
+
+  if (priceData) {
+    let baseQty = Object.keys(priceData)[0]; 
+    let basePrice = priceData[baseQty];
+    finalPrice = (amount / baseQty) * basePrice;
+  }
+
+  priceInput.value = finalPrice.toFixed(2);
+  if(priceText) priceText.innerText = "$" + finalPrice.toFixed(2);
+}
 
 
 async function sendFormWithImage(type){
