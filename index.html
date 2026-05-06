@@ -519,7 +519,6 @@ height:80px;
 <div class="card">
 <div>أدخل الكمية اللي بتبيها</div>
 </div>
-<input id="gameIdInput" placeholder="ادخل ID اللاعب" style="width:90%;margin:10px 0;padding:10px;">
 <p style="text-align:center;color:#2ecc71;font-weight:bold;margin:15px 0 10px 0;">💎 أدخل الكمية</p>
 <input type="number" id="appAmount" placeholder="أدخل الكمية" step="1" oninput="calculateAppPrice()" style="width:90%;margin:5px auto;padding:10px;border:1px solid #ddd;border-radius:5px;display:block;box-sizing:border-box;">
 
@@ -704,26 +703,7 @@ const appPrices = {
   "SoulStar": { 10000: 1.081 },
   "4fun": { 15000: 0.950 }
 };
-const MIN_PURCHASE = {
-  "يا أهلا": 1000,
-  "Soul Chill": 1000,
-  "Sugo": 8000,
-  "YoParty": 6000,
-  "Zina Live": 10000,
-  "SoulStar": 10000,
-  "4fun": 15000
-};
-const VIP_LEVELS = [
-  { min: 1000, level: 3 },
-  { min: 500, level: 2 },
-  { min: 50, level: 1 }
-];
-const VIP_DISCOUNTS = {
-  0: 0,
-  1: 0.02, // 2%
-  2: 0.05, // 5%
-  3: 0.10  // 10%
-};
+
 const apps=[
   {name:"يا أهلا",img:"https://i.ibb.co/G307spDQ/image.png"},
   {name:"Soltchen",img:"https://i.ibb.co/TMqz7RhY/image.jpg"},
@@ -1260,104 +1240,64 @@ function toggle(){
 function loadApps(){
   let html="";
   apps.forEach((app,i)=>{
-  html += `<div class="card" onclick="openBuyPopup(${i})">
-  <img src="${app.img}" alt="${app.name}">
-  <div><strong>${app.name}</strong></div>
-</div>`;
+    html+=`<div class="card" onclick="openApp(${i})"><img src="${app.img}" alt="${app.name}"><div><strong>${app.name}</strong></div></div>`;
   });
   document.getElementById("appsGrid").innerHTML=html;
 }
-function openBuyPopup(i){
+
+function openApp(i){
+  hideAll();
+  document.getElementById("appPage").style.display="block";
+  document.getElementById("title").innerText=apps[i].name;
   selectedApp = apps[i].name;
-  document.getElementById("buyPopup").style.display = "flex";
-  document.getElementById("popupTitle").innerText = selectedApp;
-
-  // وضع الحد الأدنى للكمية فوراً
-  let minAmount = MIN_PURCHASE[selectedApp] || 1;
-  document.getElementById("popupAmount").value = minAmount;
-  document.getElementById("popupUserId").value = "";
-
-  // تحديث السعر فوراً ليظهر عند الفتح
-  updatePopupPrice(); 
+  document.getElementById("appAmount").value = "";
+  document.getElementById("appPrice").innerText = "0.00";
 }
 
-async function confirmBuy() {
-  let gameId = document.getElementById("popupUserId").value;
-  let amount = parseFloat(document.getElementById("popupAmount").value);
-  let price = parseFloat(document.getElementById("popupTotal").value);
-
-  if (!gameId) { alert("⚠️ لازم تدخل ID اللاعب"); return; }
-  if (!amount || price <= 0) { alert("⚠️ الكمية أو السعر غير صحيح"); return; }
-
+async function buyApp(){
+  let userId=prompt("ادخل ID اللاعب:");
+  if(!userId){
+    alert("⚠️ لازم تدخل ID");
+    return;
+  }
+  
+  let amount = parseFloat(document.getElementById("appAmount").value);
+  if(!amount || amount <= 0){
+    alert("❌ ادخل كمية صحيحة");
+    return;
+  }
+  
+  let priceStr = document.getElementById("appPrice").innerText;
+  let price = parseFloat(priceStr);
+  
+  if(price <= 0){
+    alert("❌ هذه الكمية غير صحيحة");
+    return;
+  }
+  
   try {
     let balance = await getBalance();
-    if (balance < price) { alert("❌ رصيدك لا يكفي"); return; }
-
+    if(balance < price){
+      alert("❌ رصيدك لا يكفي");
+      return;
+    }
+    
     let newBalance = balance - price;
     await setBalance(newBalance);
-    await saveOrder(selectedApp, amount, price, gameId);
-
+    
     const user = getUser();
-    sendToTelegram(
-      "🛒 طلب جديد\n" +
-      "👤 المستخدم: " + (user.email || "غير معروف") + "\n" +
-      "🎮 التطبيق: " + selectedApp + "\n" +
-      "🆔 ID: " + gameId + "\n" +
-      "📦 الكمية: " + amount + "\n" +
-      "💰 السعر المخصوم: $" + price.toFixed(2)
-    );
-
-    alert("✅ تم تأكيد الطلب وإرساله");
-    closePopup();
+    await saveOrder(selectedApp, amount, price, userId);
+    
+    sendToTelegram("🛒 طلب شراء جديد\n👤 الإيميل: "+(user.email||"غير معروف")+"\n🆔 ID اللعبة: "+userId+"\n📱 التطبيق: "+selectedApp+"\n💎 الكمية: "+amount+"\n💰 السعر: $"+price.toFixed(2)+"\n📅 التاريخ: "+new Date().toLocaleDateString('ar-EG')+"\n⏰ الوقت: "+new Date().toLocaleTimeString('ar-EG'));
+    
+    alert("✅ تم تأكيد الطلب!");
     syncData();
-  } catch (error) {
-    alert("❌ فشل الطلب: " + error.message);
+    goHome();
+  } catch(error) {
+    console.error("خطأ في الشراء:", error);
+    alert("❌ خطأ: " + error.message);
   }
 }
-function updatePopupPrice(){
-  let amountInput = document.getElementById("popupAmount");
-  let priceInput = document.getElementById("popupTotal");
-  let priceText = document.getElementById("popupMainPrice");
-  let minWarning = document.getElementById("minWarning");
-
-  if (!amountInput || !priceInput) return;
-
-  let amount = parseFloat(amountInput.value);
-  
-  if (!amount || amount <= 0){
-    priceInput.value = "0.00";
-    if(priceText) priceText.innerText = "$0.00";
-    if(minWarning) minWarning.style.display = "none";
-    return;
-  }
-
-  let min = MIN_PURCHASE[selectedApp] || 1;
-
-  if (amount < min) {
-    if(minWarning) {
-      minWarning.style.display = "block";
-      minWarning.innerText = "أقل كمية: " + min;
-    }
-    priceInput.value = "0.00";
-    if(priceText) priceText.innerText = "$0.00";
-    return;
-  } else {
-    if(minWarning) minWarning.style.display = "none";
-  }
-
-  let priceData = appPrices[selectedApp];
-  let finalPrice = 0;
-
-  if (priceData) {
-    let baseQty = Object.keys(priceData)[0]; 
-    let basePrice = priceData[baseQty];
-    finalPrice = (amount / baseQty) * basePrice;
-  }
-
-  priceInput.value = finalPrice.toFixed(2);
-  if(priceText) priceText.innerText = "$" + finalPrice.toFixed(2);
-}
-
 
 async function sendFormWithImage(type){
   let amountInput, imageInput, method, currencyType;
@@ -1452,21 +1392,15 @@ async function saveOrder(app, amount, price, gameId){
     const user = getUser();
     if(!user.id) return;
     
-const { error } = await supabaseClient.from("orders").insert([{
-  user_id: user.id,
-  user_email: user.email,
-  app: app,
-  amount: amount,
-  price: price,
-  game_id: gameId,
-  completed: false
-}]);
-
-if (error) {
-  console.log("ORDER ERROR:", error);
-  alert("❌ خطأ: " + error.message);
-  return;
-  }
+    await supabaseClient.from("orders").insert([{
+      user_id: user.id,
+      user_email: user.email,
+      app: app,
+      amount: amount,
+      price: price,
+      game_id: gameId,
+      completed: false
+    }]);
   } catch(error) {
     console.error("خطأ في حفظ الطلب:", error);
     throw error;
@@ -1481,10 +1415,8 @@ async function loadOrders(){
       return;
     }
     
-    const { data: orders } = await supabaseClient
-  .from("orders")
-  .select("*")
-  .order("created_at", { ascending: false });
+    const { data: orders } = await supabaseClient.from("orders").select("*").eq("user_id", user.id);
+    
     let html='<h3>طلباتي</h3>';
     
     if(!orders || orders.length === 0){
@@ -1493,24 +1425,8 @@ async function loadOrders(){
       orders.forEach(o=>{
         let statusText=o.completed?"✅ تم التنفيذ":"⏳ قيد الانتظار";
         let statusClass=o.completed?"completed":"";
-        html+= `<div class="order-item ${statusClass}">
-  <h3>${o.app}</h3>
-  <p><strong>الكمية:</strong> ${o.amount}</p>
-  <p><strong>السعر:</strong> ${o.price}$</p>
-
-  ${
-    o.status === "pending"
-    ? `
-      <button onclick="approveOrder(${o.id})" style="background:green;color:white;padding:6px 10px;border:none;border-radius:6px;">✔ تنفيذ</button>
-      <button onclick="rejectOrder(${o.id})" style="background:red;color:white;padding:6px 10px;border:none;border-radius:6px;">✖ رفض</button>
-      `
-    : o.status === "approved"
-      ? "✔ تم التنفيذ"
-      : "❌ مرفوض"
-  }
-
-</div>`;
-         });
+        html+=`<div class="order-item ${statusClass}"><h3>${o.app}</h3><p><strong>الكمية:</strong> ${o.amount} 💎</p><p><strong>السعر:</strong> $${o.price}</p><p><strong>📅 التاريخ:</strong> ${new Date(o.created_at).toLocaleDateString('ar-EG')}</p><p><strong>⏰ الوقت:</strong> ${new Date(o.created_at).toLocaleTimeString('ar-EG')}</p><div class="status ${o.completed?"completed":"pending"}"><strong>${statusText}</strong></div></div>`;
+      });
     }
     
     document.getElementById("ordersList").innerHTML=html;
@@ -1518,75 +1434,7 @@ async function loadOrders(){
     console.error("خطأ في تحميل الطلبات:", error);
   }
 }
-  async function completeOrder(orderId){
 
-  // 1. جيب بيانات الطلب
-  const { data: order, error: fetchError } = await supabaseClient
-    .from("orders")
-    .select("*")
-    .eq("id", orderId)
-    .single();
-
-  if(fetchError){
-    alert("❌ خطأ في جلب الطلب");
-    return;
-  }
-
-  // 2. حدّث الحالة
-  const { error } = await supabaseClient
-    .from("orders")
-    .update({ completed: true })
-    .eq("id", orderId);
-
-  if(error){
-    alert("❌ " + error.message);
-    return;
-  }
-
-  // 3. إرسال رسالة تيليجرام 🔥
-  sendToTelegram(
-    "✅ تم تنفيذ الطلب\n" +
-    "👤 المستخدم: " + order.user_email + "\n" +
-    "🎮 التطبيق: " + order.app + "\n" +
-    "🆔 ID: " + order.game_id + "\n" +
-    "💎 الكمية: " + order.amount + "\n" +
-    "💰 السعر: $" + order.price
-  );
-
-  alert("✅ تم التنفيذ");
-  loadOrders();
-  }
-  // تنفيذ الطلب
-async function approveOrder(orderId){
-  const { error } = await supabaseClient
-    .from("orders")
-    .update({ status: "approved", completed: true })
-    .eq("id", orderId);
-
-  if(error){
-    alert("❌ خطأ: " + error.message);
-    return;
-  }
-
-  alert("✔ تم تنفيذ الطلب");
-  loadOrders();
-}
-
-// رفض الطلب
-async function rejectOrder(orderId){
-  const { error } = await supabaseClient
-    .from("orders")
-    .update({ status: "rejected", completed: true })
-    .eq("id", orderId);
-
-  if(error){
-    alert("❌ خطأ: " + error.message);
-    return;
-  }
-
-  alert("❌ تم رفض الطلب");
-  loadOrders();
-}
 async function loadPayments(){
   try {
     const user = getUser();
@@ -1674,115 +1522,9 @@ setInterval(() => {
   }
   syncData();
 }, 30000);
-// كودك القديم فوق
-
-function openPopup(appName){
-  document.getElementById("buyPopup").style.display = "flex";
-  document.getElementById("popupTitle").innerText = appName;
-}
-
-function closePopup(){
-  document.getElementById("buyPopup").style.display = "none";
-
-  // تصفير القيم
-  document.getElementById("popupAmount").value = "";
-  document.getElementById("popupUserId").value = "";
-  document.getElementById("popupTotal").value = "";
-  document.getElementById("popupMainPrice").innerText = "$0.00";
-}
-
-function confirmBuy(){
-  let id = document.getElementById("popupUserId").value;
-
-  if(!id){
-    alert("⚠️ لازم تدخل ID");
-    return;
-  }
-
-  alert("✅ تم (تجريبي)");
-  closePopup();
-  } 
-function openBuyPopup(i){
-  selectedApp = apps[i].name;
-
-  document.getElementById("buyPopup").style.display = "flex";
-  document.getElementById("popupTitle").innerText = apps[i].name;
-
-  // 👇 يحط الحد الأدنى مباشرة
-  document.getElementById("popupAmount").value = MIN_PURCHASE[selectedApp] || 1;
-  document.getElementById("popupAmount").dispatchEvent(new Event("input"));
-}
-function updatePopupPrice(){
-
-  let amount = parseFloat(document.getElementById("popupAmount").value);
-
-  // 1️⃣ تحقق من الإدخال
-  if (!amount || amount <= 0){
-    document.getElementById("popupTotal").value = "0.00";
-    document.getElementById("popupMainPrice").innerText = "$0.00";
-    document.getElementById("minwarning").style.display = "none";
-    return;
-  }
-
-  let min = MIN_PURCHASE[selectedApp] || 1;
-
-  // 2️⃣ تحقق من الحد الأدنى
-  if (amount < min) {
-    document.getElementById("minwarning").style.display = "block";
-    document.getElementById("minwarning").innerText = "اقل كمية: " + min;
-
-    document.getElementById("popupTotal").value = "0.00";
-    document.getElementById("popupMainPrice").innerText = "$0.00";
-    return;
-  } else {
-    document.getElementById("minwarning").style.display = "none";
-  }
-
-  // 3️⃣ حساب السعر
-  let basePrice = appPrices[selectedApp];
-
-  if (typeof basePrice === "object") {
-    basePrice = Object.values(basePrice)[0];
-  }
-
-let qty = 1;
-
-  let pricePerUnit = basePrice / qty;
-  let total = amount * pricePerUnit;
-
-  document.getElementById("popupTotal").value = total.toFixed(3);
-  document.getElementById("popupMainPrice").innerText = "$" + total.toFixed(3);
-  }
 </script>
-<div id="buyPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
 
-  <div style="width:90%; max-width:400px; background:white; border-radius:20px; padding:20px; text-align:center;">
-
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-
-  <div id="popupMainPrice" style="background:#0d6efd; color:white; padding:8px 15px; border-radius:20px;">
-    $0.00
-  </div>
-
-    </div>
-    <h3 id="popupTitle">اسم التطبيق</h3>
-
-    <div style="display:flex; gap:10px; margin:10px 0;">
-      <input id="popupAmount" type="number" placeholder="العدد" style="width:50%; padding:10px;" oninput="updatePopupPrice()">
-      <div id="minWarning" style="color:red; font-size:13px; display:none;"></div>
-      <input id="popupTotal" type="text" placeholder="السعر" disabled style="width:50%; padding:10px;">
-    </div>
-
-    <input id="popupUserId" placeholder="ID المستخدم" style="width:100%; padding:10px; margin-bottom:10px;">
-
-    <div style="display:flex; gap:10px;">
-      <button onclick="closePopup()" style="width:50%;">إلغاء</button>
-      <button onclick="confirmBuy()" style="width:50%;">شراء</button>
-    </div>
-
-  </div>
-
-</div>
 </body>
   </html>
+
 
