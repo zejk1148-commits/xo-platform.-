@@ -1267,70 +1267,54 @@ function loadApps(){
   });
   document.getElementById("appsGrid").innerHTML=html;
 }
-
-function openApp(i){
-  hideAll();
-  document.getElementById("appPage").style.display="block";
-  document.getElementById("title").innerText=apps[i].name;
+function openBuyPopup(i){
   selectedApp = apps[i].name;
-  document.getElementById("appAmount").value = "";
-  document.getElementById("appPrice").innerText = "0.00";
+  document.getElementById("buyPopup").style.display = "flex";
+  document.getElementById("popupTitle").innerText = selectedApp;
+
+  // وضع الحد الأدنى للكمية فوراً
+  let minAmount = MIN_PURCHASE[selectedApp] || 1;
+  document.getElementById("popupAmount").value = minAmount;
+  document.getElementById("popupUserId").value = "";
+
+  // تحديث السعر فوراً ليظهر عند الفتح
+  updatePopupPrice(); 
 }
-async function buyApp(){
 
-  let userId = document.getElementById("gameIdInput")?.value;
+async function confirmBuy() {
+  let gameId = document.getElementById("popupUserId").value;
+  let amount = parseFloat(document.getElementById("popupAmount").value);
+  let price = parseFloat(document.getElementById("popupTotal").value);
 
-  if(!userId || userId.trim() === ""){
-    alert("⚠️ لازم تدخل ID");
-    return;
-  }
-
-  let amount = parseFloat(document.getElementById("appAmount").value);
-  if(!amount || amount <= 0){
-    alert("❌ ادخل كمية صحيحة");
-    return;
-  }
-
-  let price = parseFloat(document.getElementById("appPrice").innerText);
-  if(!price || price <= 0){
-    alert("❌ السعر خطأ");
-    return;
-  }
+  if (!gameId) { alert("⚠️ لازم تدخل ID اللاعب"); return; }
+  if (!amount || price <= 0) { alert("⚠️ الكمية أو السعر غير صحيح"); return; }
 
   try {
     let balance = await getBalance();
-
-    if(balance < price){
-      alert("❌ رصيدك لا يكفي");
-      return;
-    }
+    if (balance < price) { alert("❌ رصيدك لا يكفي"); return; }
 
     let newBalance = balance - price;
     await setBalance(newBalance);
+    await saveOrder(selectedApp, amount, price, gameId);
 
     const user = getUser();
-
-    await saveOrder(selectedApp, amount, price, userId);
-
     sendToTelegram(
       "🛒 طلب جديد\n" +
-      "👤 " + (user.email || "غير معروف") + "\n" +
-      "🎮 " + selectedApp + "\n" +
-      "🆔 ID: " + userId + "\n" +
+      "👤 المستخدم: " + (user.email || "غير معروف") + "\n" +
+      "🎮 التطبيق: " + selectedApp + "\n" +
+      "🆔 ID: " + gameId + "\n" +
       "📦 الكمية: " + amount + "\n" +
-      "💰 السعر: $" + price
+      "💰 السعر المخصوم: $" + price.toFixed(2)
     );
 
-    alert("✅ تم تأكيد الطلب");
+    alert("✅ تم تأكيد الطلب وإرساله");
+    closePopup();
     syncData();
-    goHome();
-
-  } catch(error){
-    console.error(error);
-    alert("❌ " + error.message);
+  } catch (error) {
+    alert("❌ فشل الطلب: " + error.message);
   }
-
 }
+
 
 async function sendFormWithImage(type){
   let amountInput, imageInput, method, currencyType;
